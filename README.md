@@ -1,2 +1,2 @@
-# macula-cloud-vue
+# macula-cloud-admin
 Web console for macula cloud
