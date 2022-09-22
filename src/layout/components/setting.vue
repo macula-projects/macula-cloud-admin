@@ -36,28 +36,24 @@
 
 <script>
 	import colorTool from '@/utils/color'
+	import { mapWritableState } from 'pinia'
+	import { useGlobalStore } from '../../stores/global'
 
 	export default {
-		data(){
+		data() {
 			return {
-				layout: this.$store.state.global.layout,
-				menuIsCollapse: this.$store.state.global.menuIsCollapse,
-				layoutTags: this.$store.state.global.layoutTags,
 				lang: this.$TOOL.data.get('APP_LANG') || this.$CONFIG.LANG,
 				dark: this.$TOOL.data.get('APP_DARK') || false,
 				colorList: ['#409EFF', '#009688', '#536dfe', '#ff5c93', '#c62f2f', '#fd726d'],
 				colorPrimary: this.$TOOL.data.get('APP_COLOR') || this.$CONFIG.COLOR || '#409EFF'
 			}
 		},
+		computed: {
+			...mapWritableState(useGlobalStore, ['layout', 'menuIsCollapse', 'layoutTags'])
+		},
 		watch: {
 			layout(val) {
-				this.$store.commit("SET_layout", val)
-			},
-			menuIsCollapse(){
-				this.$store.commit("TOGGLE_menuIsCollapse")
-			},
-			layoutTags(){
-				this.$store.commit("TOGGLE_layoutTags")
+				this.layout = val
 			},
 			dark(val){
 				if(val){

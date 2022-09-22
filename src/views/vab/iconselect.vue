@@ -26,13 +26,8 @@
 </template>
 
 <script>
-	import scIconSelect from '@/components/scIconSelect'
-
 	export default {
 		name: 'iconSelect',
-		components: {
-			scIconSelect
-		},
 		data() {
 			return {
 				form: {

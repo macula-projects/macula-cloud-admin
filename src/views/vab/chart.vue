@@ -37,20 +37,8 @@
 </template>
 
 <script>
-	import scEcharts from '@/components/scEcharts';
-
-	/**
-	 * 引入组件 @/components/scEcharts
-	 * 组件内部会自动加载主题 @/components/scEcharts/echarts-theme-T.js
-	 * 支持props包括 height，width，option
-	 * 组件export百度Echarts所有方法，使用方式: new scEcharts[fun]
-	 */
-
 	export default {
 		name: 'chart',
-		components: {
-			scEcharts
-		},
 		data() {
 			return {
 				option: {

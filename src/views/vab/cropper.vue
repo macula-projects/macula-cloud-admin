@@ -55,13 +55,8 @@
 </template>
 
 <script>
-	import scCropper from '@/components/scCropper'
-
 	export default {
 		name: 'cropper',
-		components: {
-			scCropper
-		},
 		data() {
 			return {
 				cropperImg: 'img/avatar.jpg',

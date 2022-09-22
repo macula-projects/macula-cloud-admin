@@ -47,13 +47,8 @@
 </template>
 
 <script>
-	import scSelectFilter from '@/components/scSelectFilter'
-
 	export default {
 		name: 'listTab',
-		components: {
-			scSelectFilter
-		},
 		data() {
 			return {
 				groupId: "0",

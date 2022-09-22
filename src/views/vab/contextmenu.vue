@@ -55,14 +55,8 @@
 </template>
 
 <script>
-	import scContextmenu from '@/components/scContextmenu'
-	import scContextmenuItem from '@/components/scContextmenu/item'
 	export default {
 		name: 'contextmenu',
-		components: {
-			scContextmenu,
-			scContextmenuItem
-		},
 		data() {
 			return {
 				row: null,

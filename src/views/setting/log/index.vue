@@ -48,13 +48,11 @@
 
 <script>
 	import info from './info'
-	import scEcharts from '@/components/scEcharts'
 
 	export default {
 		name: 'log',
 		components: {
 			info,
-			scEcharts
 		},
 		data() {
 			return {

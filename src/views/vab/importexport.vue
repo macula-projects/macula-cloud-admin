@@ -99,15 +99,8 @@
 </template>
 
 <script>
-	import scFileImport from '@/components/scFileImport'
-	import scFileExport from '@/components/scFileExport'
-
 	export default {
 		name: 'importexport',
-		components: {
-			scFileImport,
-			scFileExport
-		},
 		data() {
 			return {
 				importErrDialogVisible: false,

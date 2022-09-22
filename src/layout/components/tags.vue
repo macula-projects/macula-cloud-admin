@@ -25,6 +25,10 @@
 
 <script>
 	import Sortable from 'sortablejs'
+	import { mapActions, mapState } from 'pinia'
+	import { useViewTagsStore } from '@/stores/viewTags'
+	import { useKeepAliveStore } from '@/stores/keepAlive'
+	import { useIframeStore } from '@/stores/iframe'
 
 	export default {
 		name: "tags",
@@ -34,11 +38,15 @@
 				contextMenuItem: null,
 				left: 0,
 				top: 0,
-				tagList: this.$store.state.viewTags.viewTags,
 				tipDisplayed: false
 			}
 		},
 		props: {},
+		computed: {
+			...mapState(useViewTagsStore, {
+				tagList: 'viewTags'
+			})
+		},
 		watch: {
 			$route(e) {
 				this.addViewTags(e);
@@ -93,6 +101,9 @@
 			this.scrollInit()
 		},
 		methods: {
+			...mapActions(useViewTagsStore, ['pushViewTags', 'removeViewTags']),
+			...mapActions(useKeepAliveStore, ['removeKeepLive', 'pushKeepLive', 'setRouteShow']),
+			...mapActions(useIframeStore, ['refreshIframe', 'removeIframeList']),
 			//查找树
 			treeFind(tree, func){
 				for (const data of tree) {
@@ -115,8 +126,8 @@
 			//增加tag
 			addViewTags(route) {
 				if(route.name && !route.meta.fullpage){
-					this.$store.commit("pushViewTags",route)
-					this.$store.commit("pushKeepLive",route.name)
+					this.pushViewTags(route)
+					this.pushKeepLive(route.name)
 				}
 			},
 			//高亮tag
@@ -126,9 +137,9 @@
 			//关闭tag
 			closeSelectedTag(tag, autoPushLatestView=true) {
 				const nowTagIndex = this.tagList.findIndex(item => item.fullPath == tag.fullPath)
-				this.$store.commit("removeViewTags", tag)
-				this.$store.commit("removeIframeList", tag)
-				this.$store.commit("removeKeepLive", tag.name)
+				this.removeViewTags(tag)
+				this.removeIframeList(tag)
+				this.removeKeepLive(tag.name)
 				if (autoPushLatestView && this.isActive(tag)) {
 					const leftView = this.tagList[nowTagIndex - 1]
 					if (leftView) {
@@ -170,14 +181,14 @@
 						query: nowTag.query
 					})
 				}
-				this.$store.commit("refreshIframe", nowTag)
+				this.refreshIframe(nowTag)
 				var _this = this;
 				setTimeout(function() {
-					_this.$store.commit("removeKeepLive", nowTag.name)
-					_this.$store.commit("setRouteShow", false)
+					_this.removeKeepLive(nowTag.name)
+					_this.setRouteShow(false)
 					_this.$nextTick(() => {
-						_this.$store.commit("pushKeepLive",nowTag.name)
-						_this.$store.commit("setRouteShow", true)
+						_this.pushKeepLive(nowTag.name)
+						_this.setRouteShow(true)
 					})
 				}, 0);
 			},

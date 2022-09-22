@@ -28,14 +28,8 @@
 </template>
 
 <script>
-	import { defineAsyncComponent } from 'vue';
-	const scCodeEditor = defineAsyncComponent(() => import('@/components/scCodeEditor'));
-
 	export default {
 		name: "codeeditor",
-		components: {
-			scCodeEditor
-		},
 		data(){
 			return {
 				json:

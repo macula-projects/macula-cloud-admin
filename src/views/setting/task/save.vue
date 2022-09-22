@@ -31,12 +31,7 @@
 </template>
 
 <script>
-	import scCron from '@/components/scCron';
-	
 	export default {
-		components: {
-			scCron
-		},
 		emits: ['success', 'closed'],
 		data() {
 			return {

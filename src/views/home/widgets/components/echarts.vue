@@ -5,15 +5,10 @@
 </template>
 
 <script>
-	import scEcharts from '@/components/scEcharts';
-
 	export default {
 		title: "实时收入",
 		icon: "el-icon-data-line",
 		description: "Echarts组件演示",
-		components: {
-			scEcharts
-		},
 		data() {
 			return {
 				loading: true,

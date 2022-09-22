@@ -13,13 +13,8 @@
 </template>
 
 <script>
-	import scWorkflow from '@/components/scWorkflow'
-
 	export default {
 		name: 'workflow',
-		components: {
-			scWorkflow
-		},
 		data() {
 			return {
 				data: {

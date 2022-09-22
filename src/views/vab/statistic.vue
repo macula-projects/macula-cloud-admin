@@ -35,13 +35,8 @@
 </template>
 
 <script>
-	import scStatistic from '@/components/scStatistic';
-
 	export default {
 		name: 'statistic',
-		components: {
-			scStatistic
-		},
 		data() {
 			return {
 				trendValue1: 7.7,

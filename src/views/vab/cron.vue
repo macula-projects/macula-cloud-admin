@@ -17,13 +17,8 @@
 </template>
 
 <script>
-	import scCron from '@/components/scCron'
-
 	export default {
 		name: 'cron',
-		components: {
-			scCron
-		},
 		data() {
 			return {
 				v1: "",

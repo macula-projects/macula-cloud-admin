@@ -66,13 +66,11 @@
 </template>
 
 <script>
-	import scPasswordStrength from '@/components/scPasswordStrength';
 	import commonPage from './components/commonPage'
 
 	export default {
 		components: {
 			commonPage,
-			scPasswordStrength
 		},
 		data() {
 			return {

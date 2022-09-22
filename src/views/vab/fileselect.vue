@@ -22,13 +22,8 @@
 </template>
 
 <script>
-	import scFileSelect from '@/components/scFileSelect'
-
 	export default {
 		name: 'fileselect',
-		components: {
-			scFileSelect
-		},
 		data() {
 			return {
 				file: '',

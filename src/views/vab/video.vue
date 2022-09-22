@@ -32,13 +32,8 @@
 </template>
 
 <script>
-	import scVideo from '@/components/scVideo'
-
 	export default {
-		name: 'scvideo',
-		components: {
-			scVideo
-		},
+		name: 'scvideox',
 		data() {
 			return {
 				playUrl: "https://fastly.jsdelivr.net/gh/scuiadmin/CDN/video/scui-player-demo-720.mp4",

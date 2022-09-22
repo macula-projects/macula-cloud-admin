@@ -19,14 +19,8 @@
 </template>
 
 <script>
-	import { defineAsyncComponent } from 'vue';
-	const scEditor = defineAsyncComponent(() => import('@/components/scEditor'));
-
 	export default {
 		name: "editor",
-		components: {
-			scEditor
-		},
 		data(){
 			return {
 				html: '',

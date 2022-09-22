@@ -17,13 +17,8 @@
 </template>
 
 <script>
-	import scFilterBar from '@/components/scFilterBar';
-
 	export default {
 		name: 'filterBar',
-		components: {
-			scFilterBar
-		},
 		data() {
 			return {
 				filterData : {},

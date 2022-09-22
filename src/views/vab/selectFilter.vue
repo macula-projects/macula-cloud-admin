@@ -10,13 +10,8 @@
 </template>
 
 <script>
-	import scSelectFilter from '@/components/scSelectFilter'
-
 	export default {
 		name: 'selectFilter',
-		components: {
-			scSelectFilter
-		},
 		data() {
 			return {
 				data: [
