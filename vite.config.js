@@ -29,7 +29,6 @@ export default defineConfig({
           importStyle: false
         }),
       ],
-      
     }),
 
     Components({

@@ -87,7 +87,7 @@
 			//树拖拽
 			nodeDrop(draggingNode, dropNode, dropType){
 				this.$refs.save.setData({})
-				this.$message(`拖拽对象：${draggingNode.data.meta.title}, 释放对象：${dropNode.data.meta.title}, 释放对象的位置：${dropType}`)
+				ElMessage(`拖拽对象：${draggingNode.data.meta.title}, 释放对象：${dropNode.data.meta.title}, 释放对象的位置：${dropType}`)
 			},
 			//增加
 			async add(node, data){
@@ -116,11 +116,11 @@
 			async delMenu(){
 				var CheckedNodes = this.$refs.menu.getCheckedNodes()
 				if(CheckedNodes.length == 0){
-					this.$message.warning("请选择需要删除的项")
+					ElMessage.warning("请选择需要删除的项")
 					return false;
 				}
 
-				var confirm = await this.$confirm('确认删除已选择的菜单吗？','提示', {
+				var confirm = await ElMessageBox.confirm('确认删除已选择的菜单吗？','提示', {
 					type: 'warning',
 					confirmButtonText: '删除',
 					confirmButtonClass: 'el-button--danger'
@@ -145,7 +145,7 @@
 						this.$refs.menu.remove(item)
 					})
 				}else{
-					this.$message.warning(res.message)
+					ElMessage.warning(res.message)
 				}
 			}
 		}

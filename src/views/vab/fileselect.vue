@@ -39,7 +39,7 @@
 		methods: {
 			submit(value){
 				console.log(value)
-				this.$message("返回值请查看F12控制台console.log()")
+				ElMessage("返回值请查看F12控制台console.log()")
 			}
 		}
 	}

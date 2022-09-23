@@ -89,9 +89,9 @@
 						if(res.code == 200){
 							this.$emit('success', this.form, this.mode)
 							this.visible = false;
-							this.$message.success("操作成功")
+							ElMessage.success("操作成功")
 						}else{
-							this.$alert(res.message, "提示", {type: 'error'})
+							ElMessageBox.alert(res.message, "提示", {type: 'error'})
 						}
 					}
 				})

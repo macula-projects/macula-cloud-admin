@@ -6,7 +6,6 @@ import { permission, rolePermission } from './utils/permission'
 
 import errorHandler from './utils/errorHandler'
 
-import { ElMessage, ElMessageBox } from 'element-plus'
 import * as scDirectives from './directives'
 import * as elIcons from '@element-plus/icons-vue'
 import * as scIcons from './assets/icons'
@@ -20,9 +19,6 @@ export default {
 		app.config.globalProperties.$API = api;
 		app.config.globalProperties.$AUTH = permission;
 		app.config.globalProperties.$ROLE = rolePermission;
-
-		app.use(ElMessage)
-		app.use(ElMessageBox)
 
 		//统一注册el-icon图标
 		for(let icon in elIcons){

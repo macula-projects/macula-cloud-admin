@@ -112,14 +112,14 @@
 				var res = await this.$API.demo.post.post(reqData);
 				if(res.code == 200){
 					this.$refs.table.removeIndex(index)
-					this.$message.success("删除成功")
+					ElMessage.success("删除成功")
 				}else{
-					this.$alert(res.message, "提示", {type: 'error'})
+					ElMessageBox.alert(res.message, "提示", {type: 'error'})
 				}
 			},
 			//批量删除
 			async batch_del(){
-				var confirmRes = await this.$confirm(`确定删除选中的 ${this.selection.length} 项吗？`, '提示', {
+				var confirmRes = await ElMessageBox.confirm(`确定删除选中的 ${this.selection.length} 项吗？`, '提示', {
 					type: 'warning',
 					confirmButtonText: '删除',
 					confirmButtonClass: 'el-button--danger'
@@ -131,7 +131,7 @@
 
 				var ids = this.selection.map(v => v.id)
 				this.$refs.table.removeKeys(ids)
-				this.$message.success("操作成功")
+				ElMessage.success("操作成功")
 
 			},
 			//表格选择后回调事件

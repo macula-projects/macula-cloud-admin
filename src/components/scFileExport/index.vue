@@ -164,7 +164,7 @@
 					this.asyncLoading = false
 					if(res.code == 200){
 						this.dialog = false
-						this.$msgbox({
+						ElMessageBox({
 							title: "成功发起任务",
 							message: `<div><img style="height:200px" src="img/tasks-example.png"/></div><p>已成功发起导出任务，您可以操作其他事务</p><p>稍后可在 <b>任务中心</b> 查看执行结果</p>`,
 							type: "success",
@@ -173,7 +173,7 @@
 							center: true
 						}).catch(() => {})
 					}else{
-						this.$alert(res.message || "未知错误", "发起任务失败", {
+						ElMessageBox.alert(res.message || "未知错误", "发起任务失败", {
 							type: "error",
 							center: true
 						}).catch(() => {})

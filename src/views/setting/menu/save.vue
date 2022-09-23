@@ -166,9 +166,9 @@
 				var res = await this.$API.demo.post.post(this.form)
 				this.loading = false
 				if(res.code == 200){
-					this.$message.success("保存成功")
+					ElMessage.success("保存成功")
 				}else{
-					this.$message.warning(res.message)
+					ElMessage.warning(res.message)
 				}
 			},
 			//表单注入数据

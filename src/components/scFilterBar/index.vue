@@ -156,7 +156,7 @@
 			//增加过滤项
 			addFilter(){
 				if(this.fields.length<=0){
-					this.$message.warning('无过滤项');
+					ElMessage.warning('无过滤项');
 					return false
 				}
 				const filterNum = this.fields[this.filter.length] || this.fields[0]
@@ -241,7 +241,7 @@
 			},
 			//保存常用
 			saveMy(){
-				this.$prompt('常用过滤名称', '另存为常用', {
+				ElMessageBox.prompt('常用过滤名称', '另存为常用', {
 					inputPlaceholder: '请输入识别度较高的常用过滤名称',
 					inputPattern: /\S/,
 					inputErrorMessage: '名称不能为空'
@@ -264,7 +264,7 @@
 					}
 
 					this.myFilter.push(saveObj)
-					this.$message.success(`${this.filterName} 保存常用成功`)
+					ElMessage.success(`${this.filterName} 保存常用成功`)
 					this.saveLoading = false
 				})
 				.catch(() => {

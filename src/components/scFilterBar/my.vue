@@ -77,7 +77,7 @@
 					return false
 				}
 				this.myFilter.splice(index, 1)
-				this.$message.success('删除常用成功')
+				ElMessage.success('删除常用成功')
 			},
 			//远程获取我的常用
 			async getMyfilter(){

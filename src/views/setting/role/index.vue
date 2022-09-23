@@ -109,20 +109,20 @@
 				var res = await this.$API.demo.post.post(reqData);
 				if(res.code == 200){
 					this.$refs.table.refresh()
-					this.$message.success("删除成功")
+					ElMessage.success("删除成功")
 				}else{
-					this.$alert(res.message, "提示", {type: 'error'})
+					ElMessageBox.alert(res.message, "提示", {type: 'error'})
 				}
 			},
 			//批量删除
 			async batch_del(){
-				this.$confirm(`确定删除选中的 ${this.selection.length} 项吗？如果删除项中含有子集将会被一并删除`, '提示', {
+				ElMessageBox.confirm(`确定删除选中的 ${this.selection.length} 项吗？如果删除项中含有子集将会被一并删除`, '提示', {
 					type: 'warning'
 				}).then(() => {
 					const loading = this.$loading();
 					this.$refs.table.refresh()
 					loading.close();
-					this.$message.success("操作成功")
+					ElMessage.success("操作成功")
 				}).catch(() => {
 
 				})
@@ -138,7 +138,7 @@
 				setTimeout(()=>{
 					delete row.$switch_status;
 					row.status = val;
-					this.$message.success("操作成功")
+					ElMessage.success("操作成功")
 				}, 500)
 			},
 			//搜索

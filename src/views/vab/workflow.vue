@@ -99,7 +99,7 @@
 		},
 		methods: {
 			exportJson() {
-				this.$message("返回值请查看F12控制台console.log()")
+				ElMessage("返回值请查看F12控制台console.log()")
 				console.log(this.data)
 			}
 		}

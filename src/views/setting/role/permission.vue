@@ -109,7 +109,7 @@
 				setTimeout(()=>{
 					this.isSaveing = false;
 					this.visible = false;
-					this.$message.success("操作成功")
+					ElMessage.success("操作成功")
 					this.$emit('success')
 				},1000)
 			},

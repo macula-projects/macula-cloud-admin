@@ -96,7 +96,7 @@
 				this.$refs.contextmenu.openMenu(e)
 			},
 			handleCommand(command){
-				this.$message('click on item ' + command)
+				ElMessage('click on item ' + command)
 				if(command == 'e'){
 					this.row.state = 1
 				}

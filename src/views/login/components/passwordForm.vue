@@ -85,7 +85,7 @@
 					this.$TOOL.data.set("USER_INFO", user.data.userInfo)
 				}else{
 					this.islogin = false
-					this.$message.warning(user.message)
+					ElMessage.warning(user.message)
 					return false
 				}
 				//获取菜单
@@ -98,7 +98,7 @@
 				if(menu.code == 200){
 					if(menu.data.menu.length==0){
 						this.islogin = false
-						this.$alert("当前用户无任何菜单权限，请联系系统管理员", "无权限访问", {
+						ElMessageBox.alert("当前用户无任何菜单权限，请联系系统管理员", "无权限访问", {
 							type: 'error',
 							center: true
 						})
@@ -108,14 +108,14 @@
 					this.$TOOL.data.set("PERMISSIONS", menu.data.permissions)
 				}else{
 					this.islogin = false
-					this.$message.warning(menu.message)
+					ElMessage.warning(menu.message)
 					return false
 				}
 
 				this.$router.replace({
 					path: '/'
 				})
-				this.$message.success("Login Success 登录成功")
+				ElMessage.success("Login Success 登录成功")
 				this.islogin = false
 			},
 		}

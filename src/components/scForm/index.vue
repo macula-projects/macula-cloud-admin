@@ -121,7 +121,6 @@
 
 	import { defineAsyncComponent } from 'vue'
 	const tableselectRender = defineAsyncComponent(() => import('./items/tableselect'))
-	const scEditor = defineAsyncComponent(() => import('@/components/scEditor'))
 
 	export default {
 		props: {
@@ -131,7 +130,6 @@
 		},
 		components: {
 			tableselectRender,
-			scEditor
 		},
 		data() {
 			return {

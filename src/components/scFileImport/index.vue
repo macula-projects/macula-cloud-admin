@@ -83,7 +83,7 @@
 			before(file){
 				const maxSize = file.size / 1024 / 1024 < this.maxSize;
 				if (!maxSize) {
-					this.$message.warning(`上传文件大小不能超过 ${this.maxSize}MB!`);
+					ElMessage.warning(`上传文件大小不能超过 ${this.maxSize}MB!`);
 					return false;
 				}
 				this.loading = true

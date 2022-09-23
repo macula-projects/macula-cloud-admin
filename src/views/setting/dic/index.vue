@@ -157,7 +157,7 @@
 			},
 			//删除树
 			dicDel(node, data){
-				this.$confirm(`确定删除 ${data.name} 项吗？`, '提示', {
+				ElMessageBox.confirm(`确定删除 ${data.name} 项吗？`, '提示', {
 					type: 'warning'
 				}).then(() => {
 					this.showDicloading = true;
@@ -179,7 +179,7 @@
 					}
 
 					this.showDicloading = false;
-					this.$message.success("操作成功")
+					ElMessage.success("操作成功")
 				}).catch(() => {
 
 				})
@@ -196,7 +196,7 @@
 						const tableData = _this.$refs.table.tableData
 						const currRow = tableData.splice(oldIndex, 1)[0]
 						tableData.splice(newIndex, 0, currRow)
-						_this.$message.success("排序成功")
+						ElMessage.success("排序成功")
 					}
 				})
 			},
@@ -224,14 +224,14 @@
 				var res = await this.$API.demo.post.post(reqData);
 				if(res.code == 200){
 					this.$refs.table.tableData.splice(index, 1);
-					this.$message.success("删除成功")
+					ElMessage.success("删除成功")
 				}else{
-					this.$alert(res.message, "提示", {type: 'error'})
+					ElMessageBox.alert(res.message, "提示", {type: 'error'})
 				}
 			},
 			//批量删除
 			async batch_del(){
-				this.$confirm(`确定删除选中的 ${this.selection.length} 项吗？`, '提示', {
+				ElMessageBox.confirm(`确定删除选中的 ${this.selection.length} 项吗？`, '提示', {
 					type: 'warning'
 				}).then(() => {
 					const loading = this.$loading();
@@ -243,7 +243,7 @@
 						})
 					})
 					loading.close();
-					this.$message.success("操作成功")
+					ElMessage.success("操作成功")
 				}).catch(() => {
 
 				})
@@ -257,9 +257,9 @@
 					if(res.code == 200){
 						//这里选择刷新整个表格 OR 插入/编辑现有表格数据
 						this.listDialogVisible = false;
-						this.$message.success("操作成功")
+						ElMessage.success("操作成功")
 					}else{
-						this.$alert(res.message, "提示", {type: 'error'})
+						ElMessageBox.alert(res.message, "提示", {type: 'error'})
 					}
 				})
 			},
@@ -277,7 +277,7 @@
 				setTimeout(()=>{
 					delete row.$switch_yx;
 					row.yx = val;
-					this.$message.success(`操作成功id:${row.id} val:${val}`)
+					ElMessage.success(`操作成功id:${row.id} val:${val}`)
 				}, 500)
 			},
 			//本地更新数据

@@ -253,10 +253,10 @@
 				try {
 					await config.columnSettingSave(this.tableName, userColumn)
 				}catch(error){
-					this.$message.error('保存失败')
+					ElMessage.error('保存失败')
 					this.$refs.columnSetting.isSave = false
 				}
-				this.$message.success('保存成功')
+				ElMessage.success('保存成功')
 				this.$refs.columnSetting.isSave = false
 			},
 			//自定义列重置
@@ -267,7 +267,7 @@
 					this.userColumn = column
 					this.$refs.columnSetting.usercolumn = JSON.parse(JSON.stringify(this.userColumn||[]))
 				}catch(error){
-					this.$message.error('重置失败')
+					ElMessage.error('重置失败')
 					this.$refs.columnSetting.isSave = false
 				}
 				this.$refs.columnSetting.isSave = false

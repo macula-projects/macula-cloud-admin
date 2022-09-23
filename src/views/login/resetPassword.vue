@@ -91,7 +91,7 @@
 				var validate = await this.$refs.form.validateField("phone").catch(()=>{})
 				if(!validate){ return false }
 
-				this.$message.success("已发送短信至手机号码")
+				ElMessage.success("已发送短信至手机号码")
 				this.disabled = true
 				this.time = 60
 				var t = setInterval(() => {

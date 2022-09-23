@@ -112,7 +112,7 @@
 			submit(){
 				this.$refs.form.validate(async (valid) => {
 					if (valid) {
-						this.$message.success("全部验证通过")
+						ElMessage.success("全部验证通过")
 					}else{
 						return false;
 					}
@@ -121,7 +121,7 @@
 			submit2(){
 				this.$refs.form2.validate(async (valid) => {
 					if (valid) {
-						this.$message.success("全部验证通过")
+						ElMessage.success("全部验证通过")
 					}else{
 						return false;
 					}

@@ -102,7 +102,7 @@
 			saveMods(){
 				const myModsName = this.myMods.map(v => v.name)
 				this.$TOOL.data.set("my-mods", myModsName)
-				this.$message.success("设置常用成功")
+				ElMessage.success("设置常用成功")
 				this.modsDrawer = false
 			}
 		}

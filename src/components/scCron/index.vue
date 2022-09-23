@@ -583,7 +583,7 @@
 				let arr = (this.modelValue || "* * * * * ?").split(" ")
 				//简单检查
 				if(arr.length < 6){
-					this.$message.warning("cron表达式错误，已转换为默认表达式")
+					ElMessage.warning("cron表达式错误，已转换为默认表达式")
 					arr = "* * * * * ?".split(" ")
 				}
 

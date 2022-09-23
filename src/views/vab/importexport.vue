@@ -140,7 +140,7 @@
 		methods: {
 			success(res, close){
 				if(res.code==200){
-					this.$alert("导入返回成功后，可后续操作，比如刷新表格等。执行回调函数close()可关闭上传窗口。", "导入成功", {
+					ElMessageBox.alert("导入返回成功后，可后续操作，比如刷新表格等。执行回调函数close()可关闭上传窗口。", "导入成功", {
 						type: "success",
 						showClose: false,
 						center: true

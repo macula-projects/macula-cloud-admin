@@ -120,7 +120,7 @@
 		},
 		methods: {
 			success(response){
-				this.$alert(`success函数钩子，可用于类似OCR返回信息，return false后阻止后续执行，回调参数打开控制台查看`, {
+				ElMessageBox.alert(`success函数钩子，可用于类似OCR返回信息，return false后阻止后续执行，回调参数打开控制台查看`, {
 					title: "提示",
 					type: "success"
 				})

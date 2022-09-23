@@ -84,7 +84,7 @@
 		methods: {
 			//值变化
 			change(val){
-				this.$message('change事件，返回详情查看控制台')
+				ElMessage('change事件，返回详情查看控制台')
 				console.log(val)
 			}
 		}

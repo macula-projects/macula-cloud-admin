@@ -49,7 +49,7 @@
 				var validate = await this.$refs.loginForm.validateField("phone").catch(()=>{})
 				if(!validate){ return false }
 
-				this.$message.success(this.$t('login.smsSent'))
+				ElMessage.success(this.$t('login.smsSent'))
 				this.disabled = true
 				this.time = 60
 				var t = setInterval(() => {

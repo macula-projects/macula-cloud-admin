@@ -59,7 +59,7 @@
 			save(){
 				this.$refs.form.validate(valid => {
 					if (valid) {
-						this.$alert("密码修改成功，是否跳转至登录页使用新密码登录", "修改成功", {
+						ElMessageBox.alert("密码修改成功，是否跳转至登录页使用新密码登录", "修改成功", {
 							type: 'success',
 							center: true
 						}).then(() => {

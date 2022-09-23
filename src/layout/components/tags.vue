@@ -59,7 +59,7 @@
 						targetTag.scrollIntoView()
 						//显示提示
 						if(!this.tipDisplayed){
-							this.$msgbox({
+							ElMessageBox({
 								type: 'warning',
 								center: true,
 								title: '提示',

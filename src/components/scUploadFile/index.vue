@@ -119,7 +119,7 @@
 			before(file){
 				const maxSize = file.size / 1024 / 1024 < this.maxSize;
 				if (!maxSize) {
-					this.$message.warning(`上传文件大小不能超过 ${this.maxSize}MB!`);
+					ElMessage.warning(`上传文件大小不能超过 ${this.maxSize}MB!`);
 					return false;
 				}
 			},
@@ -139,7 +139,7 @@
 				})
 			},
 			beforeRemove(uploadFile){
-				return this.$confirm(`是否移除 ${uploadFile.name} ?`, '提示', {
+				return ElMessageBox.confirm(`是否移除 ${uploadFile.name} ?`, '提示', {
 					type: 'warning',
 				}).then(() => {
 					return true
@@ -148,7 +148,7 @@
 				})
 			},
 			handleExceed(){
-				this.$message.warning(`当前设置最多上传 ${this.limit} 个文件，请移除后上传!`)
+				ElMessage.warning(`当前设置最多上传 ${this.limit} 个文件，请移除后上传!`)
 			},
 			handlePreview(uploadFile){
 				window.open(uploadFile.url)

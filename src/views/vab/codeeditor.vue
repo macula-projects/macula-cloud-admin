@@ -62,11 +62,11 @@ ORDER BY \`created_at\` DESC, \`id\` DESC LIMIT 0, 10;`
 		},
 		methods: {
 			getCode(){
-				this.$message("请查看控制台")
+				ElMessage("请查看控制台")
 				console.log(this.json)
 			},
 			getValue(){
-				this.$message("请查看控制台")
+				ElMessage("请查看控制台")
 				var v = this.$refs.editor.coder.getValue()
 				console.log(v)
 			},
