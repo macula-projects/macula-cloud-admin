@@ -41,6 +41,7 @@ export default defineConfig({
           importStyle: false
         }),
       ],
+      exclude: [/scCropper/]
     }),
 
     Inspect(),

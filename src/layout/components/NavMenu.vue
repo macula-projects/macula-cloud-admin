@@ -24,7 +24,7 @@
 
 <script>
 	export default {
-		name: 'NavMenu',
+		name: 'navMenu',
 		props: ['navMenus'],
 		data() {
 			return {}

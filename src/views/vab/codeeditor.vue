@@ -27,12 +27,13 @@
 	</el-main>
 </template>
 
-<script>
-	export default {
-		name: "codeeditor",
-		data(){
-			return {
-				json:
+<script setup>
+	import { defineAsyncComponent, ref, getCurrentInstance } from 'vue'
+	const scCodeEditor = defineAsyncComponent(() => import('@/components/scCodeEditor'))
+
+	const { proxy } = getCurrentInstance()
+
+	const json = ref(
 `{
 	"name": "SCUI",
 	"menu": [
@@ -47,34 +48,33 @@
 			"link": "https://element-plus.gitee.io"
 		}
 	]
-}`,
-				js:
+}`)
+	const js = ref(
 `// Demo code (the actual new parser character stream implementation)
 function StringStream(string) {
 	this.pos = 0;
 	this.string = string;
-}`,
-				sql:
+}`)
+	const sql = ref(
 `SELECT \`author\`, \`title\` FROM \`posts\`
 WHERE \`status\` = 'draft' AND \`author\` IN('author1','author2')
 ORDER BY \`created_at\` DESC, \`id\` DESC LIMIT 0, 10;`
-			}
-		},
-		methods: {
-			getCode(){
-				ElMessage("请查看控制台")
-				console.log(this.json)
-			},
-			getValue(){
-				ElMessage("请查看控制台")
-				var v = this.$refs.editor.coder.getValue()
-				console.log(v)
-			},
-			setValue(){
-				var v = `{"key":"newValue"}`
-				this.$refs.editor.coder.setValue(v)
-			}
-		}
+	)
+
+	function getCode() {
+		ElMessage("请查看控制台")
+		console.log(json)
+	}
+
+	function getValue() {
+		ElMessage("请查看控制台")
+		var v = proxy.$refs.editor.coder.getValue()
+		console.log(v)
+	}
+
+	function setValue() {
+		var v = `{"key":"newValue"}`
+		proxy.$refs.editor.coder.setValue(v)
 	}
 </script>
 

@@ -18,27 +18,21 @@
 	</el-main>
 </template>
 
-<script>
-	export default {
-		name: "editor",
-		data(){
-			return {
-				html: '',
-				templates: [
-					{
-						title: '自定义HTML模板',
-						description: '',
-						content: '<strong>演示模板</strong>'
-					},
-					{
-						title: '列表',
-						description: '',
-						content: '<ol><li>演示列表1</li><li>演示列表2</li></ol>'
-					}
-				]
-			}
+<script setup>
+	import { defineAsyncComponent, ref } from 'vue';
+	const scEditor = defineAsyncComponent(() => import('@/components/scEditor'));
+	const html = ref('')
+	const templates = ref([
+		{
+			title: '自定义HTML模板',
+			description: 'xxx',
+			content: '<strong>演示模板</strong>'
+		}, {
+			title: '列表',
+			description: '',
+			content: '<ol><li>演示列表1</li><li>演示列表2</li></ol>'
 		}
-	}
+	])
 </script>
 
 <style>

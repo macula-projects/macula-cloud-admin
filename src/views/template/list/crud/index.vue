@@ -2,9 +2,22 @@
 	<el-container>
 		<el-header>
 			<div class="left-panel">
-				<el-button type="primary" icon="el-icon-plus" @click="add"></el-button>
+				<el-button type="primary" icon="el-icon-plus" @click="add">弹窗新增</el-button>
 				<el-button type="primary" icon="el-icon-plus" @click="addPage">页面新增</el-button>
-				<el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del"></el-button>
+				<el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del">删除</el-button>
+			</div>
+			<div class="right-panel">
+				<div class="right-panel-search">
+					<el-input v-model="search.keyword" placeholder="关键词" clearable></el-input>
+					<el-button type="primary" icon="el-icon-search" @click="upsearch"></el-button>
+					<scFilterBar filterName="filterName" :options="options" @filterChange="change">
+						<template #default="{filterLength, openFilter}">
+							<el-badge :value="filterLength" type="danger" :hidden="filterLength<=0">
+								<el-button icon="el-icon-filter" @click="openFilter"></el-button>
+							</el-badge>
+						</template>
+					</scFilterBar>
+				</div>
 			</div>
 		</el-header>
 		<el-main class="nopadding">
@@ -63,7 +76,144 @@
 				list: {
 					apiObj: this.$API.demo.list
 				},
-				selection: []
+				selection: [],
+				search: {
+					keyword: ""
+				},
+				filterData : {},
+				defaultFilter : [],
+				options: [
+					{
+						label: '订单号',
+						value: 'id',
+						type: 'text',
+						selected: true,
+						placeholder: '请输入订单号'
+					},
+					{
+						label: '类型',
+						value: 'type',
+						type: 'select',
+						operator: '=',
+						selected: true,
+						placeholder: '请选择类型',
+						extend: {
+							data:[
+								{
+									label: "选项1",
+									value: "1"
+								},
+								{
+									label: "选项2",
+									value: "2"
+								}
+							]
+						}
+					},
+					{
+						label: '类型(多选)',
+						value: 'type2',
+						type: 'select',
+						operator: '=',
+						placeholder: '请选择类型',
+						extend: {
+							multiple: true,
+							data:[
+								{
+									label: "选项1",
+									value: "1"
+								},
+								{
+									label: "选项2",
+									value: "2"
+								}
+							]
+						}
+					},
+					{
+						label: '通知(异步)',
+						value: 'noticeType',
+						type: 'select',
+						operator: '=',
+						placeholder: '请选择通知类型',
+						extend: {
+							request: async () => {
+								var list = await this.$API.system.dic.get.get()
+								return list.data.map(item => {
+									return {
+										label: item.label,
+										value: item.value
+									}
+								})
+							}
+						}
+					},
+					{
+						label: '通知(远程搜索)',
+						value: 'noticeType2',
+						type: 'select',
+						operator: '=',
+						placeholder: '请输入关键词后检索',
+						extend: {
+							remote: true,
+							request: async (query) => {
+								var data = {
+									keyword: query,
+								}
+								var list = await this.$API.system.dic.get.get(data)
+								return list.data.map(item => {
+									return {
+										label: item.label,
+										value: item.value
+									}
+								})
+							}
+						}
+					},
+					{
+						label: '关键词(标签)',
+						value: 'tags',
+						type: 'tags',
+						operator: 'include',
+						operators: [
+							{
+								label: '包含',
+								value: 'include',
+							},
+							{
+								label: '不包含',
+								value: 'notinclude',
+							}
+						]
+					},
+					{
+						label: '开关',
+						value: 'switch',
+						type: 'switch',
+						operator: '='
+					},
+					{
+						label: '日期单选',
+						value: 'date',
+						type: 'date',
+						operator: '=',
+						operators: [
+							{
+								label: '等于',
+								value: '=',
+							},
+							{
+								label: '不等于',
+								value: '!=',
+							}
+						]
+					},
+					{
+						label: '日期范围',
+						value: 'date2',
+						type: 'daterange'
+					}
+				]
 			}
 		},
 		mounted() {
@@ -149,6 +299,13 @@
 
 				//当然也可以暴力的直接刷新表格
 				// this.$refs.table.refresh()
+			},
+			//搜索
+			upsearch(){
+				this.$refs.table.upData(this.search)
+			},
+			change(data){
+				this.filterData = data;
 			}
 		}
 	}

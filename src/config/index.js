@@ -31,7 +31,7 @@ const DEFAULT_CONFIG = {
 
 	//布局 默认：default | 通栏：header | 经典：menu | 功能坞：dock
 	//dock将关闭标签和面包屑栏
-	LAYOUT: 'default',
+	LAYOUT: 'header',
 
 	//菜单是否折叠
 	MENU_IS_COLLAPSE: false,
@@ -40,7 +40,7 @@ const DEFAULT_CONFIG = {
 	MENU_UNIQUE_OPENED: false,
 
 	//是否开启多标签
-	LAYOUT_TAGS: true,
+	LAYOUT_TAGS: false,
 
 	//语言
 	LANG: 'zh-cn',

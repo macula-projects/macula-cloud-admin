@@ -55,8 +55,6 @@
 
 <script>
 	import { defineAsyncComponent } from 'vue'
-	import { genFileId } from 'element-plus'
-	const scCropper = defineAsyncComponent(() => import('@/components/scCropper'))
 	import config from "@/config/upload"
 
 	export default {
@@ -82,9 +80,6 @@
 			cropper: { type: Boolean, default: false },
 			compress: {type: Number, default: 1},
 			aspectRatio:  {type: Number, default: NaN}
-		},
-		components: {
-			scCropper
 		},
 		data() {
 			return {

@@ -39,7 +39,7 @@
 
 		},
 		methods: {
-			...mapActions(useIframeStore, ['setIframeList', 'pushIframeList']),
+			...mapActions(useIframeStore, ['setIframeList', 'pushIframeList', 'clearIframeList']),
 			push(route){
 				if(route.meta.type == 'iframe'){
 					if(this.globalStore.ismobile || !this.globalStore.layoutTags){
