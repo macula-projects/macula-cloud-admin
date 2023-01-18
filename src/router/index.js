@@ -18,6 +18,19 @@ const otherModules = {
 //系统路由
 const routes = systemRouter
 
+//首页面板路由
+const routes_dashboard_name = "dashboard"
+const routes_dashboard = {
+	name: routes_dashboard_name,
+	path: "/dashboard",
+	meta: {
+		title: "控制台",
+		icon: "el-icon-menu",
+		affix: true
+	},
+	component: () => import("@/views/common/home")
+}
+
 //系统特殊路由
 const routes_404 = {
 	path: "/:pathMatch(.*)*",
@@ -50,6 +63,8 @@ router.beforeEach(async (to, from, next) => {
 		router.addRoute(routes[0])
 		//删除路由(404)
 		routes_404_r()
+		//删除首页面板路由
+		router.removeRoute(routes_dashboard_name)
 		isGetRouter = false;
 		next();
 		return false;
@@ -85,6 +100,7 @@ router.beforeEach(async (to, from, next) => {
 			router.addRoute("layout", item)
 		})
 		routes_404_r = router.addRoute(routes_404)
+		router.addRoute("layout", routes_dashboard)
 		if (to.matched.length == 0) {
 			router.push(to.fullPath);
 		}

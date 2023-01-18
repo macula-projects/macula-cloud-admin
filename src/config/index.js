@@ -1,6 +1,6 @@
 const DEFAULT_CONFIG = {
 	//标题
-	APP_NAME: "SCUI",
+	APP_NAME: "MACULA V5",
 
 	//首页地址
 	DASHBOARD_URL: "/dashboard",
@@ -13,6 +13,9 @@ const DEFAULT_CONFIG = {
 
 	//接口地址
 	API_URL: "/api",
+	
+	//system模块接口地址
+	SYSTEM_API_URL: "/system",
 
 	//请求超时
 	TIMEOUT: 10000,
@@ -31,7 +34,7 @@ const DEFAULT_CONFIG = {
 
 	//布局 默认：default | 通栏：header | 经典：menu | 功能坞：dock
 	//dock将关闭标签和面包屑栏
-	LAYOUT: 'header',
+	LAYOUT: 'menu',
 
 	//菜单是否折叠
 	MENU_IS_COLLAPSE: false,

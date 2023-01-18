@@ -244,7 +244,7 @@
 			}
 		},
 		methods: {
-			...mapActions(useGlobalStore, ['setIsMobile']),
+			...mapActions(useGlobalStore, ['setIsMobile', 'toggleMenuIsCollapse']),
 			openSetting(){
 				this.settingDialog = true;
 			},
