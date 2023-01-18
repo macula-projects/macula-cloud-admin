@@ -58,13 +58,7 @@ export default defineConfig(({ command, mode }) => {
 	        target: 'https://www.fastmock.site/mock/5039c4361c39a7e3252c5b55971f1bd3/api',
 	        changeOrigin: true,
 	        rewrite: (p) => p.replace(/^\/api/, '')
-	      },
-				"/system": {
-					target: `${env.VITE_SYSTEM_API_PREFIX}/system`,
-					//target: "http://localhost:9000/system",
-					changeOrigin: true,
-					rewrite: (p) => p.replace(/^\/system/, '')
-				}
+	      }
 	    },
 	  },
 	  css: {

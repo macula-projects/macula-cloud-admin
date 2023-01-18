@@ -15,7 +15,7 @@ const DEFAULT_CONFIG = {
 	API_URL: "/api",
 	
 	//system模块接口地址
-	SYSTEM_API_URL: "/system",
+	SYSTEM_API_URL: `${import.meta.env.VITE_SYSTEM_API_PREFIX}/system`,
 
 	//请求超时
 	TIMEOUT: 10000,

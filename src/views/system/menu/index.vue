@@ -13,7 +13,7 @@
 								<span class="label">
 									{{ node.label }}
 								</span>
-								<span class="do">
+								<span class="do" v-if="data.meta.type !== 'BUTTON'">
 									<el-icon @click.stop="add(node, data)"><el-icon-plus /></el-icon>
 								</span>
 							</span>
@@ -111,7 +111,7 @@
 					});
 				}
 				this.menuloading = false
-				newMenuData.id = res.data
+				newMenuData.id = res.data.menuId
 
 				this.$refs.menu.append(newMenuData, node)
 				this.$refs.menu.setCurrentKey(newMenuData.id)
@@ -136,13 +136,11 @@
 				}
 
 				this.menuloading = true
-				var reqData = {
-					ids: CheckedNodes.map(item => item.id)
-				}
-				var res = await this.$API.demo.post.post(reqData)
+				var reqData =  CheckedNodes.map(item => item.id)
+				var res = await this.$API.system_menu.menu.del.delete(reqData)
 				this.menuloading = false
 
-				if(res.code == 200){
+				if(res.code === "10000"){
 					CheckedNodes.forEach(item => {
 						var node = this.$refs.menu.getNode(item)
 						if(node.isCurrent){

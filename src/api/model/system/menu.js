@@ -7,14 +7,14 @@ export default {
 			url: `${config.SYSTEM_API_URL}/api/v1/menus/my`,
 			name: "获取我的菜单",
 			get: async function(){
-				return await http.get(this.url);
+				return await http.get(this.url)
 			}
 		},
 		list: {
-			url: `${config.SYSTEM_API_URL}/api/v1/menus`,
+			url: `${config.SYSTEM_API_URL}/api/v1/menus/list`,
 			name: "获取菜单",
 			get: async function(){
-				return await http.get(this.url);
+				return await http.get(this.url)
 			}
 		},
 		add: {
@@ -22,6 +22,13 @@ export default {
 			name: "更新添加菜单",
 			post: async function(data = {}){
 				return await http.post(this.url, data)
+			}
+		},
+		del: {
+			url: `${config.SYSTEM_API_URL}/api/v1/menus/delete`,
+			name: "删除菜单",
+			delete: async function(param = {}) {
+				return await http.delete(this.url, param)
 			}
 		}
 	}

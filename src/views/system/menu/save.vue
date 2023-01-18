@@ -165,7 +165,16 @@
 				this.loading = true
 				var res = await this.$API.system_menu.menu.add.post(this.form)
 				this.loading = false
-				if(res.code == 10000){
+				if(res.code === "10000"){
+					if (this.form.apiList) {
+						this.form.apiList.forEach(apiList => {
+							var key = `${apiList.code}_${apiList.url}`
+							if (!apiList.id && res.data.apiList[key]) {
+								apiList.id = res.data.apiList[key].id
+							}
+						})
+						console.log('appList', this.form.apiList)
+					}
 					ElMessage.success("保存成功")
 				}else{
 					ElMessage.warning(res.message)
