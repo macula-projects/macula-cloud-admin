@@ -173,7 +173,6 @@
 								apiList.id = res.data.apiList[key].id
 							}
 						})
-						console.log('appList', this.form.apiList)
 					}
 					ElMessage.success("保存成功")
 				}else{
