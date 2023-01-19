@@ -54,13 +54,9 @@
 </template>
 
 <script>
-	// import info from './info'
 
 	export default {
 		name: 'log',
-		// components: {
-		// 	info,
-		// },
 		data() {
 			return {
 				infoDrawer: false,
