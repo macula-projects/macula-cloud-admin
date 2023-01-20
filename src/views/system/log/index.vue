@@ -47,20 +47,12 @@
 			</el-main>
 		</el-container>
 	</el-container>
-
-	<el-drawer v-model="infoDrawer" title="日志详情" :size="600" destroy-on-close>
-		<info ref="info"></info>
-	</el-drawer>
 </template>
 
 <script>
-	// import info from './info'
 
 	export default {
 		name: 'log',
-		// components: {
-		// 	info,
-		// },
 		data() {
 			return {
 				infoDrawer: false,
