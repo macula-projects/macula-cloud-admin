@@ -17,13 +17,14 @@
 						<el-radio-group v-model="form.meta.type">
 							<el-radio-button label="CATALOG">目录</el-radio-button>
 							<el-radio-button label="MENU">菜单</el-radio-button>
-							<el-radio-button label="LINK">外链</el-radio-button>
+							<el-radio-button label="EXTLINK">外链</el-radio-button>
+							<el-radio-button label="IFRAME">Iframe</el-radio-button>
 							<el-radio-button label="BUTTON">按钮</el-radio-button>
 						</el-radio-group>
 					</el-form-item>
-					<el-form-item label="别名" prop="name">
-						<el-input v-model="form.name" clearable placeholder="菜单别名"></el-input>
-						<div class="el-form-item-msg">系统唯一且与内置组件名一致，否则导致缓存失效。如类型为Iframe的菜单，别名将代替源地址显示在地址栏</div>
+					<el-form-item label="权限标识" prop="perm">
+						<el-input v-model="form.perm" clearable placeholder="按钮权限标识"></el-input>
+						<div class="el-form-item-msg">目录、菜单、Iframe或外链等不需要权限标识</div>
 					</el-form-item>
 					<el-form-item label="菜单图标" prop="meta.icon">
 						<sc-icon-select v-model="form.meta.icon" clearable></sc-icon-select>
@@ -34,27 +35,21 @@
 					<el-form-item label="重定向" prop="redirect">
 						<el-input v-model="form.redirect" clearable placeholder=""></el-input>
 					</el-form-item>
-					<el-form-item label="菜单高亮" prop="active">
-						<el-input v-model="form.active" clearable placeholder=""></el-input>
-						<div class="el-form-item-msg">子节点或详情页需要高亮的上级菜单路由地址</div>
-					</el-form-item>
 					<el-form-item label="视图" prop="component">
 						<el-input v-model="form.component" clearable placeholder="">
 							<template #prepend>views/</template>
 						</el-input>
 						<div class="el-form-item-msg">如父节点、链接或Iframe等没有视图的菜单不需要填写</div>
 					</el-form-item>
-					<el-form-item label="颜色" prop="color">
-						<el-color-picker v-model="form.meta.color" :predefine="predefineColors"></el-color-picker>
-
+					<el-form-item label="租户" prop="tenantId">
+						<el-input v-model="form.tenantId" clearable placeholder="输入租户id"></el-input>
 					</el-form-item>
-					<el-form-item label="是否隐藏" prop="meta.hidden">
-						<el-checkbox v-model="form.meta.hidden">隐藏菜单</el-checkbox>
-						<el-checkbox v-model="form.meta.hiddenBreadcrumb">隐藏面包屑</el-checkbox>
-						<div class="el-form-item-msg">菜单不显示在导航中，但用户依然可以访问，例如详情页</div>
+					<el-form-item label="排序" prop="sort">
+						<el-input-number v-model="form.sort" :min="0" controls-position="right" size="large"/>
+						<div class="el-form-item-msg">菜单排序越小越前</div>
 					</el-form-item>
-					<el-form-item label="整页路由" prop="fullpage">
-						<el-switch v-model="form.meta.fullpage" />
+					<el-form-item label="是否显示" prop="meta.visible">
+						<el-checkbox v-model="form.meta.visible">显示菜单</el-checkbox>
 					</el-form-item>
 					<el-form-item label="标签" prop="tag">
 						<el-input v-model="form.meta.tag" clearable placeholder=""></el-input>
@@ -86,7 +81,6 @@
 </template>
 
 <script>
-
 	export default {
 		props: {
 			menu: { type: Object, default: () => {} },
@@ -96,7 +90,7 @@
 				form: {
 					id: "",
 					parentId: "",
-					name: "",
+					perm: "",
 					path: "",
 					component: "",
 					redirect: "",
@@ -126,7 +120,9 @@
 					'#409EFF',
 					'#c71585'
 				],
-				rules: [],
+				rules: {
+					sort: [{required: false}]
+				},
 				apiListAddTemplate: {
 					code: "",
 					url: ""

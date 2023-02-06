@@ -45,10 +45,10 @@
 			},
 			filterMenu(map){
 				map.forEach(item => {
-					if(item.meta.hidden || item.meta.type=="button"){
+					if(!item.meta.visible || item.meta.type=="BUTTON"){
 						return false
 					}
-					if(item.meta.type=='iframe'){
+					if(item.meta.type=='IFRAME'){
 						item.path = `/i/${item.name}`
 					}
 					if(item.children&&item.children.length > 0&&!item.component){

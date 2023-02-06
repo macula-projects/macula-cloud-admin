@@ -79,8 +79,9 @@
 				this.$refs.main.$el.scrollTop = 0
 			},
 			//树过滤
-			menuFilterNode(value, data){
+			menuFilterNode(value, data, node){
 				if (!value) return true;
+				console.log('tree', data, 'node', node)
 				var targetText = data.meta.title;
 				return targetText.indexOf(value) !== -1;
 			},
