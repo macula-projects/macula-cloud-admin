@@ -15,43 +15,44 @@
 					</el-form-item>
 					<el-form-item label="类型" prop="meta.type">
 						<el-radio-group v-model="form.meta.type">
-							<el-radio-button label="CATALOG">目录</el-radio-button>
-							<el-radio-button label="MENU">菜单</el-radio-button>
-							<el-radio-button label="EXTLINK">外链</el-radio-button>
-							<el-radio-button label="IFRAME">Iframe</el-radio-button>
-							<el-radio-button label="BUTTON">按钮</el-radio-button>
+							<el-radio-button :disabled="!isCatalog" label="CATALOG">目录</el-radio-button>
+							<el-radio-button :disabled="isButton" label="MENU">菜单</el-radio-button>
+							<el-radio-button :disabled="isButton" label="EXTLINK">外链</el-radio-button>
+							<el-radio-button :disabled="isButton" label="IFRAME">Iframe</el-radio-button>
+							<el-radio-button :disabled="isCatalog" label="BUTTON">按钮</el-radio-button>
 						</el-radio-group>
+						<div class="el-form-item-msg">菜单、Iframe和外链是同级显示</div>
 					</el-form-item>
-					<el-form-item label="权限标识" prop="perm">
+					<el-form-item label="权限标识" prop="perm" v-if="form.meta.type === 'BUTTON'">
 						<el-input v-model="form.perm" clearable placeholder="按钮权限标识"></el-input>
 						<div class="el-form-item-msg">目录、菜单、Iframe或外链等不需要权限标识</div>
 					</el-form-item>
-					<el-form-item label="菜单图标" prop="meta.icon">
+					<el-form-item label="菜单图标" prop="meta.icon" v-if="form.meta.type !== 'BUTTON'">
 						<sc-icon-select v-model="form.meta.icon" clearable></sc-icon-select>
 					</el-form-item>
-					<el-form-item label="路由地址" prop="path">
+					<el-form-item label="路由地址" prop="path" v-if="form.meta.type !== 'BUTTON'">
 						<el-input v-model="form.path" clearable placeholder=""></el-input>
 					</el-form-item>
-					<el-form-item label="重定向" prop="redirect">
+					<el-form-item label="重定向" prop="redirect" v-if="form.meta.type !== 'BUTTON'">
 						<el-input v-model="form.redirect" clearable placeholder=""></el-input>
 					</el-form-item>
-					<el-form-item label="视图" prop="component">
+					<el-form-item label="视图" prop="component" v-if="form.meta.type === 'MENU'">
 						<el-input v-model="form.component" clearable placeholder="">
 							<template #prepend>views/</template>
 						</el-input>
 						<div class="el-form-item-msg">如父节点、链接或Iframe等没有视图的菜单不需要填写</div>
 					</el-form-item>
-					<el-form-item label="租户" prop="tenantId">
+					<el-form-item label="租户" prop="tenantId" v-if="form.meta.type !== 'BUTTON'">
 						<el-input v-model="form.tenantId" clearable placeholder="输入租户id"></el-input>
 					</el-form-item>
-					<el-form-item label="排序" prop="sort">
-						<el-input-number v-model="form.sort" :min="0" controls-position="right" size="large"/>
+					<el-form-item label="排序" prop="sort" v-if="form.meta.type !== 'BUTTON'">
+						<el-input-number v-model="form.sort" controls-position="right" size="large"/>
 						<div class="el-form-item-msg">菜单排序越小越前</div>
 					</el-form-item>
-					<el-form-item label="是否显示" prop="meta.visible">
+					<el-form-item label="是否显示" prop="meta.visible" v-if="form.meta.type !== 'BUTTON'">
 						<el-checkbox v-model="form.meta.visible">显示菜单</el-checkbox>
 					</el-form-item>
-					<el-form-item label="标签" prop="tag">
+					<el-form-item label="标签" prop="tag" v-if="form.meta.type !== 'BUTTON'">
 						<el-input v-model="form.meta.tag" clearable placeholder=""></el-input>
 					</el-form-item>
 					<el-form-item>
@@ -121,13 +122,19 @@
 					'#c71585'
 				],
 				rules: {
-					sort: [{required: false}]
+					meta: {
+						title: [{required: true, message: '名称不能为空', trigger: 'blur'}]
+					},
+					sort: [{required: false}],
+					tenantId: [{required: true, message: '租户不能为空'}]
 				},
 				apiListAddTemplate: {
 					code: "",
 					url: ""
 				},
-				loading: false
+				loading: false,
+				isButton: false,
+				isCatalog: false
 			}
 		},
 		watch: {
@@ -156,9 +163,26 @@
 				})
 				return map
 			},
+			//处理保存的菜单数据
+			handlerMenu(form){
+				if(form.meta.type === 'BUTTON'){
+					form.meta.visible = true
+					form.meta.tag = ''
+					form.path = ''
+					form.redirect = ''
+					form.meta.icon = ''
+				} else {
+					form.perm = ''
+				}
+			},
 			//保存
 			async save(){
+				var valid = await this.$refs.dialogForm.validate(valid => valid);
+				if(!valid) {
+					return
+				}
 				this.loading = true
+				this.handlerMenu(this.form)
 				var res = await this.$API.system_menu.menu.add.post(this.form)
 				this.loading = false
 				if(res.code === "10000"){
@@ -180,6 +204,10 @@
 				this.form = data
 				this.form.apiList = data.apiList || []
 				this.form.parentId = pid
+				if(data.meta){
+					this.isCatalog = data.meta.type === 'CATALOG'
+					this.isButton = data.meta.type === 'BUTTON'
+				}
 			}
 		}
 	}

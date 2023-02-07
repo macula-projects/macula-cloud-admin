@@ -100,8 +100,11 @@
 					component: "",
 					meta:{
 						title: newMenuName,
-						type: "CATALOG"
-					}
+						type: data.meta.type === 'MENU' ? 'BUTTON': 'CATALOG',
+						visible: true
+					},
+					sort: 0,
+					tenantId: data.tenantId
 				}
 				this.menuloading = true
 				var res = await this.$API.system_menu.menu.add.post(newMenuData)
