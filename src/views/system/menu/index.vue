@@ -84,11 +84,9 @@
 				this.$refs.menu.filter(val);
 			},
 			menuCurPage(val){
-				console.log(`current page: ${val}`)
 				this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize});
 			},
 			menuPageSize(val){
-				console.log(`${val} items per page`)
 				this.menuCurPage = 1
 				this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize});
 			}
@@ -117,10 +115,20 @@
 			},
 			//树过滤
 			menuFilterNode(value, data, node){
-				if (!value) return true;
-				console.log('tree', data, 'node', node)
-				var targetText = data.meta.title;
-				return targetText.indexOf(value) !== -1;
+				if (!value) {
+					return true;
+				}
+				var targetText = data.meta.title
+				var filter = targetText.indexOf(value) !== -1
+				if(filter && node.childNodes){
+					node.childNodes.forEach(tempNode => {
+						tempNode.data.filter=true
+						console.log('a', tempNode.data.filter)
+					})
+				}
+				var parentFilter = data.filter
+				data.filter = false
+				return filter || parentFilter;
 			},
 			//树拖拽
 			nodeDrop(draggingNode, dropNode, dropType){
