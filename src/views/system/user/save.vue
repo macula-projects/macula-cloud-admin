@@ -2,7 +2,7 @@
   <el-dialog :title="titleMap[mode]" v-model="visible" :width="500" destroy-on-close @closed="$emit('closed')">
     <el-form :model="form" :rules="rules" :disabled="mode=='show'" ref="dialogForm" label-width="100px" label-position="left">
       <template v-if="mode!='resetPassword'">
-        <el-form-item label="头像" prop="avatar">
+        <el-form-item label="头像">
           <sc-upload v-model="form.avatar" title="上传头像"></sc-upload>
         </el-form-item>
         <el-form-item label="登录账号" prop="username">
@@ -12,12 +12,10 @@
           <el-input v-model="form.nickname" placeholder="请输入完整的真实姓名" clearable></el-input>
         </el-form-item>
         <el-form-item label="所属部门" prop="dept">
-          <el-cascader v-model="form.dept" :options="depts" :props="deptsProps" :placeholder="form.dept" @change="handleChange" clearable style="width: 100%;"></el-cascader>
+          <el-cascader v-model="form.dept" :options="depts" :props="deptsProps" :placeholder="form.dept" @change="handleChangeDept" clearable style="width: 100%;"></el-cascader>
         </el-form-item>
-        <el-form-item label="所属角色" prop="group">
-          <el-select v-model="form.roleNames" multiple filterable style="width: 100%">
-            <el-option v-for="item in roleNames" :key="item.id" :label="item.label" :value="item.id"/>
-          </el-select>
+        <el-form-item label="所属角色">
+          <el-cascader v-model="form.roleNames" :options="roleNames" :props="roleNamesProps" :placeholder="form.roleNames" @change="handleChangeRole" clearable style="width: 100%;"></el-cascader>
         </el-form-item>
       </template>
       <template v-if="mode=='resetPassword'">
@@ -65,14 +63,18 @@ export default {
         avatar: "",
         nickname: "",
         dept: "",
-        roleNames: [],
+        roleNames: "",
         deptId: null,
-        password: ""
+        password: "",
+        roleIds: []
       },
       //验证规则
       rules: {
-        avatar:[
-          {required: true, message: '请上传头像'}
+        // avatar:[
+        //   {required: true, message: '请上传头像'}
+        // ],
+        role: [
+          {required: true, message: '请选择所属角色'}
         ],
         username: [
           {required: true, message: '请输入登录账号'}
@@ -101,15 +103,12 @@ export default {
         ],
         dept: [
           {required: true, message: '请选择所属部门'}
-        ],
-        group: [
-          {required: true, message: '请选择所属角色', trigger: 'change'}
         ]
       },
       //所需数据选项
-      groups: [],
-      groupsProps: {
-        value: "id",
+      roleNames: [],
+      roleNamesProps: {
+        value: "value",
         multiple: true,
         checkStrictly: true
       },
@@ -123,8 +122,7 @@ export default {
     }
   },
   mounted() {
-    //todo 角色的内容待补充
-    //this.getGroup()
+    this.getRole()
     this.getDept()
   },
   methods: {
@@ -135,17 +133,25 @@ export default {
       return this
     },
     //加载树数据
-    async getGroup(){
-      var res = await this.$API.system.role.list.get();
-      this.groups = res.data.rows;
+    async getRole(){
+      var res = await this.$API.system_role.role.options.get();
+      this.roleNames = res.data;
+      console.log("res_role",res);
     },
     async getDept(){
       var res = await this.$API.system_dept.dept.list.get();
       this.depts = res.data;
-      console.log("data",this.depts)
+      console.log("depts",this.depts)
     },
-    handleChange(val){
+    handleChangeDept(val){
       this.form.deptId = val[1];
+    },
+    handleChangeRole(val){
+      let roleIdArray = [];
+      val.forEach(item => {
+        roleIdArray.push(item[0]);
+      });
+      this.form.roleIds = roleIdArray;
     },
     //表单提交方法
     submit(){
@@ -158,7 +164,6 @@ export default {
           }else if(this.mode == 'edit'){
             var res = await this.$API.system_user.user.edit.put(this.form, this.form.id);
           }else if(this.mode == 'resetPassword'){
-            //todo 判断原始是否正确
             this.form.password = this.form.newPassword;
             console.log("form",this.form)
             var res = await this.$API.system_user.user.resetPassword.patch(this.form);
@@ -168,6 +173,7 @@ export default {
             this.$emit('success', this.form, this.mode)
             this.visible = false;
             ElMessage.success("操作成功");
+
           }else{
             ElMessageBox.alert(res.message, "提示", {type: 'error'})
           }
@@ -183,12 +189,10 @@ export default {
       this.form.username = data.username
       this.form.avatar = data.avatar
       this.form.nickname = data.nickname
-      //this.form.roleNames = data.roleNames
+      this.form.roleNames = data.roleNames
+      //this.form.roleIds = data.roleNames
       this.form.dept = data.deptName
       this.form.password = data.password
-      //console.log("from",this.form)
-      //可以和上面一样单个注入，也可以像下面一样直接合并进去
-      //Object.assign(this.form, data)
     }
   }
 }

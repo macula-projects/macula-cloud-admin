@@ -23,6 +23,14 @@ export default {
 			delete: async function(ids){
 				return await http.delete(`${this.url}/${ids}`)
 			}
+		},
+		options: {
+			url: `${config.SYSTEM_API_URL}/api/v1/roles/options`,
+			name: "获取角色下拉选项",
+			get: async function(){
+				var res = await http.get(this.url);
+				return res;
+			}
 		}
 	}
 }
