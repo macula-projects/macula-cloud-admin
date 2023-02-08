@@ -16,7 +16,7 @@
           <el-button type="primary" icon="el-icon-plus" @click="add"></el-button>
           <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del"></el-button>
 
-          <el-button type="primary" plain :disabled="selection.length==0" @click="set_role">分配角色</el-button>
+          <!-- <el-button type="primary" plain :disabled="selection.length==0" @click="set_role">分配角色</el-button> -->
           <el-button type="primary" plain :disabled="selection.length==0" @click="reset_password">密码重置</el-button>
 
         </div>
@@ -81,6 +81,7 @@ export default {
       group: [],
       apiObj: this.$API.system_user.user.list,
       selection: [],
+      roleNames: [],
       search: {
         keywords: null
       }
@@ -93,7 +94,6 @@ export default {
   },
   mounted() {
     this.getDept();
-    this.getRole();
   },
   methods: {
     //添加
@@ -108,7 +108,7 @@ export default {
       this.dialog.save = true
       this.$nextTick(() => {
         this.$refs.saveDialog.open('edit').setData(row)
-      })
+      });
     },
     //查看
     table_show(row){
@@ -189,9 +189,6 @@ export default {
       this.showGrouploading = false;
       this.group.unshift({id: '', label: '所有'});
     },
-    async getRole(){
-      //
-    },
     //树过滤
     groupFilterNode(value, data){
       if (!value) return true;
@@ -211,12 +208,14 @@ export default {
     //本地更新数据
     handleSuccess(data, mode){
       if(mode=='add'){
-        data.id = new Date().getTime()
-        this.$refs.table.tableData.unshift(data)
+        //data.id = new Date().getTime()
+        //this.$refs.table.tableData.unshift(data)
+        this.$refs.table.refresh();
       }else if(mode=='edit'){
-        this.$refs.table.tableData.filter(item => item.id===data.id ).forEach(item => {
-          Object.assign(item, data)
-        })
+        // this.$refs.table.tableData.filter(item => item.id===data.id ).forEach(item => {
+        //   Object.assign(item, data)
+        // })
+        this.$refs.table.refresh();
       }
     }
   }
