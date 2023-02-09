@@ -76,7 +76,7 @@
 				tenantId: "1",
 				menuTotal: 0,
 				menuCurPage: 1,
-				menuPageSize: 1
+				menuPageSize: 10
 			}
 		},
 		watch: {
@@ -93,7 +93,7 @@
 			}
 		},
 		mounted() {
-			this.getMenu({});
+			this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize});
 		},
 		methods: {
 			//加载树数据
