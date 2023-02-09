@@ -42,9 +42,6 @@
 						</el-input>
 						<div class="el-form-item-msg">如父节点、链接或Iframe等没有视图的菜单不需要填写</div>
 					</el-form-item>
-					<el-form-item label="租户" prop="tenantId" v-if="form.meta.type !== 'BUTTON'">
-						<el-input v-model="form.tenantId" clearable placeholder="输入租户id"></el-input>
-					</el-form-item>
 					<el-form-item label="排序" prop="sort" v-if="form.meta.type !== 'BUTTON'">
 						<el-input-number v-model="form.sort" controls-position="right" size="large"/>
 						<div class="el-form-item-msg">菜单排序越小越前</div>
@@ -87,6 +84,7 @@
 			menu: { type: Object, default: () => {} },
 		},
 		data(){
+			let that = this;
 			return {
 				form: {
 					id: "",
@@ -129,13 +127,19 @@
 					tenantId: [{required: true, message: '租户不能为空'}],
 					path: [{required: true, message: '路径不能为空',trigger: 'blur'}]
 				},
-				apiListAddTemplate: {
-					code: "",
-					url: ""
-				},
 				loading: false,
 				isButton: false,
-				isCatalog: false
+				isCatalog: false,
+				apiObj: {
+					get: async function(){
+						return  {
+							data: {
+								rows: that.testTenant,
+								total: 4
+							}
+						}
+					}
+				}
 			}
 		},
 		watch: {
