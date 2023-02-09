@@ -3,13 +3,7 @@
 		<el-aside width="300px" v-loading="menuloading">
 			<el-container>
 				<el-header>
-					<el-input placeholder="输入关键字进行过滤" v-model="menuFilterText" clearable>
-						<template #prepend>
-							<el-select v-model="tenantId" placeholder="Select" style="width: 115px">
-								<el-option label="system" value="1" />
-							</el-select>
-						</template>
-					</el-input>
+					<el-input placeholder="输入关键字进行过滤" v-model="menuFilterText" clearable></el-input>
 				</el-header>
 				<el-main class="nopadding">
 					<el-container>
