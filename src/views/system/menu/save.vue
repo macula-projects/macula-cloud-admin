@@ -126,7 +126,8 @@
 						title: [{required: true, message: '名称不能为空', trigger: 'blur'}]
 					},
 					sort: [{required: false}],
-					tenantId: [{required: true, message: '租户不能为空'}]
+					tenantId: [{required: true, message: '租户不能为空'}],
+					path: [{required: true, message: '路径不能为空',trigger: 'blur'}]
 				},
 				apiListAddTemplate: {
 					code: "",

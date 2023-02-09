@@ -3,51 +3,49 @@
 			<el-header>
 				<div style="width: 100%">
 					<el-row :gutter="20">
-						<el-col :span="10">
+						<el-col :span="8">
 							<div class="mt-4">
 								<el-input
 									v-model="keyWord"
-									placeholder="Please input"
+									placeholder="输入角色名称或角色编码"
 									class="input-with-select"
-									style="max-width: 500px;"
 								>
 									<template #prepend>
 										<el-select v-model="tenantId" placeholder="Select" style="width: 115px">
 											<el-option label="system" value="1" />
 										</el-select>
 									</template>
-									<template #append>
-										<el-button @click="searchRole">
-											<el-icon><el-icon-search /></el-icon>
-										</el-button>
-									</template>
 								</el-input>
 							</div>
 						</el-col>
-						<el-col :span="2">
-							<el-button @click="add" v-auth="'role::add'">添加</el-button>
+						<el-col :span="2" :offset="14" style="text-align: right;">
+								<el-button @click="add" type="primary" v-auth="'role::add'">添加</el-button>
 						</el-col>
 					</el-row>
 				</div>
 			</el-header>
 		<el-main>
-			<scTable ref="table" :apiObj="list.apiObj" row-key="id" stripe>
-				<!-- <el-table-column type="selection" width="50"></el-table-column> -->
-				<el-table-column label="角色名称" prop="name" width="150"></el-table-column>
-				<el-table-column label="角色编码" prop="code" width="150"></el-table-column>
-				<el-table-column label="排序" prop="sort" width="250"></el-table-column>
-				<el-table-column label="状态" prop="status" width="150">
+			<scTable ref="table" :apiObj="apiObj" row-key="id" stripe>
+				<el-table-column label="#" type="index" width="50"></el-table-column>
+				<el-table-column label="角色名称" prop="name" width="250"></el-table-column>
+				<el-table-column label="角色编码" prop="code" width="250"></el-table-column>
+				<el-table-column label="排序" prop="sort" width="120" sortable></el-table-column>
+				<el-table-column label="状态" prop="status" width="120">
 					<template #default="scope">
-						<el-switch :value="String(scope.row.status)" disabled active-value="1" inactive-value="0" />
+						<el-switch :model-value="String(scope.row.status)" disabled active-value="1" inactive-value="0" />
 					</template>
 				</el-table-column>
-				<el-table-column label="数据权限" prop="dataScope" width="150" sortable></el-table-column>
-				<el-table-column label="操作" fixed="right" align="right" width="160">
+				<el-table-column label="数据权限" prop="dataScope" width="250"></el-table-column>
+				<el-table-column label="操作" fixed="right" align="right" width="250">
 					<template #default="scope">
 						<el-button-group>
 							<el-button text type="primary" size="small">资源分配</el-button>
 							<el-button text type="primary" size="small" @click="edit(scope.row, scope.$index)">编辑</el-button>
-							<el-button text type="primary" size="small" @click="del(scope.row, scope.$index)">删除</el-button>
+							<el-popconfirm title="确定删除吗？" @confirm="del(scope.row, scope.$index)">
+								<template #reference>
+									<el-button text type="danger" size="small">删除</el-button>
+								</template>
+							</el-popconfirm>
 						</el-button-group>
 					</template>
 				</el-table-column>
@@ -69,13 +67,16 @@ export default{
 			spaceSize: 10,
 			tenantId: '1',
 			keyWord: '',
-			list: {
-				apiObj: this.$API.system_role.role.list
-			}
+			apiObj: this.$API.system_role.role.list
 		}
 	},
 	components: {
 		saveDialog
+	},
+	watch: {
+		keyWord(){
+			this.searchRole()
+		}
 	},
 	methods: {
 		searchRole(){
@@ -94,7 +95,6 @@ export default{
 			})
 		},
 		async del(row){
-			console.log(this.$API.system_role.role)
 			var res = await this.$API.system_role.role.del.delete(row.id)
 			if(res.code == "10000"){
 				this.$refs.table.refresh()
