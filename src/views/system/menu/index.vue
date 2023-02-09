@@ -31,7 +31,7 @@
 							<el-pagination
 								v-model:current-page="menuCurPage"
 								v-model:page-size="menuPageSize"
-								:page-sizes="[10, 20, 30, 50]"
+								:page-sizes="[5, 10, 20, 30, 50, 100]"
 								small
 								background
 								layout="total, sizes, prev, pager, next"
@@ -80,7 +80,8 @@
 			}
 		},
 		watch: {
-			menuFilterText(val){
+			async menuFilterText(val){
+				await this.getMenu({keywords: val,pageNum: 1, pageSize: this.menuPageSize})
 				this.$refs.menu.filter(val);
 			},
 			menuCurPage(val){
