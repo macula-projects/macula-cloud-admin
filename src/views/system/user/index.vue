@@ -136,9 +136,7 @@ export default {
         this.selection.forEach(item => {
           this.$refs.table.tableData.forEach((itemI, indexI) => {
             if (item.id === itemI.id) {
-              console.log("itemI.id",itemI.id)
               var res = this.$API.system_user.user.del.delete(itemI.id)
-              console.log("res",res)
               this.$refs.table.tableData.splice(indexI, 1)
 
             }
@@ -168,14 +166,6 @@ export default {
         ElMessageBox.alert("只能选一个", "提示", {type: 'error'});
       }
 
-    },
-    //分配角色
-    set_role(){
-      if(this.selection.length == 1){
-
-      }else{
-        ElMessageBox.alert("只能选一个", "提示", {type: 'error'});
-      }
     },
     //表格选择后回调事件
     selectionChange(selection){
@@ -208,13 +198,8 @@ export default {
     //本地更新数据
     handleSuccess(data, mode){
       if(mode=='add'){
-        //data.id = new Date().getTime()
-        //this.$refs.table.tableData.unshift(data)
         this.$refs.table.refresh();
       }else if(mode=='edit'){
-        // this.$refs.table.tableData.filter(item => item.id===data.id ).forEach(item => {
-        //   Object.assign(item, data)
-        // })
         this.$refs.table.refresh();
       }
     }

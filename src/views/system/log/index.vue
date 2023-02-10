@@ -134,7 +134,6 @@
 					this.searchParam.EndDate = this.search.date[1]
 					this.searchParam.keywords = this.search.keywords
 				}
-				console.log('searchParam', this.searchParam)
 				this.$refs.table.upData(this.searchParam)
 			},
 			rowClick(row){
