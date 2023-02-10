@@ -167,14 +167,6 @@ export default {
       }
 
     },
-    //分配角色
-    set_role(){
-      if(this.selection.length == 1){
-
-      }else{
-        ElMessageBox.alert("只能选一个", "提示", {type: 'error'});
-      }
-    },
     //表格选择后回调事件
     selectionChange(selection){
       this.selection = selection;
@@ -206,13 +198,8 @@ export default {
     //本地更新数据
     handleSuccess(data, mode){
       if(mode=='add'){
-        //data.id = new Date().getTime()
-        //this.$refs.table.tableData.unshift(data)
         this.$refs.table.refresh();
       }else if(mode=='edit'){
-        // this.$refs.table.tableData.filter(item => item.id===data.id ).forEach(item => {
-        //   Object.assign(item, data)
-        // })
         this.$refs.table.refresh();
       }
     }
