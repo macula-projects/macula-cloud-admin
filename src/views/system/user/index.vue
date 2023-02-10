@@ -136,9 +136,7 @@ export default {
         this.selection.forEach(item => {
           this.$refs.table.tableData.forEach((itemI, indexI) => {
             if (item.id === itemI.id) {
-              console.log("itemI.id",itemI.id)
               var res = this.$API.system_user.user.del.delete(itemI.id)
-              console.log("res",res)
               this.$refs.table.tableData.splice(indexI, 1)
 
             }

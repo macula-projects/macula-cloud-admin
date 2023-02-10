@@ -184,13 +184,11 @@ export default {
     },
     //表单注入数据
     setData(data){
-      console.log("setData",data)
       this.form.id = data.id
       this.form.username = data.username
       this.form.avatar = data.avatar
       this.form.nickname = data.nickname
       this.form.roleNames = data.roleNames
-      //this.form.roleIds = data.roleNames
       this.form.dept = data.deptName
       this.form.password = data.password
     }
