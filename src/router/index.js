@@ -142,7 +142,7 @@ function filterAsyncRouter(routerMap) {
 		//处理外部链接特殊路由
 		if(item.meta.type=='IFRAME'){
 			item.meta.url = item.path;
-			item.path = `/i/${item.name}`;
+			item.path = `/i/${item.meta.title}`;
 		}
 		//MAP转路由对象
 		var route = {

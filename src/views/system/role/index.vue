@@ -3,22 +3,17 @@
 			<el-header>
 				<div style="width: 100%">
 					<el-row :gutter="20">
-						<el-col :span="8">
+						<el-col :span="5">
 							<div class="mt-4">
 								<el-input
 									v-model="keyWord"
-									placeholder="输入角色名称或角色编码"
+									placeholder="输入角色名称或角色编码进行过滤"
 									class="input-with-select"
 								>
-									<template #prepend>
-										<el-select v-model="tenantId" placeholder="Select" style="width: 115px">
-											<el-option label="system" value="1" />
-										</el-select>
-									</template>
 								</el-input>
 							</div>
 						</el-col>
-						<el-col :span="2" :offset="14" style="text-align: right;">
+						<el-col :span="2" :offset="17" style="text-align: right;">
 								<el-button @click="add" type="primary" v-auth="'role::add'">添加</el-button>
 						</el-col>
 					</el-row>
@@ -35,7 +30,11 @@
 						<el-switch :model-value="String(scope.row.status)" disabled active-value="1" inactive-value="0" />
 					</template>
 				</el-table-column>
-				<el-table-column label="数据权限" prop="dataScope" width="250"></el-table-column>
+				<el-table-column label="数据权限" prop="dataScope" width="250">
+					<template #default="scope">
+						{{ dataScopeEnumValue[scope.row.dataScope] }}
+					</template>
+				</el-table-column>
 				<el-table-column label="操作" fixed="right" align="right" width="250">
 					<template #default="scope">
 						<el-button-group>
@@ -52,7 +51,7 @@
 			</scTable>
 		</el-main>
 	</el-container>
-	<save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSaveSuccess" @closed="dialog.save=false"></save-dialog>
+	<save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSaveSuccess" @closed="dialog.save=false" :dataScopeEnum="dataScopeEnum"></save-dialog>
 </template>
 
 <script>
@@ -65,9 +64,10 @@ export default{
 				save: false
 			},
 			spaceSize: 10,
-			tenantId: '1',
 			keyWord: '',
-			apiObj: this.$API.system_role.role.list
+			apiObj: this.$API.system_role.role.list,
+			dataScopeEnum: [],
+			dataScopeEnumValue: {}
 		}
 	},
 	components: {
@@ -78,7 +78,19 @@ export default{
 			this.searchRole()
 		}
 	},
+	async created(){
+		let dataScopeRes = await this.$API.system_role.role.optionsByDataScope.get()
+		if(dataScopeRes.code === '10000'){
+			this.dataScopeEnum = dataScopeRes.data
+			this.handlerDataScopeEnum()
+		}
+	},
 	methods: {
+		handlerDataScopeEnum(){
+			this.dataScopeEnum.forEach((item) => {
+				this.dataScopeEnumValue[item.value] = item.label
+			})
+		},
 		searchRole(){
 			this.$refs.table.upData({keywords: this.keyWord})
 		},
