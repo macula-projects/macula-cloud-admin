@@ -49,7 +49,7 @@
 						return false
 					}
 					if(item.meta.type=='IFRAME'){
-						item.path = `/i/${item.name}`
+						item.path = `/i/${item.meta.title}`
 					}
 					if(item.children&&item.children.length > 0&&!item.component){
 						this.filterMenu(item.children)

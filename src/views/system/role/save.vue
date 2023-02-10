@@ -7,14 +7,17 @@
 			<el-form-item label="角色编码" prop="code">
 				<el-input v-model="form.code" clearable></el-input>
 			</el-form-item>
+			<el-form-item label="数据权限" prop="dataScope">
+				<el-select v-model="form.dataScope" placeholder="请选择角色数据权限">
+					<el-option v-for="(item, index) in dataScopeEnum" :key="index" :label="item.label" :value="item.value"  ></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="排序" prop="sort">
-				<el-input-number v-model="form.sort" controls-position="right" :min="1" style="width: 100%;"></el-input-number>
+				<el-input-number v-model="form.sort" controls-position="right"></el-input-number>
+				<div class="el-form-item-msg">角色排序越小越前</div>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
 				<el-switch v-model="form.status" active-value="1" inactive-value="0"></el-switch>
-			</el-form-item>
-			<el-form-item label="数据权限" prop="dataScope">
-				<el-input v-model="form.dataScope" clearable type="textarea"></el-input>
 			</el-form-item>
 		</el-form>
 		<template #footer>
@@ -27,7 +30,11 @@
 <script>
 	export default {
 		emits: ['success', 'closed'],
+		props: {
+			dataScopeEnum: {type: Array, default: []}
+		},
 		data() {
+			let that = this
 			return {
 				mode: "add",
 				titleMap: {
@@ -43,8 +50,8 @@
 					name: "",
 					code: "",
 					sort: 1,
-					status: 1,
-					dataScope: ""
+					status: '1',
+					dataScope: "ME"
 				},
 				//验证规则
 				rules: {
@@ -55,7 +62,10 @@
 						{required: true, message: '请输入角色名称'}
 					],
 					code: [
-						{required: true, message: '请输入角色编码'}
+						{required: true, validator: that.validtorRoleCode, trigger: 'blur'}
+					],
+					dataScope: [
+						{required: true, message: '请选择角色数据权限'}
 					]
 				}
 			}
@@ -69,6 +79,24 @@
 				this.mode = mode;
 				this.visible = true;
 				return this
+			},
+			async validtorRoleCode(rule, value, callback){
+				if(value.trim().length === 0){
+					callback(new Error('角色编码不能为空或空字符串'))
+				}
+				const regx = /^[A-Z]+_*[A-Z]*$/g
+				if(!regx.test(value)){
+					callback(new Error('角色编码由大写字母及下划线组成且必须以大写字母开头'))
+				}
+				const params = {
+					id: this.form.id ? this.form.id : null, 
+					code: value,
+					}
+				const res = await this.$API.system_role.role.validtorRoleCode.get(params)
+				if(res.code==="10000" && res.data){
+					callback()
+				}
+				callback(new Error('角色编码已存在！'))
 			},
 			//表单提交方法
 			submit(){

@@ -67,7 +67,7 @@
 					}
 					//处理http
 					if(item.meta.type=='IFRAME'){
-						item.path = `/i/${item.name}`;
+						item.path = `/i/${item.meta.title}`;
 					}
 					//递归循环
 					if(item.children&&item.children.length > 0){
