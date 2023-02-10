@@ -124,22 +124,15 @@
 						title: [{required: true, message: '名称不能为空', trigger: 'blur'}]
 					},
 					sort: [{required: false}],
-					tenantId: [{required: true, message: '租户不能为空'}],
 					path: [{required: true, message: '路径不能为空',trigger: 'blur'}]
+				},
+				apiListAddTemplate: {
+					code: "",
+					url: ""
 				},
 				loading: false,
 				isButton: false,
-				isCatalog: false,
-				apiObj: {
-					get: async function(){
-						return  {
-							data: {
-								rows: that.testTenant,
-								total: 4
-							}
-						}
-					}
-				}
+				isCatalog: false
 			}
 		},
 		watch: {

@@ -143,8 +143,7 @@
 						type: (data && data.meta) ? (data.meta.type === 'MENU' ? 'BUTTON': 'CATALOG') : 'CATALOG',
 						visible: true
 					},
-					sort: 0,
-					tenantId: data ? data.tenantId : null
+					sort: 0
 				}
 				this.menuloading = true
 				var res = await this.$API.system_menu.menu.add.post(newMenuData)
