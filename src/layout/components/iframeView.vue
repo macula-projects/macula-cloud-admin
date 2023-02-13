@@ -8,7 +8,7 @@
 -->
 
 <template>
-	<div v-show="$route.meta.type=='iframe'" class="iframe-pages">
+	<div v-show="$route.meta.type=='IFRAME'" class="iframe-pages">
 		<iframe v-for="item in iframeStore.iframeList" :key="item.meta.url" v-show="$route.meta.url==item.meta.url" :src="item.meta.url" frameborder='0'></iframe>
 	</div>
 </template>
@@ -41,7 +41,7 @@
 		methods: {
 			...mapActions(useIframeStore, ['setIframeList', 'pushIframeList', 'clearIframeList']),
 			push(route){
-				if(route.meta.type == 'iframe'){
+				if(route.meta.type == 'IFRAME'){
 					if(this.globalStore.ismobile || !this.globalStore.layoutTags){
 						this.setIframeList(route)
 					}else{
