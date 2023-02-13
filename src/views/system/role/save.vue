@@ -59,7 +59,7 @@
 						{required: true, message: '请输入排序', trigger: 'change'}
 					],
 					name: [
-						{required: true, message: '请输入角色名称'}
+						{required: true, validator: that.validtorRoleName, trigger: 'blur'}
 					],
 					code: [
 						{required: true, validator: that.validtorRoleCode, trigger: 'blur'}
@@ -80,9 +80,23 @@
 				this.visible = true;
 				return this
 			},
+			async validtorRoleName(rule, value, callback){
+				if(value.trim().length === 0){
+					callback(new Error('请输入角色名称'))
+				}
+				const params = {
+					id: this.form.id ? this.form.id : null, 
+					name: value,
+					}
+				const res = await this.$API.system_role.role.validtorRoleName.get(params)
+				if(res.code==="10000" && res.data){
+					callback()
+				}
+				callback(new Error('角色名称已存在！'))
+			},
 			async validtorRoleCode(rule, value, callback){
 				if(value.trim().length === 0){
-					callback(new Error('角色编码不能为空或空字符串'))
+					callback(new Error('请输入角色编码'))
 				}
 				const regx = /^[A-Z]+_*[A-Z]*$/g
 				if(!regx.test(value)){

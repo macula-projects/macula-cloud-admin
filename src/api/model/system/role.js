@@ -39,6 +39,13 @@ export default {
 				return await http.get(this.url, params)
 			}
 		},
+		validtorRoleName: {
+			url: `${config.SYSTEM_API_URL}/api/v1/roles/validtor/name`,
+			name: '角色名字值合法性验证',
+			get: async function(params){
+				return await http.get(this.url, params)
+			}
+		},
 		optionsByDataScope: {
 			url: `${config.SYSTEM_API_URL}/api/v1/roles/optionsByDataScope`,
 			name: '获取角色数据权限下拉选项',

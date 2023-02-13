@@ -38,7 +38,7 @@
 				<el-table-column label="操作" fixed="right" align="right" width="250">
 					<template #default="scope">
 						<el-button-group>
-							<el-button text type="primary" size="small">资源分配</el-button>
+							<el-button text type="primary" size="small" @click="resource(scope.row)">资源分配</el-button>
 							<el-button text type="primary" size="small" @click="edit(scope.row, scope.$index)">编辑</el-button>
 							<el-popconfirm title="确定删除吗？" @confirm="del(scope.row, scope.$index)">
 								<template #reference>
@@ -52,16 +52,19 @@
 		</el-main>
 	</el-container>
 	<save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSaveSuccess" @closed="dialog.save=false" :dataScopeEnum="dataScopeEnum"></save-dialog>
+	<resource-dialog v-if="dialog.resource" ref="resourceDialog" @success="handleSaveSuccess" @closed="dialog.resource=false" :dataScopeEnum="dataScopeEnum"></resource-dialog>
 </template>
 
 <script>
 import saveDialog from './save'
+import resourceDialog from './resource'
 export default{
 	name: 'role',
 	data () {
 		return {
 			dialog: {
-				save: false
+				save: false,
+				resource: false
 			},
 			spaceSize: 10,
 			keyWord: '',
@@ -71,7 +74,8 @@ export default{
 		}
 	},
 	components: {
-		saveDialog
+		saveDialog,
+		resourceDialog
 	},
 	watch: {
 		keyWord(){
@@ -104,6 +108,12 @@ export default{
 			this.dialog.save=true
 			this.$nextTick(()=>{
 				this.$refs.saveDialog.open("edit").setData(row)
+			})
+		},
+		resource(row){
+			this.dialog.resource=true
+			this.$nextTick(()=>{
+				this.$refs.resourceDialog.open().refreshResource(row)
 			})
 		},
 		async del(row){
