@@ -67,7 +67,6 @@
 					}
 				},
 				menuFilterText: "",
-				tenantId: "1",
 				menuTotal: 0,
 				menuCurPage: 1,
 				menuPageSize: 10
@@ -75,19 +74,28 @@
 		},
 		watch: {
 			async menuFilterText(val){
-				await this.getMenu({keywords: val,pageNum: 1, pageSize: this.menuPageSize})
-				this.$refs.menu.filter(val);
+				if(this.menuCurPage === 1){
+					await this.getMenu({keywords: this.menuFilterText, pageNum: this.menuCurPage, pageSize: this.menuPageSize})
+					this.$refs.menu.filter(this.menuFilterText);
+				}else{
+					this.menuCurPage = 1
+				}
 			},
-			menuCurPage(val){
-				this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize});
+			async menuCurPage(val){
+				await this.getMenu({keywords: this.menuFilterText, pageNum: this.menuCurPage, pageSize: this.menuPageSize})
+				this.$refs.menu.filter(this.menuFilterText);
 			},
-			menuPageSize(val){
-				this.menuCurPage = 1
-				this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize});
+			async menuPageSize(val){
+				if(this.menuCurPage === 1){
+					await this.getMenu({keywords: this.menuFilterText, pageNum: this.menuCurPage, pageSize: this.menuPageSize})
+					this.$refs.menu.filter(this.menuFilterText);
+				}else{
+					this.menuCurPage = 1
+				}
 			}
 		},
 		mounted() {
-			this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize});
+			this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize})
 		},
 		methods: {
 			//加载树数据
@@ -118,7 +126,6 @@
 				if(filter && node.childNodes){
 					node.childNodes.forEach(tempNode => {
 						tempNode.data.filter=true
-						console.log('a', tempNode.data.filter)
 					})
 				}
 				var parentFilter = data.filter
