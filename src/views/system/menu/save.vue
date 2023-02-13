@@ -33,7 +33,7 @@
 					<el-form-item label="路由地址" prop="path" v-if="form.meta.type !== 'BUTTON'">
 						<el-input v-model="form.path" clearable placeholder=""></el-input>
 					</el-form-item>
-					<el-form-item label="重定向" prop="redirect" v-if="form.meta.type !== 'BUTTON'">
+					<el-form-item label="重定向" prop="redirect" v-if="form.meta.type === 'MENU'">
 						<el-input v-model="form.redirect" clearable placeholder=""></el-input>
 					</el-form-item>
 					<el-form-item label="视图" prop="component" v-if="form.meta.type === 'MENU'">

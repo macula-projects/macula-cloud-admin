@@ -72,7 +72,7 @@
 				//匹配系统路由
 				var router = this.$router.getRoutes()
 				var filterRouter= filterMenu.map((m) => {
-					if(m.meta.type == "link"){
+					if(m.meta.type == "EXTLINK"){
 						return router.find(r => r.path == '/'+m.path)
 					}else{
 						return router.find(r => r.path == m.path)
@@ -83,7 +83,7 @@
 					res.push({
 						name: item.name,
 						type: item.meta.type,
-						path: item.meta.type=="link"?item.path.slice(1):item.path,
+						path: item.meta.type=="EXTLINK"?item.path.slice(1):item.path,
 						icon: item.meta.icon,
 						title: item.meta.title,
 						breadcrumb: item.meta.breadcrumb.map(v => v.meta.title).join(' - ')
@@ -96,7 +96,7 @@
 					this.history.push(this.input)
 					this.$TOOL.data.set("SEARCH_HISTORY", this.history)
 				}
-				if(item.type=="link"){
+				if(item.type=="EXTLINK"){
 					setTimeout(()=>{
 						let a = document.createElement("a")
 							a.style = "display: none"
