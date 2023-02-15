@@ -7,6 +7,9 @@
 			<el-form-item label="应用编码" prop="code">
 				<el-input v-model="form.code"  clearable></el-input>
 			</el-form-item>
+			<el-form-item label="主页" prop="code">
+				<el-input v-model="form.homepage"  clearable></el-input>
+			</el-form-item>
 			<el-form-item label="负责人" prop="manager">
 				<el-input v-model="form.manager"  clearable></el-input>
 			</el-form-item>
@@ -38,6 +41,7 @@
 				form: {
 					id:"",
 					applicationName: "",
+					homepage: "",
 					code: "",
 					manager: "",
 					mobile:""
@@ -95,6 +99,7 @@
 			setData(data){
 				this.form.id = data.id
 				this.form.applicationName = data.applicationName
+				this.form.homepage = data.homepage
 				this.form.code = data.code
 				this.form.manager = data.manager
 				this.form.mobile = data.mobile
