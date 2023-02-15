@@ -7,6 +7,7 @@ import router from '@/router';
 axios.defaults.baseURL = ''
 
 axios.defaults.timeout = sysConfig.TIMEOUT
+let loadQuitMsgBox = false
 
 // HTTP request 拦截器
 axios.interceptors.request.use(
@@ -45,14 +46,20 @@ axios.interceptors.response.use(
 					message: error.response.data.message || "Status:500，服务器发生错误！"
 				});
 			} else if (error.response.status == 401) {
-				ElMessageBox.confirm('当前用户已被登出或无权限访问当前资源，请尝试重新登录后再操作。', '无权限访问', {
-					type: 'error',
-					closeOnClickModal: false,
-					center: true,
-					confirmButtonText: '重新登录'
-				}).then(() => {
-					router.replace({path: '/login'});
-				}).catch(() => {})
+				if(!loadQuitMsgBox){
+					loadQuitMsgBox = true
+					ElMessageBox.confirm('当前用户已被登出或无权限访问当前资源，请尝试重新登录后再操作。', '无权限访问', {
+						type: 'error',
+						closeOnClickModal: false,
+						center: true,
+						confirmButtonText: '重新登录'
+					}).then(() => {
+						loadQuitMsgBox = false
+						router.replace({path: '/login'});
+					}).catch(() => {
+						loadQuitMsgBox = false
+					})
+				}
 			} else {
 				ElNotification.error({
 					title: '请求错误',

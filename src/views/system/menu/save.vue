@@ -60,18 +60,49 @@
 			</el-col>
 			<el-col :lg="12" class="apilist">
 				<h2>接口权限</h2>
-				<sc-form-table v-model="form.apiList" :addTemplate="apiListAddTemplate" placeholder="暂无匹配接口权限">
-					<el-table-column prop="code" label="标识" width="150">
-						<template #default="scope">
-							<el-input v-model="scope.row.code" placeholder="请输入内容"></el-input>
-						</template>
-					</el-table-column>
-					<el-table-column prop="url" label="Api url">
-						<template #default="scope">
-							<el-input v-model="scope.row.url" placeholder="请输入内容"></el-input>
-						</template>
-					</el-table-column>
-				</sc-form-table>
+				<el-form>
+					<sc-form-table v-model="form.apiList" :addTemplate="apiListAddTemplate" placeholder="暂无匹配接口权限">
+						<el-table-column prop="code" label="标识" width="150">
+							<template #default="scope">
+								<el-popover :visible="scope.row.codeVisible" placement="bottom" popper-style="padding: 0px;">
+									<el-tag
+											class="mx-1"
+											type="danger"
+											style="width: 100%;"
+										>
+											{{ scope.row.codeErrMsg }}
+										</el-tag>
+									<template #reference>
+										<el-input ref="apiListCodeRef"  v-model="scope.row.code" placeholder="请输入内容"></el-input>
+									</template>
+								</el-popover>
+							</template>
+						</el-table-column>
+						<el-table-column prop="url" label="Api url">
+							<template #default="scope">
+								<el-popover :visible="scope.row.urlVisible" placement="bottom" popper-style="padding: 0px;">
+									<el-tag
+											class="mx-1"
+											type="danger"
+											style="width: 100%;"
+										>
+											{{ scope.row.urlErrMsg }}
+										</el-tag>
+									<template #reference>
+										<el-input ref="apiListUrlRef" v-model="scope.row.url" placeholder="请输入内容"></el-input>
+									</template>
+								</el-popover>
+							</template>
+						</el-table-column>
+						<el-table-column prop="method" label="请求方式">
+							<template #default="scope">
+								<el-select v-model="scope.row.method">
+									<el-option v-for="(item, index) in methodOptions" :key="index" :label="item.label" :value="item.value"></el-option>
+								</el-select>
+							</template>
+						</el-table-column>
+					</sc-form-table>
+				</el-form>
 			</el-col>
 		</template>
 	</el-row>
@@ -128,11 +159,14 @@
 				},
 				apiListAddTemplate: {
 					code: "",
-					url: ""
+					url: "",
+					method: "GET"
 				},
 				loading: false,
 				isButton: false,
-				isCatalog: false
+				isCatalog: false,
+				methodOptions: [],
+				apiListValidtor: true
 			}
 		},
 		watch: {
@@ -141,6 +175,27 @@
 					this.menuOptions = this.treeToMap(this.menu)
 				},
 				deep: true
+			},
+			'form.apiList': {
+				handler(newV, oldV){
+					if(newV){
+						this.apiListValidtor=true
+						newV.forEach(api=> {
+							api['codeVisible'] = !this.validtorApiCode(api.code, api)
+							api['urlVisible'] = !this.validtorApiUrl(api.url, api)
+							if(api['codeVisible'] || api['urlVisible']) {
+								this.apiListValidtor = false
+							} 
+						})
+					}
+				},
+				deep: true
+			}
+		},
+		async created() {
+			const methodOptionRes = await this.$API.system_menu.menu.methodOption.get()
+			if(methodOptionRes.code === '10000'){
+				this.methodOptions = methodOptionRes.data
 			}
 		},
 		mounted() {
@@ -179,6 +234,10 @@
 				if(!valid) {
 					return
 				}
+				if(!this.apiListValidtor){
+					ElMessage.error('接口权限数据错误，请完善后点击保存！')
+					return
+				}
 				this.loading = true
 				this.handlerMenu(this.form)
 				var res = await this.$API.system_menu.menu.add.post(this.form)
@@ -206,6 +265,30 @@
 					this.isCatalog = data.meta.type === 'CATALOG'
 					this.isButton = data.meta.type === 'BUTTON'
 				}
+			},
+			validtorApiCode(code, apiData){
+				if(code.trim().length === 0){
+					apiData['codeErrMsg'] = '标识不能为空'
+					return false
+				}
+				const reg = /^([\u4e00-\u9fa5]|[a-z]|[A-Z]|[0-9]|[_]|[\.])*$/
+				if(!reg.test(code)){
+					apiData['codeErrMsg'] = '标识含非法字符'
+					return false
+				}
+				return true
+			},
+			validtorApiUrl(url, apiData){
+				if(url.trim().length === 0){
+					apiData['urlErrMsg'] = 'url不能为空'
+					return false
+				}
+				const reg = /^(\/[a-zA-Z0-9_#?&]*)+$/
+				if(!reg.test(url)){
+					apiData['urlErrMsg'] = 'url含非法字符'
+					return false
+				}
+				return true
 			}
 		}
 	}
