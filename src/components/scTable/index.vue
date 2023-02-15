@@ -214,9 +214,6 @@
 				this.$refs.scTable.setScrollTop(0)
 				this.$emit('dataChange', res, this.tableData)
 			},
-			rowKey(row){
-				return row.id
-			},
 			//分页点击
 			paginationChange(){
 				this.isPaging = true
@@ -394,10 +391,7 @@
 			},
 			sort(prop, order){
 				this.$refs.scTable.sort(prop, order)
-			},
-			getSelectionRows(){
-				this.$refs.scTable.getSelectionRows()
-			},
+			}
 		}
 	}
 </script>
