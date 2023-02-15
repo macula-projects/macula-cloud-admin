@@ -13,10 +13,13 @@
 											:data="menuList"
 											show-checkbox
 											default-expand-all
+											:default-checked-keys="selectMenuList"
 											node-key="id"
 											highlight-current
+											check-strictly
 											:props="defaultProps"
 											:filter-node-method="menuFilterNode"
+											@check-change="nodeCheck"
 										/>
 									</el-main>
 									<el-footer>
@@ -33,7 +36,9 @@
 								</el-container>
 							</div>
 						</el-tab-pane>
-						<el-tab-pane label="数据权限" name="dataScope">
+						<el-tab-pane label="权限列表" name="permission">
+						</el-tab-pane>
+						<!-- <el-tab-pane label="数据权限" name="dataScope">
 							<div class="treeMain">
 								<el-container>
 									<el-main>
@@ -55,7 +60,7 @@
 									</el-main>
 								</el-container>
 							</div>
-						</el-tab-pane>
+						</el-tab-pane> -->
 				 </el-tabs>
 			</el-container>
 		</template>
@@ -95,7 +100,11 @@ export default {
 					return data.name
 				}
 			},
-			dataScope: null
+			dataScope: null,
+			selectMenuList: [],
+			roleId: null,
+			menuTreeLoading: false,
+			menuTreeNodeMap: {}
 		}
 	},
 	async created(){
@@ -139,6 +148,13 @@ export default {
 		},
 		//树过滤
 		menuFilterNode(value, data, node){
+			if(!this.menuTreeLoading){
+				this.menuTreeNodeMap[data.id] = {
+					'cur': node,
+					'parent': this.getParentNode(data),
+					'children': this.getChildNode(node)
+				}
+			}
 			if (!value) {
 				return true;
 			}
@@ -153,13 +169,52 @@ export default {
 			data.filter = false
 			return filter || parentFilter;
 		},
+		getParentNode(data){
+			let parentNodes = []
+			this.loopLoadParentNode(data, parentNodes)
+			return parentNodes
+		},
+		loopLoadParentNode(data, parentNodes){
+			if(data.parentId && this.menuTreeNodeMap[data.parentId]){
+				let parentNode = this.menuTreeNodeMap[data.parentId]['cur']
+				this.loopLoadParentNode(parentNode.data, parentNodes)
+				parentNodes.push(parentNode)
+			}
+		},
+		getChildNode(node){
+			let childrenNodes = []
+			this.loopLoadChildNode(childrenNodes, node)
+			return childrenNodes
+		},
+		loopLoadChildNode(childrenNodes, node){
+			if(node && node.childNodes.length>0){
+				node.childNodes.forEach(tmpNode=>{
+					this.loopLoadChildNode(childrenNodes, tmpNode)
+					childrenNodes.push(tmpNode)
+				})
+			}
+		},
+		nodeCheck(data, curNodeState){
+			if(curNodeState){
+				this.menuTreeNodeMap[data.id]['parent'].forEach(parentNode=>this.$refs.menuTree.setChecked(parentNode.data, curNodeState))
+			}else{
+				this.menuTreeNodeMap[data.id]['children'].forEach(childrenNode=>this.$refs.menuTree.setChecked(childrenNode.data, curNodeState))
+			}
+		},
 		open(){
 			this.visible=true
 			return this
 		},
-		refreshResource(row){
+		async refreshResource(row){
+			this.roleId = row.id
 			this.dataScope = row.dataScope
-			this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize})
+			await this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize})
+			this.$refs.menuTree.filter()
+			this.menuTreeLoading = true
+			const roleMenuIdsRes = await this.$API.system_role.role.getRoleMenuIds.get(this.roleId)
+			if(roleMenuIdsRes.code === '10000'){
+				this.selectMenuList = roleMenuIdsRes.data
+			}
 		},
 		updateValidtor(done){
 			if(this.update){
@@ -173,17 +228,28 @@ export default {
 			}
 			done()
 		},
-		submit(){
-			console.log('保存成功', this.$refs.menuTree.getCheckedNodes())
-			this.$emit('success')
+		async submit(){
+			if(this.roleId){
+				this.isSaveing = true
+				this.selectMenuList.length = 0
+				this.$refs.menuTree.getCheckedNodes(false,true).forEach(item => this.selectMenuList.push(item.id))
+				const putRes = await this.$API.system_role.role.updateRoleMenus.put(this.roleId, this.selectMenuList)
+				this.isSaveing = false
+				if(putRes.code === '10000'){
+					ElMessage.success('保存成功！')
+					this.visible = false;
+					this.$emit('success')
+					return
+				}
+				ElMessage.error(`保存失败，${putRes.msg}`)
+			}else{
+				ElMessage.warning('数据加载中，请稍后重试或重新加载！')
+			}
 		}
 	}
 }
 </script>
 
 <style scoped>
-	.el-dialog__body{
-		padding: 0px 20px;
-	}
 	.treeMain {height:280px;overflow: auto;border: 1px solid #dcdfe6;margin-bottom: 10px;}
 </style>
