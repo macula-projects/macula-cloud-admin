@@ -62,7 +62,7 @@
 												row-key="id"
 										  >
 										    <el-table-column type="selection" width="35" />
-										    <el-table-column property="urlPerm" label="权限路径" width="200" />
+										    <el-table-column property="urlPerm" label="权限路径" width="200" show-overflow-tooltip />
 										    <el-table-column property="fromMenu" label="所属菜单" show-overflow-tooltip />
 										  </el-table>
 									</el-main>
@@ -187,6 +187,13 @@ export default {
 				this.permRowMap[item.id]=item
 				this.curPagePermIds.push(item.id)
 			})
+			this.$nextTick(()=>{
+				this.selectPermList.forEach(item=>{
+					if(this.permRowMap[item]){
+						this.$refs.permTableRef.toggleRowSelection(this.permRowMap[item], true)
+					}
+				})
+			})
 		},
 		loadingPageMenuIds(data){
 			this.curPageMenuIds=[]
@@ -286,21 +293,16 @@ export default {
 		async refreshResource(row){
 			this.roleId = row.id
 			this.dataScope = row.dataScope
+			const rolePermIdsRes = await this.$API.system_role.role.getRolePermIds.get(this.roleId)
+			if(rolePermIdsRes.code === '10000'){
+				this.selectPermList = rolePermIdsRes.data
+			}
 			await this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize})
 			this.$refs.menuTree.filter()
 			await this.getPermData({pageNum: this.permCurPage, pageSize: this.permPageSize})
 			const roleMenuIdsRes = await this.$API.system_role.role.getRoleMenuIds.get(this.roleId)
 			if(roleMenuIdsRes.code === '10000'){
 				this.selectMenuList = roleMenuIdsRes.data
-			}
-			const rolePermIdsRes = await this.$API.system_role.role.getRolePermIds.get(this.roleId)
-			if(rolePermIdsRes.code === '10000'){
-				this.selectPermList = rolePermIdsRes.data
-				this.selectPermList.forEach(item=>{
-					if(this.permRowMap[item]){
-						this.$refs.permTableRef.toggleRowSelection(this.permRowMap[item], true)
-					}
-				})
 			}
 		},
 		async submit(){
