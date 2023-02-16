@@ -117,6 +117,7 @@ export default {
 			roleId: null,
 			menuTreeLoading: false,
 			menuTreeNodeMap: {},
+			curPageMenuIds: [],
 			permFilterText: '',
 			permMenuFilterText: '',
 			permTotal: 0,
@@ -125,7 +126,8 @@ export default {
 			permTableData: [],
 			selectPermList: [],
 			permRowMap: {},
-			permRowLoading: false
+			permRowLoading: false,
+			curPagePermIds: []
 		}
 	},
 	async created(){
@@ -180,7 +182,23 @@ export default {
 	methods: {
 		loadingPermRow(data){
 			this.permRowMap={}
-			data.forEach(item=>this.permRowMap[item.id]=item)
+			this.curPagePermIds=[]
+			data.forEach(item=>{
+				this.permRowMap[item.id]=item
+				this.curPagePermIds.push(item.id)
+			})
+		},
+		loadingPageMenuIds(data){
+			this.curPageMenuIds=[]
+			this.loopLoadPageMenuIds(data)
+		},
+		loopLoadPageMenuIds(data){
+			data.forEach(item=>{
+				this.curPageMenuIds.push(item.id)
+				if(item.children && item.children.length>0){
+					this.loopLoadPageMenuIds(item.children)
+				}
+			})
 		},
 		//加载权限列表数据
 		async getPermData(params){
@@ -196,10 +214,11 @@ export default {
 		//加载菜单树数据
 		async getMenu(params){
 			this.menuloading = true
-			var res = await this.$API.system_menu.menu.pages.get(params);
+			var res = await this.$API.system_menu.menu.pages.get(params)
 			this.menuloading = false
 			if(res.code === '10000') {
-				this.menuList = res.data.records;
+				this.menuList = res.data.records
+				this.loadingPageMenuIds(this.menuList)
 				this.menuCurPage = res.data.current
 				this.menuPageSize = res.data.size
 				this.menuTotal = res.data.total
@@ -289,10 +308,10 @@ export default {
 				this.isSaveing = true
 				this.selectMenuList.length = 0
 				this.$refs.menuTree.getCheckedNodes(false,true).forEach(item => this.selectMenuList.push(item.id))
-				const putMenusRes = await this.$API.system_role.role.updateRoleMenus.put(this.roleId, this.selectMenuList)
+				const putMenusRes = await this.$API.system_role.role.updateRoleMenus.put(this.roleId, {curPage: this.curPageMenuIds, new: this.selectMenuList})
 				this.selectPermList.length = 0
 				this.$refs.permTableRef.getSelectionRows().forEach(item => this.selectPermList.push(item.id))
-				const putPermsRes = await this.$API.system_role.role.updateRolePerms.put(this.roleId, this.selectPermList)
+				const putPermsRes = await this.$API.system_role.role.updateRolePerms.put(this.roleId, {curPage: this.curPagePermIds, new: this.selectPermList})
 				this.isSaveing = false
 				if(putMenusRes.code === '10000' && putPermsRes.code === '10000'){
 					ElMessage.success('保存成功！')
