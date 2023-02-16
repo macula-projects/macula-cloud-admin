@@ -41,6 +41,13 @@ export default {
         //let param = {"password":data.password}
         return await http.patch(reqUrl,data)
       }
-    }
+    },
+    listByIds: {
+      url: `${config.SYSTEM_API_URL}/api/v1/users/getUsers`,
+      name: "根据id获取用户列表",
+      get: async function(params){
+        return await http.get(this.url, params);
+      }
+    },
   }
 }

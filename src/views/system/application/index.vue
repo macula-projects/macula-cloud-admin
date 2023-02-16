@@ -19,10 +19,11 @@
 				<el-table-column label="负责人" prop="manager" width="150"></el-table-column>
 				<el-table-column label="联系方式" prop="mobile" width="150"></el-table-column>
 				<el-table-column label="创建时间" prop="createTime" width="170"></el-table-column>
-				<el-table-column label="操作" fixed="right" align="right" width="200">
+				<el-table-column label="操作" fixed="right" align="right" width="300">
 					<template #default="scope">
 						<el-button-group>
-							<el-button text type="primary" size="small" @click="table_show(scope.row, scope.$index)">添加维护人</el-button>
+							<el-button text type="primary" size="small" @click="table_show(scope.row, scope.$index)">查看维护人</el-button>
+							<el-button text type="primary" size="small" @click="table_add_maintainer(scope.row, scope.$index)">添加维护人</el-button>
 							<el-button text type="primary" size="small" @click="table_edit(scope.row, scope.$index)">编辑</el-button>
 							<el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
 								<template #reference>
@@ -37,24 +38,28 @@
 	</el-container>
 	<save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSuccess" @closed="dialog.save=false"></save-dialog>
 	<list-dialog v-if="dialog.list" ref="listDialog" @success="handleSuccess" @closed="dialog.list=false"></list-dialog>
+	<show-dialog v-if="dialog.show" ref="showDialog" @success="handleSuccess" @closed="dialog.show=false"></show-dialog>
 
 </template>
 
 <script>
 	import saveDialog from './save'
 	import listDialog from './addMaintainer'
+	import showDialog from './showMaintainer'
 
 	export default {
 		name: 'application',
 		components: {
 			saveDialog,
-			listDialog
+			listDialog,
+			showDialog
 		},
 		data() {
 			return {
 				dialog: {
 					save: false,
-					list: false
+					list: false,
+					show: false,
 				},
 				apiObj: this.$API.system_application.application.list,
 				selection: [],
@@ -78,8 +83,15 @@
 					this.$refs.saveDialog.open('edit').setData(row)
 				})
 			},
-			//查看
+			//查看维护人
 			table_show(row){
+				this.dialog.show = true
+				this.$nextTick(() => {
+					this.$refs.showDialog.open(row)
+				})
+			},
+			//添加维护人
+			table_add_maintainer(row){
 				this.dialog.list = true
 				this.$nextTick(() => {
 					this.$refs.listDialog.open(row)

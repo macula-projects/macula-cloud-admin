@@ -11,18 +11,18 @@
                     </div>
             </el-header>
             <el-main class="nopadding">
-                <scTable ref="listable" :apiObj="apiObjUserList" 
+                <sc-list-table ref="listable" :apiObj="apiObjUserList" 
                 @data-change="dataChange"  
                 @select="onTableSelect"
                 @select-all="onTableSelectAll"
-                stripe remoteSort remoteFilter>
+                stripe>
                     <el-table-column type="selection" :reserve-selection="true" width="50"></el-table-column>
-                    <el-table-column label="ID" prop="id" width="80" sortable='custom'></el-table-column>
-                    <el-table-column label="用户名" prop="username" width="150" sortable='custom'></el-table-column>
-                    <el-table-column label="用户昵称" prop="nickname" width="150" sortable='custom'></el-table-column>
-                    <el-table-column label="所属角色" prop="roleNames" width="150" sortable='custom'></el-table-column>
-                    <el-table-column label="创建时间" prop="createTime" width="170" sortable='custom'></el-table-column>
-                </scTable>
+                    <el-table-column label="ID" prop="id" width="80"></el-table-column>
+                    <el-table-column label="用户名" prop="username" width="150"></el-table-column>
+                    <el-table-column label="用户昵称" prop="nickname" width="150"></el-table-column>
+                    <el-table-column label="所属角色" prop="roleNames" width="150"></el-table-column>
+                    <el-table-column label="创建时间" prop="createTime" width="170"></el-table-column>
+                </sc-list-table>
             </el-main>
         </el-container>
         <template #footer>
@@ -126,9 +126,11 @@
                 //  判断是点击了表格勾选还是取消勾选，true为选中，0或false是取消选中
                 const selected = rows.length && rows.indexOf(row) !== -1
                 if (!selected) {
-                    // 如果点击取消勾选
-                    const index = this.selectIds.indexOf(row.id)
-                    this.selectIds.splice(index, 1) // 取消勾选，则删除id
+                    if (row !== null) {
+                        // 如果点击取消勾选
+                        const index = this.selectIds.indexOf(row.id)
+                        this.selectIds.splice(index, 1) // 取消勾选，则删除id
+                    }
                 } else {
                     this.selectIds.push(row.id)
                 }
@@ -142,8 +144,8 @@
                 let flag_inCurrentPage
                 selection.forEach((item) => {
                     if (item.itemId === a[0].itemId) {
-                    flag_inCurrentPage = true
-                    return
+                        flag_inCurrentPage = true
+                        return
                     }
                 })
                 // true 为全选  false 为取消勾选
@@ -161,11 +163,6 @@
                     this.selectIds = this.selectIds.filter(x => !this.currentPageData.some(y => y.id  === x ))
                 }
             },
-			//表单注入数据
-			setData(data){
-				//可以和上面一样单个注入，也可以像下面一样直接合并进去
-				//Object.assign(this.form, data)
-			},
             //搜索
 			upsearch(){
                 this.isSearching = true
