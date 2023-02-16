@@ -166,7 +166,9 @@
 				isButton: false,
 				isCatalog: false,
 				methodOptions: [],
-				apiListValidtor: true
+				apiListValidtor: true,
+				apiListValidObj:{},
+				apiListValidObjLoading: true
 			}
 		},
 		watch: {
@@ -178,15 +180,37 @@
 			},
 			'form.apiList': {
 				handler(newV, oldV){
-					if(newV){
+					if(newV && this.apiListValidObjLoading){
+						this.apiListValidObjLoading = false
 						this.apiListValidtor=true
 						newV.forEach(api=> {
+							let key = api.code +":"+api.url+":"+api.method
+							this.apiListValidObj[key] = false
 							api['codeVisible'] = !this.validtorApiCode(api.code, api)
 							api['urlVisible'] = !this.validtorApiUrl(api.url, api)
 							if(api['codeVisible'] || api['urlVisible']) {
 								this.apiListValidtor = false
 							} 
 						})
+					}
+				},
+				deep: true
+			},
+			apiListValidObj: {
+				handler(newV, oldV){
+					if(JSON.stringify(newV) === '{}'){
+						this.apiListValidObjLoading = true
+						return
+					}
+					let comple = true
+					for (let key in newV) {
+					 if(!newV[key]){
+						 comple =false
+					 } 
+					}
+					if(comple){
+						this.apiListValidObj={}
+						this.apiListValidObjLoading = true
 					}
 				},
 				deep: true
@@ -242,6 +266,7 @@
 				this.handlerMenu(this.form)
 				var res = await this.$API.system_menu.menu.add.post(this.form)
 				this.loading = false
+				this.apiListValidObj={}
 				if(res.code === "10000"){
 					if (this.form.apiList) {
 						this.form.apiList.forEach(apiList => {
@@ -279,15 +304,31 @@
 				return true
 			},
 			validtorApiUrl(url, apiData){
+				let key = apiData.code +":"+apiData.url+":"+apiData.method
 				if(url.trim().length === 0){
 					apiData['urlErrMsg'] = 'url不能为空'
+					this.apiListValidObj[key] = true
 					return false
 				}
-				const reg = /^(\/[a-zA-Z0-9_#?&]*)+$/
+				const reg = /^(\/[a-zA-Z0-9_#?&*]*)+$/
 				if(!reg.test(url)){
 					apiData['urlErrMsg'] = 'url含非法字符'
+					this.apiListValidObj[key] = true
 					return false
 				}
+				this.$API.system_permission.permission.validtorUrlPerm
+				.get({id: apiData.id, url: apiData.url, method: apiData.method})
+				.then(res=>{
+					if(res.code === '10000' && res.data){
+						apiData['urlVisible'] = false
+						this.apiListValidObj[key] = true
+						return
+					}
+					apiData['urlErrMsg'] = 'url与请求方式已存在'
+					apiData['urlVisible'] = true
+					this.apiListValidObj[key] = true
+					this.apiListValidtor = false
+				})
 				return true
 			}
 		}
