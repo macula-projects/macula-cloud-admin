@@ -30,16 +30,16 @@
       <el-main class="nopadding">
         <scTable ref="table" :apiObj="apiObj" @selection-change="selectionChange" stripe remoteSort remoteFilter>
           <el-table-column type="selection" width="50"></el-table-column>
-          <el-table-column label="ID" prop="id" width="80" sortable='custom'></el-table-column>
-          <el-table-column label="头像" width="80" column-key="filterAvatar" :filters="[{text: '已上传', value: '1'}, {text: '未上传', value: '0'}]">
+          <el-table-column label="ID" prop="id" width="80" ></el-table-column>
+          <el-table-column label="头像" width="80" column-key="filterAvatar">
             <template #default="scope">
               <el-avatar :src="scope.row.avatar" size="small"></el-avatar>
             </template>
           </el-table-column>
-          <el-table-column label="用户名" prop="username" width="150" sortable='custom' column-key="filterUserName" :filters="[{text: '系统账号', value: '1'}, {text: '普通账号', value: '0'}]"></el-table-column>
-          <el-table-column label="用户昵称" prop="nickname" width="150" sortable='custom'></el-table-column>
-          <el-table-column label="所属角色" prop="roleNames" width="200" sortable='custom'></el-table-column>
-          <el-table-column label="创建时间" prop="createTime" width="170" sortable='custom'></el-table-column>
+          <el-table-column label="用户名" prop="username" width="150"  column-key="filterUserName"></el-table-column>
+          <el-table-column label="用户昵称" prop="nickname" width="150" ></el-table-column>
+          <el-table-column label="所属角色" prop="roleNames" width="200" ></el-table-column>
+          <el-table-column label="创建时间" prop="createTime" width="170" ></el-table-column>
           <el-table-column label="操作" fixed="right" align="right" width="160">
             <template #default="scope">
               <el-button-group>
@@ -187,7 +187,7 @@ export default {
     //树点击事件
     groupClick(data){
       var params = {
-        deptId: data.id
+        deptId: data.value
       }
       this.$refs.table.reload(params)
     },
