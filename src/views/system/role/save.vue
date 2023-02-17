@@ -51,7 +51,7 @@
 					code: "",
 					sort: 1,
 					status: '1',
-					dataScope: "ME"
+					dataScope: "ALL"
 				},
 				//验证规则
 				rules: {
