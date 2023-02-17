@@ -10,7 +10,7 @@
 <template>
 	<div class="scTable" :style="{'height':_height}" ref="scTableMain" v-loading="loading">
 		<div class="scTable-table" :style="{'height':_table_height}">
-			<el-table v-bind="$attrs" :data="tableData" :row-key="rowKey" :key="toggleIndex" ref="scTable" :height="height=='auto'?null:'100%'" :size="config.size" :border="config.border" :stripe="config.stripe" :summary-method="remoteSummary?remoteSummaryMethod:summaryMethod" @sort-change="sortChange" @filter-change="filterChange">
+			<el-table v-bind="$attrs" :data="tableData" :row-key="getRowKey" :key="toggleIndex" ref="scTable" :height="height=='auto'?null:'100%'" :size="config.size" :border="config.border" :stripe="config.stripe" :summary-method="remoteSummary?remoteSummaryMethod:summaryMethod" @sort-change="sortChange" @filter-change="filterChange">
 				<slot></slot>
 				<template v-for="(item, index) in userColumn" :key="index">
 					<el-table-column v-if="!item.hide" :column-key="item.prop" :label="item.label" :prop="item.prop" :width="item.width" :sortable="item.sortable" :fixed="item.fixed" :filters="item.filters" :filter-method="remoteFilter||!item.filters?null:filterHandler" :show-overflow-tooltip="item.showOverflowTooltip">
@@ -64,10 +64,10 @@
 
 <script>
 	import config from "@/config/table";
-	import columnSetting from './columnSetting'
+	import columnSetting from './columnListSetting'
 
 	export default {
-		name: 'scTable',
+		name: 'scListTable',
 		components: {
 			columnSetting
 		},
@@ -168,6 +168,9 @@
 				const userColumn = await config.columnSettingGet(this.tableName, this.column)
 				this.userColumn = userColumn
 			},
+			getRowKey(row){
+				return row.id
+			},
 			//获取数据
 			async getData(){
 				this.loading = true;
@@ -182,7 +185,6 @@
 					delete reqData[config.request.pageSize]
 				}
 				Object.assign(reqData, this.tableParams)
-
 				try {
 					var res = await this.apiObj.get(reqData);
 				}catch(error){
@@ -334,12 +336,6 @@
 			pushRow(row){
 				this.tableData.push(row)
 			},
-			//根据key覆盖数据
-			updateKey(row, rowKey=this.rowKey){
-				this.tableData.filter(item => item[rowKey]===row[rowKey] ).forEach(item => {
-					Object.assign(item, row)
-				})
-			},
 			//根据index覆盖数据
 			updateIndex(row, index){
 				Object.assign(this.tableData[index], row)
@@ -352,16 +348,6 @@
 			removeIndexes(indexes=[]){
 				indexes.forEach(index => {
 					this.tableData.splice(index, 1)
-				})
-			},
-			//根据key删除
-			removeKey(key, rowKey=this.rowKey){
-				this.tableData.splice(this.tableData.findIndex(item => item[rowKey]===key), 1)
-			},
-			//根据keys批量删除
-			removeKeys(keys=[], rowKey=this.rowKey){
-				keys.forEach(key => {
-					this.tableData.splice(this.tableData.findIndex(item => item[rowKey]===key), 1)
 				})
 			},
 			//原生方法转发

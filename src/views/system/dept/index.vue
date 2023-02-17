@@ -19,7 +19,7 @@
 				</div>
 			</div>
 		</el-header>
-		<el-main class="nopadding">
+		<el-main>
 			<scTable ref="table" :apiObj="apiObj" row-key="id"  hidePagination>
 				<el-table-column label="部门名称" prop="name" width="250"></el-table-column>
 				<el-table-column label="排序" prop="sort" width="150"></el-table-column>
@@ -42,7 +42,6 @@
 						</el-button-group>
 					</template>
 				</el-table-column>
-
 			</scTable>
 		</el-main>
 	</el-container>
@@ -131,11 +130,7 @@
 			},
 			//本地更新数据
 			handleSaveSuccess(data, mode){
-				if(mode=='add'){
-					this.$refs.table.refresh()
-				}else if(mode=='edit'){
-					this.$refs.table.refresh()
-				}
+				this.$refs.table.refresh()
 			}
 		}
 	}

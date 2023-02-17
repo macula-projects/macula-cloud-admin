@@ -30,6 +30,13 @@ export default {
 			delete: async function(param = {}) {
 				return await http.delete(this.url, param)
 			}
+		},
+		methodOption: {
+			url: `${config.SYSTEM_API_URL}/api/v1/menus/methodOption`,
+			name: '获取请求方法下拉列表',
+			get: async function(){
+				return await http.get(this.url)
+			}
 		}
 	}
 }

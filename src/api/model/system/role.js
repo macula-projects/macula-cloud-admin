@@ -52,6 +52,34 @@ export default {
 			get: async function(){
 				return await http.get(this.url)
 			}
-		}
+		},
+		getRoleMenuIds: {
+			url: `${config.SYSTEM_API_URL}/api/v1/roles`,
+			name: '获取角色的菜单ID集合',
+			get: async function(roleId, params){
+				return await http.get(`${this.url}/${roleId}/menuIds`, params)
+			}
+		},
+		updateRoleMenus: {
+			url: `${config.SYSTEM_API_URL}/api/v1/roles`,
+			name: '分配角色的资源菜单权限',
+			put: async function(roleId, data){
+				return await http.put(`${this.url}/${roleId}/menus`, data)
+			}
+		},
+		getRolePermIds: {
+			url: `${config.SYSTEM_API_URL}/api/v1/roles`,
+			name: '获取角色的权限ID集合',
+			get: async function(roleId, params){
+				return await http.get(`${this.url}/${roleId}/permIds`, params)
+			}
+		},
+		updateRolePerms: {
+			url: `${config.SYSTEM_API_URL}/api/v1/roles`,
+			name: '分配角色的资源路径权限',
+			put: async function(roleId, data){
+				return await http.put(`${this.url}/${roleId}/perms`, data)
+			}
+		},
 	}
 }
