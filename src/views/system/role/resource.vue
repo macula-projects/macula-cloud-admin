@@ -137,19 +137,16 @@ export default {
 		async menuFilterText(val){
 			if(this.menuCurPage === 1){
 				await this.getMenu({keywords: this.menuFilterText, pageNum: this.menuCurPage, pageSize: this.menuPageSize})
-				this.$refs.menuTree.filter(this.menuFilterText);
 			}else{
 				this.menuCurPage = 1
 			}
 		},
 		async menuCurPage(val){
 			await this.getMenu({keywords: this.menuFilterText, pageNum: this.menuCurPage, pageSize: this.menuPageSize})
-			this.$refs.menuTree.filter(this.menuFilterText);
 		},
 		async menuPageSize(val){
 			if(this.menuCurPage === 1){
 				await this.getMenu({keywords: this.menuFilterText, pageNum: this.menuCurPage, pageSize: this.menuPageSize})
-				this.$refs.menuTree.filter(this.menuFilterText);
 			}else{
 				this.menuCurPage = 1
 			}
@@ -229,6 +226,9 @@ export default {
 				this.menuCurPage = res.data.current
 				this.menuPageSize = res.data.size
 				this.menuTotal = res.data.total
+				this.$nextTick(()=>{
+					this.$refs.menuTree.filter(this.menuFilterText)
+				})
 			}
 		},
 		//树过滤
@@ -297,34 +297,43 @@ export default {
 			if(rolePermIdsRes.code === '10000'){
 				this.selectPermList = rolePermIdsRes.data
 			}
-			await this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize})
-			this.$refs.menuTree.filter()
-			await this.getPermData({pageNum: this.permCurPage, pageSize: this.permPageSize})
 			const roleMenuIdsRes = await this.$API.system_role.role.getRoleMenuIds.get(this.roleId)
 			if(roleMenuIdsRes.code === '10000'){
 				this.selectMenuList = roleMenuIdsRes.data
 			}
+			this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize})
+			this.getPermData({pageNum: this.permCurPage, pageSize: this.permPageSize})
 		},
 		async submit(){
 			if(this.roleId){
 				this.isSaveing = true
-				this.selectMenuList.length = 0
-				this.$refs.menuTree.getCheckedNodes(false,true).forEach(item => this.selectMenuList.push(item.id))
-				const putMenusRes = await this.$API.system_role.role.updateRoleMenus.put(this.roleId, {curPage: this.curPageMenuIds, new: this.selectMenuList})
-				this.selectPermList.length = 0
-				this.$refs.permTableRef.getSelectionRows().forEach(item => this.selectPermList.push(item.id))
-				const putPermsRes = await this.$API.system_role.role.updateRolePerms.put(this.roleId, {curPage: this.curPagePermIds, new: this.selectPermList})
+				await this.updateMenuIds()
+				await this.updatePermIds()
 				this.isSaveing = false
-				if(putMenusRes.code === '10000' && putPermsRes.code === '10000'){
-					ElMessage.success('保存成功！')
-					this.visible = false;
-					this.$emit('success')
-					return
-				}
-				ElMessage.error(`保存失败，${putRes.msg}`)
+				ElMessage.success('保存成功！')
+				this.visible = false;
+				this.$emit('success')
 			}else{
 				ElMessage.warning('数据加载中，请稍后重试或重新加载！')
 			}
+		},
+		async updateMenuIds(){
+			this.selectMenuList.length = 0
+			this.$refs.menuTree.getCheckedNodes(false,true).forEach(item => this.selectMenuList.push(item.id))
+			const putMenusRes = await this.$API.system_role.role.updateRoleMenus.put(this.roleId, {curPage: this.curPageMenuIds, new: this.selectMenuList})
+			if(putMenusRes.code === '10000'){
+				return
+			}
+			
+		},
+		async updatePermIds(){
+			this.selectPermList.length = 0
+			this.$refs.permTableRef.getSelectionRows().forEach(item => this.selectPermList.push(item.id))
+			const putPermsRes = await this.$API.system_role.role.updateRolePerms.put(this.roleId, {curPage: this.curPagePermIds, new: this.selectPermList})
+			if(putPermsRes.code === '10000'){
+				return
+			}
+			ElMessage.error('更新角色权限信息失败！')
 		}
 	}
 }
