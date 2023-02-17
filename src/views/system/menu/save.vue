@@ -291,6 +291,10 @@
 					this.isButton = data.meta.type === 'BUTTON'
 				}
 			},
+			//验证是否能修复个别情况api权限列表鼠标hover显示红块问题
+			initApiList(apiList){
+				if(apiList) apiList.forEach(item=>{item['codeVisible']=false; item['urlVisible']=false;})
+			},
 			validtorApiCode(code, apiData){
 				if(code.trim().length === 0){
 					apiData['codeErrMsg'] = '标识不能为空'
@@ -328,6 +332,10 @@
 					apiData['urlVisible'] = true
 					this.apiListValidObj[key] = true
 					this.apiListValidtor = false
+				}).catch(err=>{
+					ElMessage.wran('验证apiUrl路径验证器请求异常')
+					apiData['urlVisible'] = false
+					this.apiListValidObj[key] = true
 				})
 				return true
 			}
