@@ -14,7 +14,7 @@
 										<span class="label">
 											{{ node.label }}
 										</span>
-										<span class="do" v-if="data.meta.type !== 'BUTTON'">
+										<span class="do" v-if="data.meta.type !== 'BUTTON' && data.meta.type !== 'IFRAME' && data.meta.type !== 'EXTLINK'">
 											<el-icon @click.stop="add(node, data)"><el-icon-plus /></el-icon>
 										</span>
 									</span>
