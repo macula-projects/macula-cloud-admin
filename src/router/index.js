@@ -147,7 +147,7 @@ function filterAsyncRouter(routerMap) {
 		//MAP转路由对象
 		var route = {
 			path: item.path,
-			name: item.name,
+			name: item.name || item.meta.title,
 			meta: item.meta,
 			redirect: item.redirect,
 			children: item.children ? filterAsyncRouter(item.children) : null,
