@@ -1,5 +1,5 @@
 <template>
-	<div class="adminui-tags">
+	<div class="adminui-tags" v-show="tagList.length > 0">
 		<ul ref="tags">
 			<li v-for="tag in tagList" v-bind:key="tag" :class="[isActive(tag)?'active':'',tag.meta.affix?'affix':'' ]" @contextmenu.prevent="openContextMenu($event, tag)">
 				<router-link :to="tag">
