@@ -22,6 +22,7 @@
 											:props="defaultProps"
 											:filter-node-method="menuFilterNode"
 											@check-change="nodeCheck"
+											@check="menuUpdateFlag=true"
 										/>
 									</el-main>
 									<el-footer>
@@ -60,6 +61,7 @@
 												border
 										    style="width: 100%"
 												row-key="id"
+												@select="permUpdateFlag=true"
 										  >
 										    <el-table-column type="selection" width="35" />
 										    <el-table-column property="urlPerm" label="权限路径" width="200" show-overflow-tooltip />
@@ -118,6 +120,7 @@ export default {
 			menuTreeLoading: false,
 			menuTreeNodeMap: {},
 			curPageMenuIds: [],
+			menuUpdateFlag: false,
 			permFilterText: '',
 			permMenuFilterText: '',
 			permTotal: 0,
@@ -127,7 +130,8 @@ export default {
 			selectPermList: [],
 			permRowMap: {},
 			permRowLoading: false,
-			curPagePermIds: []
+			curPagePermIds: [],
+			permUpdateFlag: false
 		}
 	},
 	async created(){
@@ -307,8 +311,12 @@ export default {
 		async submit(){
 			if(this.roleId){
 				this.isSaveing = true
-				await this.updateMenuIds()
-				await this.updatePermIds()
+				if(this.menuUpdateFlag){
+					await this.updateMenuIds()
+				}
+				if(this.permUpdateFlag){
+					await this.updatePermIds()
+				}
 				this.isSaveing = false
 				ElMessage.success('保存成功！')
 				this.visible = false;

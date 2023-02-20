@@ -30,7 +30,7 @@
 					<el-form-item label="菜单图标" prop="meta.icon" v-if="form.meta.type !== 'BUTTON'">
 						<sc-icon-select v-model="form.meta.icon" clearable></sc-icon-select>
 					</el-form-item>
-					<el-form-item label="路由地址" prop="path" v-if="form.meta.type !== 'BUTTON'">
+					<el-form-item label="路由地址" prop="path" v-if="form.meta.type !== 'BUTTON' && form.meta.type !== 'CATALOG'">
 						<el-input v-model="form.path" clearable placeholder=""></el-input>
 					</el-form-item>
 					<el-form-item label="重定向" prop="redirect" v-if="form.meta.type === 'MENU'">
@@ -248,6 +248,9 @@
 					form.path = ''
 					form.redirect = ''
 					form.meta.icon = ''
+				} else if(form.meta.type === 'CATALOG'){
+					form.path = '/'
+					form.perm = ''
 				} else {
 					form.perm = ''
 				}
