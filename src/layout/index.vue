@@ -147,7 +147,7 @@
 					</el-scrollbar>
 				</div>
 			</div>
-			<div v-if="!ismobile && nextMenu.length>0 || !pmenu.component" :class="menuIsCollapse?'aminui-side isCollapse':'aminui-side'">
+			<div v-if="(pmenu.meta) && (!ismobile && nextMenu.length>0 || !pmenu.component)" :class="menuIsCollapse?'aminui-side isCollapse':'aminui-side'">
 				<div v-if="!menuIsCollapse" class="adminui-side-top">
 					<h2>{{ pmenu.meta.title }}</h2>
 				</div>

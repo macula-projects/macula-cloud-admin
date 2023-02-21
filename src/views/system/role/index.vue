@@ -1,29 +1,24 @@
 <template>
 	<el-container>
 			<el-header>
-				<div style="width: 100%">
-					<el-row :gutter="20">
-						<el-col :span="5">
-							<div class="mt-4">
-								<el-input
-									v-model="keyWord"
-									placeholder="输入角色名称或角色编码进行过滤"
-									class="input-with-select"
-								>
-								</el-input>
-							</div>
-						</el-col>
-						<el-col :span="2" :offset="17" style="text-align: right;">
-								<el-button @click="add" type="primary" v-auth="'role::add'">添加</el-button>
-						</el-col>
-					</el-row>
+				<div class="left-panel">
+					<el-button type="primary" icon="el-icon-plus" @click="add"></el-button>
+					<el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del"></el-button>
+					<el-button type="primary" plain :disabled="selection.length!=1" @click="resource">权限设置</el-button>
+				</div>
+				<div class="right-panel">
+					<div class="right-panel-search">
+						<el-input v-model="keyWord" placeholder="角色名称" clearable></el-input>
+						<el-button type="primary" icon="el-icon-search" @click="searchRole"></el-button>
+					</div>
 				</div>
 			</el-header>
 		<el-main>
-			<scTable ref="table" :apiObj="apiObj" row-key="id" stripe>
+			<scTable ref="table" :apiObj="apiObj" row-key="id" @selection-change="selectionChange" stripe>
+				<el-table-column type="selection" width="50"></el-table-column>
 				<el-table-column label="#" type="index" width="50"></el-table-column>
 				<el-table-column label="角色名称" prop="name" width="250"></el-table-column>
-				<el-table-column label="角色编码" prop="code" width="250"></el-table-column>
+				<el-table-column label="角色编码" prop="code" width="200"></el-table-column>
 				<el-table-column label="排序" prop="sort" width="120" sortable></el-table-column>
 				<el-table-column label="状态" prop="status" width="120">
 					<template #default="scope">
@@ -58,6 +53,7 @@
 <script>
 import saveDialog from './save'
 import resourceDialog from './resource'
+
 export default{
 	name: 'role',
 	data () {
@@ -70,7 +66,8 @@ export default{
 			keyWord: '',
 			apiObj: this.$API.system_role.role.list,
 			dataScopeEnum: [],
-			dataScopeEnumValue: {}
+			dataScopeEnumValue: {},
+			selection: []
 		}
 	},
 	components: {
@@ -78,9 +75,7 @@ export default{
 		resourceDialog
 	},
 	watch: {
-		keyWord(){
-			this.searchRole()
-		}
+
 	},
 	async created(){
 		let dataScopeRes = await this.$API.system_role.role.optionsByDataScope.get()
@@ -111,10 +106,29 @@ export default{
 			})
 		},
 		resource(row){
+			if(!row['id']){
+				row = this.selection[0]
+			}
 			this.dialog.resource=true
 			this.$nextTick(()=>{
 				this.$refs.resourceDialog.open().refreshResource(row)
 			})
+		},
+		//表格选择后回调事件
+		selectionChange(selection){
+			this.selection = selection;
+		},
+		async batch_del(){
+			const msgBox = await ElMessageBox.confirm(`确定删除选中的 ${this.selection.length} 项吗？如果删除项中含有子集将会被一并删除`, '提示', {
+				type: 'warning'
+			}).catch(()=>{});
+			if(msgBox==='confirm'){
+				let loading = ElLoading.service({ fullscreen: true })
+				await this.$API.system_role.role.del.delete(this.selection.map(item=>item.id))
+				this.$refs.table.refresh()
+				loading.close()
+				ElMessage.success("操作成功")
+			}
 		},
 		async del(row){
 			var res = await this.$API.system_role.role.del.delete(row.id)
