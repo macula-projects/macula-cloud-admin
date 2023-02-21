@@ -8,13 +8,6 @@ export default {
 			get: async function(params){
 				return await http.get(this.url, params)
 			}
-		},
-		pagesResourcePerm: {
-			url: `${config.SYSTEM_API_URL}/api/v1/permissions/role/permPages`,
-			name: '角色权限分页列表',
-			get: async function(params){
-				return await http.get(this.url, params)
-			}
 		}
 	}
 }

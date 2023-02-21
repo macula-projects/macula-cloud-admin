@@ -39,49 +39,6 @@
 								</el-container>
 							</div>
 						</el-tab-pane>
-						<el-tab-pane label="权限列表" name="permission">
-							<div class="treeMain">
-								<el-container>
-									<el-header>
-										<div style="width: 100%">
-											<el-row :gutter="10">
-												<el-col :span="12">
-													<el-input v-model="permFilterText" placeholder="输入路径进行权限过滤" />
-												</el-col>
-												<el-col :span="12">
-														<el-input v-model="permMenuFilterText" placeholder="输入关键字进行菜单过滤" />
-												</el-col>
-											</el-row>
-										</div>
-									</el-header>
-									<el-main>
-										<el-table
-										    ref="permTableRef"
-										    :data="permTableData"
-												border
-										    style="width: 100%"
-												row-key="id"
-												@select="permUpdateFlag=true"
-										  >
-										    <el-table-column type="selection" width="35" />
-										    <el-table-column property="urlPerm" label="权限路径" width="200" show-overflow-tooltip />
-										    <el-table-column property="fromMenu" label="所属菜单" show-overflow-tooltip />
-										  </el-table>
-									</el-main>
-									<el-footer>
-										<el-pagination
-											v-model:current-page="permCurPage"
-											v-model:page-size="permPageSize"
-											:page-sizes="[5, 10, 20, 30, 50, 100]"
-											small
-											background
-											layout="total, sizes, prev, pager, next"
-											:total="permTotal"
-										/>
-									</el-footer>
-								</el-container>
-							</div>
-						</el-tab-pane>
 				 </el-tabs>
 			</el-container>
 		</template>
@@ -120,18 +77,7 @@ export default {
 			menuTreeLoading: false,
 			menuTreeNodeMap: {},
 			curPageMenuIds: [],
-			menuUpdateFlag: false,
-			permFilterText: '',
-			permMenuFilterText: '',
-			permTotal: 0,
-			permCurPage: 1,
-			permPageSize: 10,
-			permTableData: [],
-			selectPermList: [],
-			permRowMap: {},
-			permRowLoading: false,
-			curPagePermIds: [],
-			permUpdateFlag: false
+			menuUpdateFlag: false
 		}
 	},
 	async created(){
@@ -154,48 +100,9 @@ export default {
 			}else{
 				this.menuCurPage = 1
 			}
-		},
-		async permCurPage(val){
-			await this.getPermData({name: this.permFilterText, menuName: this.permMenuFilterText, pageNum: this.permCurPage, pageSize: this.permPageSize})
-		},
-		async permPageSize(val){
-			if(this.permCurPage === 1){
-				await this.getPermData({name: this.permFilterText, menuName: this.permMenuFilterText, pageNum: this.permCurPage, pageSize: this.permPageSize})
-			} else {
-				this.permCurPage = 1
-			}
-		},
-		async permFilterText(val){
-			if(this.permCurPage === 1){
-				await this.getPermData({name: this.permFilterText, menuName: this.permMenuFilterText, pageNum: this.permCurPage, pageSize: this.permPageSize})
-			} else {
-				this.permCurPage = 1
-			}
-		},
-		async permMenuFilterText(val){
-			if(this.permCurPage === 1){
-				await this.getPermData({name: this.permFilterText, menuName: this.permMenuFilterText, pageNum: this.permCurPage, pageSize: this.permPageSize})
-			} else {
-				this.permCurPage = 1
-			}
 		}
 	},
 	methods: {
-		loadingPermRow(data){
-			this.permRowMap={}
-			this.curPagePermIds=[]
-			data.forEach(item=>{
-				this.permRowMap[item.id]=item
-				this.curPagePermIds.push(item.id)
-			})
-			this.$nextTick(()=>{
-				this.selectPermList.forEach(item=>{
-					if(this.permRowMap[item]){
-						this.$refs.permTableRef.toggleRowSelection(this.permRowMap[item], true)
-					}
-				})
-			})
-		},
 		loadingPageMenuIds(data){
 			this.curPageMenuIds=[]
 			this.loopLoadPageMenuIds(data)
@@ -207,17 +114,6 @@ export default {
 					this.loopLoadPageMenuIds(item.children)
 				}
 			})
-		},
-		//加载权限列表数据
-		async getPermData(params){
-			const permDataRes = await this.$API.system_permission.permission.pagesResourcePerm.get(params)
-			if(permDataRes.code === '10000'){
-				this.permTableData = permDataRes.data.records
-				this.loadingPermRow(permDataRes.data.records)
-				this.permTotal = permDataRes.data.total
-				this.permCurPage = permDataRes.data.current
-				this.permPageSize = permDataRes.data.size
-			}
 		},
 		//加载菜单树数据
 		async getMenu(params){
@@ -297,26 +193,16 @@ export default {
 		async refreshResource(row){
 			this.roleId = row.id
 			this.dataScope = row.dataScope
-			const rolePermIdsRes = await this.$API.system_role.role.getRolePermIds.get(this.roleId)
-			if(rolePermIdsRes.code === '10000'){
-				this.selectPermList = rolePermIdsRes.data
-			}
 			const roleMenuIdsRes = await this.$API.system_role.role.getRoleMenuIds.get(this.roleId)
 			if(roleMenuIdsRes.code === '10000'){
 				this.selectMenuList = roleMenuIdsRes.data
 			}
 			this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize})
-			this.getPermData({pageNum: this.permCurPage, pageSize: this.permPageSize})
 		},
 		async submit(){
 			if(this.roleId){
 				this.isSaveing = true
-				if(this.menuUpdateFlag){
-					await this.updateMenuIds()
-				}
-				if(this.permUpdateFlag){
-					await this.updatePermIds()
-				}
+				await this.updateMenuIds()
 				this.isSaveing = false
 				ElMessage.success('保存成功！')
 				this.visible = false;
@@ -333,15 +219,6 @@ export default {
 				return
 			}
 			
-		},
-		async updatePermIds(){
-			this.selectPermList.length = 0
-			this.$refs.permTableRef.getSelectionRows().forEach(item => this.selectPermList.push(item.id))
-			const putPermsRes = await this.$API.system_role.role.updateRolePerms.put(this.roleId, {curPage: this.curPagePermIds, curSel: this.selectPermList})
-			if(putPermsRes.code === '10000'){
-				return
-			}
-			ElMessage.error('更新角色权限信息失败！')
 		}
 	}
 }
