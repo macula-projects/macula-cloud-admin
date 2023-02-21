@@ -1,26 +1,20 @@
 <template>
 	<el-container>
 		<el-header>
-			<div style="width: 100%">
-				<el-row :gutter="20">
-					<el-col :span="5">
-						<div class="mt-4">
-							<el-input
-								v-model="keyWord"
-								placeholder="输入租户名称或租户编码进行过滤"
-								class="input-with-select"
-							>
-							</el-input>
-						</div>
-					</el-col>
-					<el-col :span="2" style="text-align: right;">
-							<el-button @click="add" type="primary">添加</el-button>
-					</el-col>
-				</el-row>
+			<div class="left-panel">
+				<el-button type="primary" icon="el-icon-plus" @click="add"></el-button>
+				<el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del"></el-button>
+				<el-button type="primary" plain :disabled="selection.length!=1" @click="resource">权限设置</el-button>
+			</div>
+			<div class="right-panel">
+				<div class="right-panel-search">
+					<el-input v-model="keyWord" placeholder="租户名称" clearable></el-input>
+					<el-button type="primary" icon="el-icon-search" @click="searchTenant"></el-button>
+				</div>
 			</div>
 		</el-header>
 		<el-main>
-			<scTable ref="table" :apiObj="apiObj" row-key="id" stripe>
+			<scTable ref="table" :apiObj="apiObj" row-key="id" @selection-change="selectionChange" stripe>
 				<el-table-column type="selection" width="50"></el-table-column>
 				<el-table-column label="#" type="index" width="50"></el-table-column>
 				<el-table-column label="租户名称" prop="name" width="250"></el-table-column>
@@ -43,30 +37,77 @@
 			</scTable>
 		</el-main>
 	</el-container>
+	<save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSaveSuccess" @closed="dialog.save=false"></save-dialog>
+	<resource-dialog v-if="dialog.resource" ref="resourceDialog" @success="handleSaveSuccess" @closed="dialog.resource=false"></resource-dialog>
 </template>
 
 <script>
+import saveDialog from './save'
+import resourceDialog from './resource'
 export default{
 	name: 'tenant',
 	data(){
 		let that =this
 		return{
 			keyWord: '',
-			apiObj: this.$API.system_tenant.tenant.pages
+			apiObj: this.$API.system_tenant.tenant.pages,
+			selection: [],
+			dialog: {
+				save: false,
+				resource: false
+			}
 		}
+	},
+	components:{
+		saveDialog,
+		resourceDialog
 	},
 	methods: {
 		add(){
-			
+			this.dialog.save=true
+			this.$nextTick(()=>{
+				this.$refs.saveDialog.open()
+			})
 		},
 		resource(row){
 			
 		},
 		edit(row, index){
+			this.dialog.save=true
+			this.$nextTick(()=>{
+				this.$refs.saveDialog.open("edit").setData(row)
+			})
+		},
+		async del(row, index){
+			var res = await this.$API.system_tenant.tenant.del.delete(row.id)
+			if(res.code == "10000"){
+				this.$refs.table.refresh()
+				ElMessage.success("删除成功")
+			}else{
+				ElMessageBox.alert(res.message, "提示", {type: 'error'})
+			}
+		},
+		async batch_del(){
+			const msgBox = await ElMessageBox.confirm(`确定删除选中的 ${this.selection.length} 项吗？如果删除项中含有子集将会被一并删除`, '提示', {
+				type: 'warning'
+			}).catch(()=>{});
+			if(msgBox==='confirm'){
+				let loading = ElLoading.service({ fullscreen: true })
+				await this.$API.system_tenant.tenant.del.delete(this.selection.map(item=>item.id))
+				this.$refs.table.refresh()
+				loading.close()
+				ElMessage.success("操作成功")
+			}
+		},
+		searchTenant(){
 			
 		},
-		del(row, index){
-			
+		//表格选择后回调事件
+		selectionChange(selection){
+			this.selection = selection;
+		},
+		handleSaveSuccess(){
+			this.$refs.table.refresh()
 		}
 	}
 }
