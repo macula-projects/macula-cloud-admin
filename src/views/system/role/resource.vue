@@ -328,7 +328,7 @@ export default {
 		async updateMenuIds(){
 			this.selectMenuList.length = 0
 			this.$refs.menuTree.getCheckedNodes(false,true).forEach(item => this.selectMenuList.push(item.id))
-			const putMenusRes = await this.$API.system_role.role.updateRoleMenus.put(this.roleId, {curPage: this.curPageMenuIds, new: this.selectMenuList})
+			const putMenusRes = await this.$API.system_role.role.updateRoleMenus.put(this.roleId, {curPage: this.curPageMenuIds, curSel: this.selectMenuList})
 			if(putMenusRes.code === '10000'){
 				return
 			}
@@ -337,7 +337,7 @@ export default {
 		async updatePermIds(){
 			this.selectPermList.length = 0
 			this.$refs.permTableRef.getSelectionRows().forEach(item => this.selectPermList.push(item.id))
-			const putPermsRes = await this.$API.system_role.role.updateRolePerms.put(this.roleId, {curPage: this.curPagePermIds, new: this.selectPermList})
+			const putPermsRes = await this.$API.system_role.role.updateRolePerms.put(this.roleId, {curPage: this.curPagePermIds, curSel: this.selectPermList})
 			if(putPermsRes.code === '10000'){
 				return
 			}
