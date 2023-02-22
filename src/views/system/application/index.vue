@@ -3,6 +3,7 @@
 		<el-header>
 			<div class="left-panel">
 				<el-button type="primary" icon="el-icon-plus" @click="add"></el-button>
+				<el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del"></el-button>
 			</div>
 			<div class="right-panel">
 				<div class="right-panel-search">
@@ -11,8 +12,9 @@
 				</div>
 			</div>
 		</el-header>
-		<el-main>
-			<scTable ref="table" :apiObj="apiObj" stripe>
+		<el-main class="nopadding">
+			<scTable ref="table" :apiObj="apiObj" @selection-change="selectionChange" stripe>
+				<el-table-column type="selection" width="50"></el-table-column>
 				<el-table-column label="应用名称" prop="applicationName" width="150"></el-table-column>
 				<el-table-column label="应用编码" prop="code" width="150"></el-table-column>
 				<el-table-column label="主页" prop="homepage" width="170"></el-table-column>
@@ -111,6 +113,27 @@
 				}else{
 					ElMessageBox.alert(res.message, "提示", {type: 'error'})
 				}
+			},
+			//表格选择后回调事件
+			selectionChange(selection){
+				this.selection = selection;
+			},
+			//批量删除
+			async batch_del(){
+				ElMessageBox.confirm(`确定删除选中的 ${this.selection.length} 项吗？`, '提示', {
+					type: 'warning'
+				}).then(() => {
+					this.selection.forEach(item => {
+						this.$refs.table.tableData.forEach((itemI, indexI) => {
+							if (item.id === itemI.id) {
+								var res = this.$API.system_application.application.del.delete(itemI.id)
+								this.$refs.table.tableData.splice(indexI, 1)
+							}
+						})
+					})
+					//loading.close();
+					ElMessage.success("操作成功")
+				}).catch(() => {})
 			},
 			//搜索
 			upsearch(){

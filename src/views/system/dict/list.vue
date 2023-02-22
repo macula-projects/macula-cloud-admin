@@ -7,12 +7,15 @@
 			<el-form-item label="项名称" prop="name">
 				<el-input v-model="form.name" clearable></el-input>
 			</el-form-item>
-			<el-form-item label="键值" prop="key">
-				<el-input v-model="form.key" clearable></el-input>
+			<el-form-item label="键值" prop="value">
+				<el-input v-model="form.value" clearable></el-input>
 			</el-form-item>
-			<el-form-item label="是否有效" prop="yx">
-				<el-switch v-model="form.yx" active-value="1" inactive-value="0"></el-switch>
-			</el-form-item>
+			<el-form-item label="状态" prop="status">
+				<el-radio-group v-model="form.status">
+					<el-radio :label="1">正常</el-radio>
+					<el-radio :label="0">禁用</el-radio>
+				</el-radio-group>
+        	</el-form-item>
 		</el-form>
 		<template #footer>
 			<el-button @click="visible=false" >取 消</el-button>
@@ -37,8 +40,10 @@
 					id: "",
 					dic: "",
 					name: "",
-					key: "",
-					yx: "1"
+					value: 0,
+					typeCode: null,
+					oldTypeCode: null,
+					status: 1
 				},
 				rules: {
 					dic: [
@@ -47,7 +52,7 @@
 					name: [
 						{required: true, message: '请输入项名称'}
 					],
-					key: [
+					value: [
 						{required: true, message: '请输入键值'}
 					]
 				},
@@ -75,17 +80,24 @@
 			},
 			//获取字典列表
 			async getDic(){
-				var res = await this.$API.system.dic.tree.get();
-				this.dic = res.data;
+				var res = await this.$API.system_dict.dict.typeList.get();
+				this.dic = res.data.records;
 			},
 			//表单提交方法
 			submit(){
 				this.$refs.dialogForm.validate(async (valid) => {
 					if (valid) {
 						this.isSaveing = true;
-						var res = await this.$API.demo.post.post(this.form);
+						var res = null
+						var dt = this.dic.find(d => d.id == this.form.dic)
+						this.form.typeCode = dt.code
+						if (this.mode === 'add') {
+							res = await this.$API.system_dict.dict.addItem.post(this.form);
+						} else {
+							res = await this.$API.system_dict.dict.editItem.put(this.form.id, this.form);							
+						}						
 						this.isSaveing = false;
-						if(res.code == 200){
+						if(res.code == 10000){
 							this.$emit('success', this.form, this.mode)
 							this.visible = false;
 							ElMessage.success("操作成功")
@@ -99,8 +111,12 @@
 			setData(data){
 				this.form.id = data.id
 				this.form.name = data.name
-				this.form.key = data.key
-				this.form.yx = data.yx
+				this.form.value = data.value
+				if (this.mode === 'edit') {
+					this.form.status = data.status
+				}
+				this.form.typeCode = data.code
+				this.form.oldTypeCode = data.code
 				this.form.dic = data.dic
 			}
 		}
