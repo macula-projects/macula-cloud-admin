@@ -37,6 +37,13 @@ export default {
 			get: async function(){
 				return await http.get(this.url)
 			}
+		},
+		list: {
+			url: `${config.SYSTEM_API_URL}/api/v1/menus`,
+			name: '获取菜单列表',
+			get: async function(params){
+				return await http.get(this.url, params)
+			}
 		}
 	}
 }
