@@ -12,7 +12,7 @@
 				</div>
 			</div>
 		</el-header>
-		<el-main>
+		<el-main class="nopadding">
 			<scTable ref="table" :apiObj="apiObj" stripe highlightCurrentRow>
 				<el-table-column label="操作名称" prop="opTitle" width="150"></el-table-column>
 				<el-table-column label="请求接口" prop="opUrl" width="150"></el-table-column>

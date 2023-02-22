@@ -83,7 +83,6 @@
 							res = await this.$API.system_dict.dict.editType.put(this.form.id, this.form);							
 						}
 						this.isSaveing = false;
-						console.log('form', this.form)
 						if(res.code == 10000){
 							this.$emit('success', this.form, this.mode)
 							this.visible = false;
