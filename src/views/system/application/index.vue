@@ -65,7 +65,7 @@
 					list: false,
 					show: false,
 				},
-				apiObj: this.$API.system_application.application.list,
+				apiObj: this.$API.system_application.application.listPages,
 				selection: [],
 				search: {
 					keywords: null,

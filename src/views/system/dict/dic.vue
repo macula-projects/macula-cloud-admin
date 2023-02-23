@@ -68,7 +68,7 @@
 			},
 			//获取字典列表
 			async getDic(){
-				var res = await this.$API.system_dict.dict.typeList.get();
+				var res = await this.$API.system_dict.dict.typeListPages.get();
 				this.dic = res.data.records;
 			},
 			//表单提交方法
