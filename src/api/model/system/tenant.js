@@ -56,7 +56,7 @@ export default{
 				return await http.get(`${this.url}/${id}`)
 			}
 		},
-		putApplicationMenu:{
+		putTenantApplication:{
 			url: `${config.SYSTEM_API_URL}/api/v1/tenants/application`,
 			name: '更新租户菜单信息',
 			put: async function(id, data, tenantCode){
@@ -70,8 +70,8 @@ export default{
 		tenantDict:{
 			url: `${config.SYSTEM_API_URL}/api/v1/tenants/dict`,
 			name: '获取租户的菜单列表',
-			get: async function(id){
-				return await http.get(`${this.url}/${id}`)
+			get: async function(id,params){
+				return await http.get(`${this.url}/${id}`, params)
 			}
 		},
 		putTenantDict:{
