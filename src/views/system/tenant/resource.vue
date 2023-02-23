@@ -6,29 +6,33 @@
 					 <el-tab-pane label="菜单权限" name="menu">
 							<div class="treeMain">
 								<el-container>
-									<el-main>
-										<el-tree
-											ref="menuTree"
-											:data="menuList"
-											show-checkbox
-											:default-checked-keys="selectMenuList"
-											node-key="id"
-											highlight-current
-											:props="defaultProps"
-										/>
-									</el-main>
+									<el-tree
+										ref="menuTree"
+										:data="menuList"
+										show-checkbox
+										:default-checked-keys="selectMenuList"
+										node-key="id"
+										highlight-current
+										:props="defaultProps"
+									/>
 								</el-container>
 							</div>
 						</el-tab-pane>
 						<el-tab-pane label="应用权限" name="application">
 							<div class="treeMain">
 								<el-container>
-									<el-header>
-									</el-header>
-									<el-main>
-									</el-main>
-									<el-footer>
-									</el-footer>
+									<el-table
+										ref="applicationTableRef"
+										:data="applicationTableData"
+										border
+										style="width: 100%"
+										row-key="id"
+									>
+										<el-table-column type="selection" width="35" />
+										<el-table-column label="#" type="index" width="35"></el-table-column>
+										<el-table-column property="applicationName" label="应用名称" width="200" show-overflow-tooltip />
+										<el-table-column property="code" label="应用编码" show-overflow-tooltip />
+									</el-table>
 								</el-container>
 							</div>
 						</el-tab-pane>
@@ -63,6 +67,7 @@ export default{
 			isSaveing: false,
 			activeName: 'menu',
 			tenantId: null,
+			tenantCode: null,
 			defaultProps: {
 				label: (data) => {
 					return data.name
@@ -70,15 +75,14 @@ export default{
 			},
 			menuList: [],
 			selectMenuList: [],
+			applicationTableData: [],
+			selectApplicationList: []
 		}
 	},
 	async created(){
 	},
 	watch: {
-		menuFilterText(){
-			this.getMenu()
-			//this.$refs.menuTree.filter(this.menuFilterText)
-		}
+		
 	},
 	methods: {
 		//加载菜单树数据
@@ -88,17 +92,29 @@ export default{
 				this.menuList = res.data
 			}
 		},
+		async getApplicationList(params){
+			var res = await this.$API.system_application.application.list.get(params)
+			if(res.code === '10000'){
+				this.applicationTableData = res.data
+			}
+		},
 		open(){
 			this.visible=true
 			return this
 		},
 		async refreshResource(row){
 			this.tenantId = row.id
-			const roleMenuIdsRes = await this.$API.system_tenant.tenant.tenantMenu.get(row.id)
-			if(roleMenuIdsRes.code === '10000'){
-				this.selectMenuList = roleMenuIdsRes.data
+			this.tenantCode = row.code
+			const menuIdsRes = await this.$API.system_tenant.tenant.tenantMenu.get(row.id)
+			if(menuIdsRes.code === '10000'){
+				this.selectMenuList = menuIdsRes.data
 			}
 			this.getMenu()
+			const applicationIdsRes = await this.$API.system_tenant.tenant.tenantApplication.get(row.id)
+			if(applicationIdsRes.code === '10000'){
+				this.selectApplicationList = applicationIdsRes.data
+			}
+			this.getApplicationList()
 		},
 		async submit(){
 			if(this.tenantId){
@@ -113,7 +129,7 @@ export default{
 			}
 		},
 		async saveTenantMenu(){
-			return await this.$API.system_tenant.tenant.putTenantMenu.put(this.tenantId, this.$refs.menuTree.getCheckedKeys());
+			return await this.$API.system_tenant.tenant.putTenantMenu.put(this.tenantId, this.$refs.menuTree.getCheckedKeys(), this.tenantCode);
 		}
 	}
 }
