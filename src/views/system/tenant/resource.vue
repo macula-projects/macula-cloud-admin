@@ -46,6 +46,7 @@
 											border
 											style="width: 100%"
 											row-key="id"
+											default-expand-all
 										>
 											<el-table-column type="selection" width="35" />
 											<el-table-column label="#" type="index" width="35"></el-table-column>
