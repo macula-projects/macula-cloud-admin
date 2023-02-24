@@ -116,7 +116,7 @@
 		methods: {
 			//加载树数据
 			async getDic(){
-				var res = await this.$API.system_dict.dict.typeList.get();
+				var res = await this.$API.system_dict.dict.typeListPages.get();
 				this.showDicloading = false;
 				this.dicList = res.data.records;
 				//获取第一个节点,设置选中 & 加载明细列表
@@ -128,7 +128,7 @@
 					this.listApiParams = {
 						typeCode: firstNode.code
 					}
-					this.listApi = this.$API.system_dict.dict.itemsList;
+					this.listApi = this.$API.system_dict.dict.itemsListPages;
 				}
 			},
 			//树过滤

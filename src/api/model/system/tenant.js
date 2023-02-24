@@ -30,6 +30,60 @@ export default{
 			delete: async function(id){
 				return await http.delete(`${this.url}/${id}`)
 			}
+		},
+		tenantMenu:{
+			url: `${config.SYSTEM_API_URL}/api/v1/tenants/menu`,
+			name: '获取租户的菜单列表',
+			get: async function(id){
+				return await http.get(`${this.url}/${id}`)
+			}
+		},
+		putTenantMenu:{
+			url: `${config.SYSTEM_API_URL}/api/v1/tenants/menu`,
+			name: '更新租户菜单信息',
+			put: async function(id, data, tenantCode){
+				let requestUrl  = `${this.url}/${id}`
+				if(tenantCode){
+					requestUrl = `${requestUrl}?appCode=${tenantCode}`
+				}
+				return await http.put(requestUrl, data)
+			}
+		},
+		tenantApplication:{
+			url: `${config.SYSTEM_API_URL}/api/v1/tenants/application`,
+			name: '获取租户的菜单列表',
+			get: async function(id){
+				return await http.get(`${this.url}/${id}`)
+			}
+		},
+		putTenantApplication:{
+			url: `${config.SYSTEM_API_URL}/api/v1/tenants/application`,
+			name: '更新租户菜单信息',
+			put: async function(id, data, tenantCode){
+				let requestUrl  = `${this.url}/${id}`
+				if(tenantCode){
+					requestUrl = `${requestUrl}?appCode=${tenantCode}`
+				}
+				return await http.put(requestUrl, data)
+			}
+		},
+		tenantDict:{
+			url: `${config.SYSTEM_API_URL}/api/v1/tenants/dict`,
+			name: '获取租户的菜单列表',
+			get: async function(id,params){
+				return await http.get(`${this.url}/${id}`, params)
+			}
+		},
+		putTenantDict:{
+			url: `${config.SYSTEM_API_URL}/api/v1/tenants/dict`,
+			name: '更新租户菜单信息',
+			put: async function(id, data, tenantCode){
+				let requestUrl  = `${this.url}/${id}`
+				if(tenantCode){
+					requestUrl = `${requestUrl}?appCode=${tenantCode}`
+				}
+				return await http.put(requestUrl, data)
+			}
 		}
 	}
 }

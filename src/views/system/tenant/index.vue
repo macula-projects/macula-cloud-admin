@@ -24,7 +24,7 @@
 				<el-table-column label="操作" fixed="right" align="right" width="250">
 					<template #default="scope">
 						<el-button-group>
-							<el-button text type="primary" size="small" @click="resource(scope.row)">资源分配</el-button>
+							<el-button text type="primary" size="small" @click="show(scope.row)">查看</el-button>
 							<el-button text type="primary" size="small" @click="edit(scope.row, scope.$index)">编辑</el-button>
 							<el-popconfirm title="确定删除吗？" @confirm="del(scope.row, scope.$index)">
 								<template #reference>
@@ -69,8 +69,20 @@ export default{
 				this.$refs.saveDialog.open()
 			})
 		},
+		show(row){
+			this.dialog.save=true
+			this.$nextTick(()=>{
+				this.$refs.saveDialog.open("show").setData(row)
+			})
+		},
 		resource(row){
-			
+			if(!row['id']){
+				row = this.selection[0]
+			}
+			this.dialog.resource=true
+			this.$nextTick(()=>{
+				this.$refs.resourceDialog.open().refreshResource(row)
+			})
 		},
 		edit(row, index){
 			this.dialog.save=true
@@ -100,7 +112,7 @@ export default{
 			}
 		},
 		searchTenant(){
-			
+			this.$refs.table.upData({keywords: this.keyWord})
 		},
 		//表格选择后回调事件
 		selectionChange(selection){

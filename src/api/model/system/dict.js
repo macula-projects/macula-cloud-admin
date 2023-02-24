@@ -3,9 +3,16 @@ import http from "@/utils/request"
 
 export default {
 	dict: {
-		typeList: {
+		typeListPages: {
 			url: `${config.SYSTEM_API_URL}/api/v1/dict/types/pages`,
 			name: "字典类型分页列表",
+			get: async function(params){
+				return await http.get(this.url, params);
+			}
+		},
+		typeList: {
+			url: `${config.SYSTEM_API_URL}/api/v1/dict/types/list`,
+			name: "字典类型列表",
 			get: async function(params){
 				return await http.get(this.url, params);
 			}
@@ -17,9 +24,16 @@ export default {
 				return await http.get(`${this.url}/${params.code}/items`);
 			}
 		},
-		itemsList: {
+		itemsListPages: {
 			url: `${config.SYSTEM_API_URL}/api/v1/dict/items/pages`,
 			name: "字典数据分页列表",
+			get: async function(params){
+				return await http.get(this.url, params);
+			}
+		},
+		itemsList: {
+			url: `${config.SYSTEM_API_URL}/api/v1/dict/items/list`,
+			name: "字典数据列表",
 			get: async function(params){
 				return await http.get(this.url, params);
 			}
