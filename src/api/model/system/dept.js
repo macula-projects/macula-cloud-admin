@@ -19,15 +19,6 @@ export default {
 				return res;
 			}
 		},
-		getDeptForm: {
-			url: `${config.SYSTEM_API_URL}/api/v1/dept/param/form`,
-			name: "获取部门详情",
-			get: async function(params){
-				var reqUrl = this.url.replace('param', params)
-				var res = await http.get(reqUrl);
-				return res.data;
-			}
-		},
 		add: {
 			url: `${config.SYSTEM_API_URL}/api/v1/dept`,
 			name: "添加部门",

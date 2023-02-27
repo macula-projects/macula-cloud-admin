@@ -10,13 +10,6 @@ export default {
 				return await http.get(this.url, params);
 			}
 		},
-		list: {
-			url: `${config.SYSTEM_API_URL}/api/v1/app/list`,
-			name: "应用列表",
-			get: async function(params){
-				return await http.get(this.url, params);
-			}
-		},
 		add: {
 			url: `${config.SYSTEM_API_URL}/api/v1/app`,
 			name: "添加应用",

@@ -4,7 +4,6 @@
 			<div class="left-panel">
 				<el-button type="primary" icon="el-icon-plus" @click="add"></el-button>
 				<el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del"></el-button>
-				<el-button type="primary" plain :disabled="selection.length!=1" @click="resource">权限设置</el-button>
 			</div>
 			<div class="right-panel">
 				<div class="right-panel-search">
@@ -19,7 +18,7 @@
 				<el-table-column label="#" type="index" width="50"></el-table-column>
 				<el-table-column label="租户名称" prop="name" width="250"></el-table-column>
 				<el-table-column label="租户编码" prop="code" width="250"></el-table-column>
-				<el-table-column label="负责人" prop="supervisor" width="120"></el-table-column>
+				<el-table-column label="负责人" prop="supervisor" show-overflow-tooltip width="120"></el-table-column>
 				<el-table-column label="描述" prop="description" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" fixed="right" align="right" width="250">
 					<template #default="scope">
@@ -38,12 +37,10 @@
 		</el-main>
 	</el-container>
 	<save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSaveSuccess" @closed="dialog.save=false"></save-dialog>
-	<resource-dialog v-if="dialog.resource" ref="resourceDialog" @success="handleSaveSuccess" @closed="dialog.resource=false"></resource-dialog>
 </template>
 
 <script>
 import saveDialog from './save'
-import resourceDialog from './resource'
 export default{
 	name: 'tenant',
 	data(){
@@ -59,8 +56,7 @@ export default{
 		}
 	},
 	components:{
-		saveDialog,
-		resourceDialog
+		saveDialog
 	},
 	methods: {
 		add(){
@@ -73,15 +69,6 @@ export default{
 			this.dialog.save=true
 			this.$nextTick(()=>{
 				this.$refs.saveDialog.open("show").setData(row)
-			})
-		},
-		resource(row){
-			if(!row['id']){
-				row = this.selection[0]
-			}
-			this.dialog.resource=true
-			this.$nextTick(()=>{
-				this.$refs.resourceDialog.open().refreshResource(row)
 			})
 		},
 		edit(row, index){
@@ -116,7 +103,7 @@ export default{
 		},
 		//表格选择后回调事件
 		selectionChange(selection){
-			this.selection = selection;
+			this.selection = selection
 		},
 		handleSaveSuccess(){
 			this.$refs.table.refresh()
