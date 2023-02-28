@@ -106,7 +106,7 @@
 						})
 						return false
 					}
-					//this.$TOOL.cookie.set('tenantId', tenantOptionsRes.data[0].value)
+					this.$TOOL.cookie.set('tenantId', tenantOptionsRes.data[0].value)
 				}
 				//获取菜单
 				var menu = await this.$API.system_menu.menu.myMenus.get()
