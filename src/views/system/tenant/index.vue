@@ -18,11 +18,16 @@
 				<el-table-column label="#" type="index" width="50"></el-table-column>
 				<el-table-column label="租户名称" prop="name" width="250"></el-table-column>
 				<el-table-column label="租户编码" prop="code" width="250"></el-table-column>
-				<el-table-column label="负责人" prop="supervisor" show-overflow-tooltip width="120"></el-table-column>
-				<el-table-column label="描述" prop="description" show-overflow-tooltip></el-table-column>
+				<el-table-column label="负责人" prop="supervisor" show-overflow-tooltip>
+					<template #default="scope">
+						{{ scope.row.supervisor.map(item=>item.username).join(',') }}
+					</template>
+				</el-table-column>
+				<el-table-column label="描述" prop="description" show-overflow-tooltip width="120"></el-table-column>
 				<el-table-column label="操作" fixed="right" align="right" width="250">
 					<template #default="scope">
 						<el-button-group>
+							<el-button text type="primary" size="small" @click="table_show(scope.row, scope.$index)">查看负责人</el-button>
 							<el-button text type="primary" size="small" @click="show(scope.row)">查看</el-button>
 							<el-button text type="primary" size="small" @click="edit(scope.row, scope.$index)">编辑</el-button>
 							<el-popconfirm title="确定删除吗？" @confirm="del(scope.row, scope.$index)">
@@ -37,10 +42,12 @@
 		</el-main>
 	</el-container>
 	<save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSaveSuccess" @closed="dialog.save=false"></save-dialog>
+	<show-maintainer-dialog v-if="dialog.show" ref="showMaintainerDialog" @closed="dialog.show=false"></show-maintainer-dialog>
 </template>
 
 <script>
 import saveDialog from './save'
+import showMaintainerDialog from './showMaintainer'
 export default{
 	name: 'tenant',
 	data(){
@@ -51,14 +58,22 @@ export default{
 			selection: [],
 			dialog: {
 				save: false,
-				resource: false
+				resource: false,
+				show: false
 			}
 		}
 	},
 	components:{
-		saveDialog
+		saveDialog,
+		showMaintainerDialog
 	},
 	methods: {
+		table_show(row, rowIndex){
+			this.dialog.show = true
+			this.$nextTick(() => {
+				this.$refs.showMaintainerDialog.open(row)
+			})
+		},
 		add(){
 			this.dialog.save=true
 			this.$nextTick(()=>{

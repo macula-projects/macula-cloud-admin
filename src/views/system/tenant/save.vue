@@ -8,7 +8,22 @@
 				<el-input v-model="form.code" clearable></el-input>
 			</el-form-item>
 			<el-form-item label="负责人" prop="supervisor">
-				<el-input v-model="form.supervisor" clearable></el-input>
+				<sc-table-select v-model="form.supervisor" :apiObj="apiObj" :table-width="450" multiple clearable collapse-tags collapse-tags-tooltip :props="props">
+					<template #header="{form, submit}">
+						<el-form :inline="true" :model="form">
+							<el-form-item>
+								<el-input v-model="form.keywords" placeholder="用户名称" clearable></el-input>
+							</el-form-item>
+							<el-form-item>
+								<el-button type="primary" @click="submit">查询</el-button>
+							</el-form-item>
+						</el-form>
+					</template>
+					<!-- <el-table-column prop="id" label="ID" width="180"></el-table-column> -->
+					<el-table-column label="#" type="index" width="50"></el-table-column>
+					<el-table-column prop="username" label="用户名" width="150"></el-table-column>
+					<el-table-column prop="nickname" label="真实名字"></el-table-column>
+				</sc-table-select>
 			</el-form-item>
 			<el-form-item label="描述" prop="description">
 				<el-input type="textarea" v-model="form.description" clearable></el-input>
@@ -40,9 +55,15 @@ export default{
 				id:"",
 				name: "",
 				code: "",
-				supervisor: "",
+				supervisor: [],
 				description: ""
 			},
+			props: {
+				label: 'username',
+				value: 'id',
+				keyword: "keywords"
+			},
+			apiObj: this.$API.system_user.user.list,
 			//验证规则
 			rules: {
 				name: [
@@ -50,6 +71,9 @@ export default{
 				],
 				code: [
 					{required: true, message: '租户编码不能为空', trigger: 'blur'}
+				],
+				supervisor: [
+					{required: true, message: '租户负责人不能为空', trigger: 'blur'}
 				]
 			}
 		}
@@ -58,6 +82,12 @@ export default{
 	
 	},
 	methods: {
+		//保存的负责人只需要传递id属性
+		handlerSupervisor(){
+			if(this.form.supervisor){
+				this.form.supervisor = this.form.supervisor.map(item=>item.id)
+			}
+		},
 		//显示
 		open(mode='add'){
 			this.mode = mode;
@@ -69,6 +99,7 @@ export default{
 			this.$refs.dialogForm.validate(async (valid) => {
 				if (valid) {
 					this.isSaveing = true;
+					this.handlerSupervisor()
 					var res = {}
 					if(this.mode === 'add'){
 						res = await this.$API.system_tenant.tenant.add.post(this.form);
@@ -91,7 +122,7 @@ export default{
 			this.form.id = data.id
 			this.form.name = data.name
 			this.form.code = data.code
-			this.form.supervisor = data.supervisor
+			this.form.supervisor = data.supervisor;
 			this.form.description = data.description
 		}
 	}
