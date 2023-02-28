@@ -30,6 +30,13 @@ export default{
 			delete: async function(id){
 				return await http.delete(`${this.url}/${id}`)
 			}
+		},
+		options:{
+			url: `${config.SYSTEM_API_URL}/api/v1/tenants/options`,
+			name: '获取租户下拉选项',
+			get: async function(params){
+				return await http.get(this.url, params)
+			}
 		}
 	}
 }
