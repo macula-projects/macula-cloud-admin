@@ -17,13 +17,6 @@ export default {
 				return await http.get(this.url, params);
 			}
 		},
-		getItems: {
-			url: `${config.SYSTEM_API_URL}/api/v1/dict/types`,
-			name: "获取字典类型的数据项",
-			get: async function(params){
-				return await http.get(`${this.url}/${params.code}/items`);
-			}
-		},
 		itemsListPages: {
 			url: `${config.SYSTEM_API_URL}/api/v1/dict/items/pages`,
 			name: "字典数据分页列表",

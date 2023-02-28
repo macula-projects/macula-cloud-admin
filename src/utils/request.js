@@ -8,6 +8,7 @@ axios.defaults.baseURL = ''
 
 axios.defaults.timeout = sysConfig.TIMEOUT
 let loadQuitMsgBox = false
+let menuRouteSuffixReg = /\/menus\/(my|routes)$/
 
 // HTTP request 拦截器
 axios.interceptors.request.use(
@@ -20,6 +21,23 @@ axios.interceptors.request.use(
 			config.params = config.params || {};
 			config.params['_'] = new Date().getTime();
 		}
+		// 菜单路由获取通过环境配置文件的VITE_SYSTEM_TENANT_ID
+		if(menuRouteSuffixReg.test(config.url)){
+			config.params = config.params || {};
+			config.params['tenantId'] = `${import.meta.env.VITE_SYSTEM_TENANT_ID}`
+		}
+		// tool.cookie含有tenantId, 则遍历config的参数，如果包含tenantId则不添加，不包含则从tool.cookie中获取并添加到param参属下
+		if(tool.cookie.get('tenantId')){
+			let addFlag = true
+			if(config.params && Object.keys(config.params).indexOf('tenantId') != -1){
+				addFlag = false
+			}
+			if(addFlag){
+				config.params = config.params || {};
+				config.params['tenantId'] = tool.cookie.get('tenantId')
+			}
+		}
+		
 		Object.assign(config.headers, sysConfig.HEADERS)
 		return config;
 	},

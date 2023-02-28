@@ -95,6 +95,19 @@
 					ElMessage.warning(userInfo.message)
 					return false
 				}
+				//获取我的租户列表
+				var tenantOptionsRes = await this.$API.system_tenant.tenant.options.get()
+				if (tenantOptionsRes.code && tenantOptionsRes.code == 10000) {
+					if(tenantOptionsRes.data.length == 0){
+						this.islogin = false
+						ElMessageBox.alert("当前用户无任何菜单权限，请联系系统管理员", "无权限访问", {
+							type: 'error',
+							center: true
+						})
+						return false
+					}
+					//this.$TOOL.cookie.set('tenantId', tenantOptionsRes.data[0].value)
+				}
 				//获取菜单
 				var menu = await this.$API.system_menu.menu.myMenus.get()
 
