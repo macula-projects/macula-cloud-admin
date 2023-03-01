@@ -6,7 +6,7 @@
 					<el-input placeholder="输入关键字进行过滤" v-model="menuFilterText" clearable></el-input>
 				</el-header>
 				<el-main class="nopadding">
-					<el-tree ref="menu" class="menu" node-key="id" :data="menuList" :props="menuProps" draggable highlight-current :expand-on-click-node="false" check-strictly show-checkbox @node-click="menuClick" @node-drop="nodeDrop">
+					<el-tree ref="menu" class="menu" node-key="id" :data="menuList" :props="menuProps" :default-expanded-keys="defaultExpandedIds" draggable highlight-current :expand-on-click-node="false" check-strictly show-checkbox @node-click="menuClick" @node-drop="nodeDrop">
 						<template #default="{node, data}">
 							<span class="custom-tree-node el-tree-node__label">
 								<span class="label">
@@ -51,7 +51,8 @@
 						return data.name
 					}
 				},
-				menuFilterText: ""
+				menuFilterText: "",
+				defaultExpandedIds: []
 			}
 		},
 		watch: {
@@ -74,6 +75,7 @@
 			},
 			//树点击
 			menuClick(data, node){
+				console.log(data, node)
 				var pid = node.level==1? '0' :node.parent.data.id
 				this.$refs.save.setData(data, pid)
 				this.$refs.main.$el.scrollTop = 0
@@ -92,7 +94,7 @@
 					name: newMenuName,
 					path: "/",
 					component: "",
-					type: (data && data.meta) ? (data.meta.type === 'MENU' ? 'BUTTON': 'CATALOG') : 'CATALOG',
+					type: data ? (data.type === 'MENU' ? 'BUTTON': 'CATALOG') : 'CATALOG',
 					icon: '',
 					visible: 1,
 					sort: 0,
@@ -101,12 +103,18 @@
 				}
 				var res = await this.$API.system_menu.menu.add.post(newMenuData)
 				if(res.code === '10000'){
-					location.reload()
+					this.getMenu()
+					this.defaultExpandedIds = []
+					this.loopPushDefaultExpandedIds(node)
 				}
-				this.$refs.menu.append(newMenuData, node)
-				this.$refs.menu.setCurrentKey(newMenuData.id)
-				var pid = node ? node.data.id : ""
-				this.$refs.save.setData(newMenuData, pid)
+			},
+			loopPushDefaultExpandedIds(node){
+				if(node.data && node.data.id){
+					this.defaultExpandedIds.push(node.data.id)
+				}
+				if(node.parent){
+					this.loopPushDefaultExpandedIds(node.parent)
+				}
 			},
 			//删除菜单
 			async delMenu(){
@@ -130,7 +138,6 @@
 				CheckedNodes.map(item => {
 					this.loadingSubMenuId(item, reqData)					
 				})
-				console.log(reqData)
 				var res = await this.$API.system_menu.menu.del.delete(reqData)
 				this.menuloading = false
 
