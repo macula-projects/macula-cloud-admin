@@ -83,9 +83,9 @@ export default{
 	},
 	methods: {
 		//保存的负责人只需要传递id属性
-		handlerSupervisor(){
-			if(this.form.supervisor){
-				this.form.supervisor = this.form.supervisor.map(item=>item.id)
+		handlerSupervisor(reqForm){
+			if(reqForm.supervisor){
+				reqForm.supervisor = reqForm.supervisor.map(item=>item.id)
 			}
 		},
 		//显示
@@ -99,12 +99,13 @@ export default{
 			this.$refs.dialogForm.validate(async (valid) => {
 				if (valid) {
 					this.isSaveing = true;
-					this.handlerSupervisor()
+					let reqForm = JSON.parse(JSON.stringify(this.form))
+					this.handlerSupervisor(reqForm)
 					var res = {}
 					if(this.mode === 'add'){
-						res = await this.$API.system_tenant.tenant.add.post(this.form);
+						res = await this.$API.system_tenant.tenant.add.post(reqForm);
 					} else {
-						res = await this.$API.system_tenant.tenant.edit.put(this.form.id, this.form);
+						res = await this.$API.system_tenant.tenant.edit.put(reqForm.id, reqForm);
 					}
 					this.isSaveing = false;
 					if(res.code == "10000"){

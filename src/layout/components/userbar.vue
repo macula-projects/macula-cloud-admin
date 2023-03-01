@@ -3,6 +3,7 @@
 		<div class="screen panel-item hidden-sm-and-down" @click="screen">
 			<el-icon><el-icon-full-screen /></el-icon>
 		</div>
+		<tenant></tenant>
 		<el-dropdown class="user panel-item" trigger="click" @command="handleUser">
 			<div class="user-avatar">
 				<el-avatar :size="30">{{ userNameF }}</el-avatar>
@@ -21,7 +22,13 @@
 </template>
 
 <script>
+	import tenant from './tenant'
+	import { useTenantStore } from '@/stores/tenant';
+	import { mapActions } from 'pinia';
 	export default {
+		components:{
+			tenant
+		},
 		data(){
 			return {
 				userName: "",
@@ -34,14 +41,16 @@
 			this.userNameF = this.userName.substring(0,1);
 		},
 		methods: {
+			...mapActions(useTenantStore, ['clearTenantOptions']),
 			//个人信息
 			handleUser(command) {
 				if(command == "clearCache"){
 					ElMessageBox.confirm('清除缓存会将系统初始化，包括登录状态、主题、语言设置等，是否继续？','提示', {
 						type: 'info',
 					}).then(() => {
-						const loading = this.$loading()
+						const loading = ElLoading.service({ fullscreen: true })
 						this.$TOOL.data.clear()
+						this.clearTenantOptions()
 						this.$router.replace({path: '/login'})
 						setTimeout(()=>{
 							loading.close()

@@ -31,6 +31,8 @@
 </template>
 
 <script>
+	import { useTenantStore } from '@/stores/tenant';
+	import { mapActions } from 'pinia';
 	export default {
 		data() {
 			return {
@@ -66,6 +68,7 @@
 
 		},
 		methods: {
+			...mapActions(useTenantStore, ['pushTenantOptions', 'updateTenantLabel', 'updateTenantId', 'clearTenantOptions']),
 			async login(){
 
 				var validate = await this.$refs.loginForm.validate().catch(()=>{})
@@ -106,7 +109,10 @@
 						})
 						return false
 					}
-					this.$TOOL.cookie.set('tenantId', tenantOptionsRes.data[0].value)
+					this.clearTenantOptions()
+					this.pushTenantOptions(tenantOptionsRes.data)
+					this.updateTenantId(tenantOptionsRes.data[0].value)
+					this.updateTenantLabel(tenantOptionsRes.data[0].label)
 				}
 				//获取菜单
 				var menu = await this.$API.system_menu.menu.myMenus.get()

@@ -6,33 +6,18 @@
 					<el-input placeholder="输入关键字进行过滤" v-model="menuFilterText" clearable></el-input>
 				</el-header>
 				<el-main class="nopadding">
-					<el-container>
-						<el-main>
-							<el-tree ref="menu" class="menu" node-key="id" :data="menuList" :props="menuProps" draggable highlight-current :expand-on-click-node="false" check-strictly show-checkbox :filter-node-method="menuFilterNode" @node-click="menuClick" @node-drop="nodeDrop">
-								<template #default="{node, data}">
-									<span class="custom-tree-node el-tree-node__label">
-										<span class="label">
-											{{ node.label }}
-										</span>
-										<span class="do" v-if="data.meta.type !== 'BUTTON' && data.meta.type !== 'IFRAME' && data.meta.type !== 'EXTLINK'">
-											<el-icon @click.stop="add(node, data)"><el-icon-plus /></el-icon>
-										</span>
-									</span>
-								</template>
-							</el-tree>
-						</el-main>
-						<el-footer>
-							<el-pagination
-								v-model:current-page="menuCurPage"
-								v-model:page-size="menuPageSize"
-								:page-sizes="[5, 10, 20, 30, 50, 100]"
-								small
-								background
-								layout="total, sizes, prev, pager, next"
-								:total="menuTotal"
-							/>
-						</el-footer>
-					</el-container>
+					<el-tree ref="menu" class="menu" node-key="id" :data="menuList" :props="menuProps" draggable highlight-current :expand-on-click-node="false" check-strictly show-checkbox @node-click="menuClick" @node-drop="nodeDrop">
+						<template #default="{node, data}">
+							<span class="custom-tree-node el-tree-node__label">
+								<span class="label">
+									{{ node.label }}
+								</span>
+								<span class="do" v-if="data.type !== 'BUTTON' && data.type !== 'IFRAME' && data.type !== 'EXTLINK'">
+									<el-icon @click.stop="add(node, data)"><el-icon-plus /></el-icon>
+								</span>
+							</span>
+						</template>
+					</el-tree>
 				</el-main>
 				<el-footer style="height:51px;">
 					<el-button type="primary" size="small" icon="el-icon-plus" @click="add()"></el-button>
@@ -63,74 +48,35 @@
 				menuList: [],
 				menuProps: {
 					label: (data)=>{
-						return data.meta.title
+						return data.name
 					}
 				},
-				menuFilterText: "",
-				menuTotal: 0,
-				menuCurPage: 1,
-				menuPageSize: 10
+				menuFilterText: ""
 			}
 		},
 		watch: {
 			async menuFilterText(val){
-				if(this.menuCurPage === 1){
-					await this.getMenu({keywords: this.menuFilterText, pageNum: this.menuCurPage, pageSize: this.menuPageSize})
-					this.$refs.menu.filter(this.menuFilterText);
-				}else{
-					this.menuCurPage = 1
-				}
-			},
-			async menuCurPage(val){
-				await this.getMenu({keywords: this.menuFilterText, pageNum: this.menuCurPage, pageSize: this.menuPageSize})
-				this.$refs.menu.filter(this.menuFilterText);
-			},
-			async menuPageSize(val){
-				if(this.menuCurPage === 1){
-					await this.getMenu({keywords: this.menuFilterText, pageNum: this.menuCurPage, pageSize: this.menuPageSize})
-					this.$refs.menu.filter(this.menuFilterText);
-				}else{
-					this.menuCurPage = 1
-				}
+				await this.getMenu({keywords: this.menuFilterText})
 			}
 		},
 		mounted() {
-			this.getMenu({pageNum: this.menuCurPage, pageSize: this.menuPageSize})
+			this.getMenu()
 		},
 		methods: {
 			//加载树数据
 			async getMenu(params){
 				this.menuloading = true
-				var res = await this.$API.system_menu.menu.pages.get(params);
+				var res = await this.$API.system_menu.menu.list.get(params)
 				this.menuloading = false
 				if(res.code === '10000') {
-					this.menuList = res.data.records;
-					this.menuCurPage = res.data.current
-					this.menuPageSize = res.data.size
-					this.menuTotal = res.data.total
+					this.menuList = res.data
 				}
 			},
 			//树点击
 			menuClick(data, node){
-				var pid = node.level==1?undefined:node.parent.data.id;
+				var pid = node.level==1?undefined:node.parent.data.id
 				this.$refs.save.setData(data, pid)
 				this.$refs.main.$el.scrollTop = 0
-			},
-			//树过滤
-			menuFilterNode(value, data, node){
-				if (!value) {
-					return true;
-				}
-				var targetText = data.meta.title
-				var filter = targetText.indexOf(value) !== -1
-				if(filter && node.childNodes){
-					node.childNodes.forEach(tempNode => {
-						tempNode.data.filter=true
-					})
-				}
-				var parentFilter = data.filter
-				data.filter = false
-				return filter || parentFilter;
 			},
 			//树拖拽
 			nodeDrop(draggingNode, dropNode, dropType){
@@ -141,16 +87,17 @@
 			async add(node, data){
 				var newMenuName = "未命名" + newMenuIndex++;
 				var newMenuData = {
+					id: "",
 					parentId: data ? data.id : "",
 					name: newMenuName,
 					path: "",
 					component: "",
-					meta:{
-						title: newMenuName,
-						type: (data && data.meta) ? (data.meta.type === 'MENU' ? 'BUTTON': 'CATALOG') : 'CATALOG',
-						visible: true
-					},
-					sort: 0
+					type: (data && data.meta) ? (data.meta.type === 'MENU' ? 'BUTTON': 'CATALOG') : 'CATALOG',
+					icon: '',
+					visible: 1,
+					sort: 0,
+					perm: '',
+					redirect: ''
 				}
 				this.menuloading = true
 				var res = await this.$API.system_menu.menu.add.post(newMenuData)
