@@ -5,16 +5,16 @@
 		</el-col>
 		<template v-else>
 			<el-col :lg="12">
-				<h2>{{form.meta.title || "新增菜单"}}</h2>
+				<h2>{{form.name || "新增菜单"}}</h2>
 				<el-form :model="form" :rules="rules" ref="dialogForm" label-width="80px" label-position="left">
-					<el-form-item label="显示名称" prop="meta.title">
-						<el-input v-model="form.meta.title" clearable placeholder="菜单显示名字"></el-input>
+					<el-form-item label="显示名称" prop="name">
+						<el-input v-model="form.name" clearable placeholder="菜单显示名字"></el-input>
 					</el-form-item>
 					<el-form-item label="上级菜单" prop="parentId">
 						<el-cascader v-model="form.parentId" :options="menuOptions" :props="menuProps" :show-all-levels="false" placeholder="顶级菜单" clearable disabled></el-cascader>
 					</el-form-item>
-					<el-form-item label="类型" prop="meta.type">
-						<el-radio-group v-model="form.meta.type">
+					<el-form-item label="类型" prop="type">
+						<el-radio-group v-model="form.type">
 							<el-radio-button :disabled="!isCatalog" label="CATALOG">目录</el-radio-button>
 							<el-radio-button :disabled="isButton" label="MENU">菜单</el-radio-button>
 							<el-radio-button :disabled="isButton" label="EXTLINK">外链</el-radio-button>
@@ -23,34 +23,32 @@
 						</el-radio-group>
 						<div class="el-form-item-msg">菜单、Iframe和外链是同级显示</div>
 					</el-form-item>
-					<el-form-item label="权限标识" prop="perm" v-if="form.meta.type === 'BUTTON'">
+					<el-form-item label="权限标识" prop="perm" v-if="form.type === 'BUTTON'">
 						<el-input v-model="form.perm" clearable placeholder="按钮权限标识"></el-input>
 						<div class="el-form-item-msg">目录、菜单、Iframe或外链等不需要权限标识</div>
 					</el-form-item>
-					<el-form-item label="菜单图标" prop="meta.icon" v-if="form.meta.type !== 'BUTTON'">
-						<sc-icon-select v-model="form.meta.icon" clearable></sc-icon-select>
+					<el-form-item label="菜单图标" prop="meta.icon" v-if="form.type !== 'BUTTON'">
+						<sc-icon-select v-model="form.icon" clearable></sc-icon-select>
 					</el-form-item>
-					<el-form-item label="路由地址" prop="path" v-if="form.meta.type !== 'BUTTON' && form.meta.type !== 'CATALOG'">
+					<el-form-item label="路由地址" prop="path" v-if="form.type !== 'BUTTON'">
 						<el-input v-model="form.path" clearable placeholder=""></el-input>
+						<div class="el-form-item-msg">目录路由必须以/开头</div>
 					</el-form-item>
-					<el-form-item label="重定向" prop="redirect" v-if="form.meta.type === 'MENU'">
+					<el-form-item label="重定向" prop="redirect" v-if="form.type === 'MENU'">
 						<el-input v-model="form.redirect" clearable placeholder=""></el-input>
 					</el-form-item>
-					<el-form-item label="视图" prop="component" v-if="form.meta.type === 'MENU'">
+					<el-form-item label="视图" prop="component" v-if="form.type === 'MENU'">
 						<el-input v-model="form.component" clearable placeholder="">
 							<template #prepend>views/</template>
 						</el-input>
 						<div class="el-form-item-msg">如父节点、链接或Iframe等没有视图的菜单不需要填写</div>
 					</el-form-item>
-					<el-form-item label="排序" prop="sort" v-if="form.meta.type !== 'BUTTON'">
+					<el-form-item label="排序" prop="sort" v-if="form.type !== 'BUTTON'">
 						<el-input-number v-model="form.sort" controls-position="right" size="large"/>
 						<div class="el-form-item-msg">菜单排序越小越前</div>
 					</el-form-item>
-					<el-form-item label="是否显示" prop="meta.visible" v-if="form.meta.type !== 'BUTTON'">
-						<el-checkbox v-model="form.meta.visible">显示菜单</el-checkbox>
-					</el-form-item>
-					<el-form-item label="标签" prop="tag" v-if="form.meta.type !== 'BUTTON'">
-						<el-input v-model="form.meta.tag" clearable placeholder=""></el-input>
+					<el-form-item label="是否显示" prop="meta.visible" v-if="form.type !== 'BUTTON'">
+						<el-checkbox v-model="form.visible" :true-label="1" :false-label="0">显示菜单</el-checkbox>
 					</el-form-item>
 					<el-form-item>
 						<el-button type="primary" @click="save" :loading="loading">保 存</el-button>
@@ -120,19 +118,15 @@
 				form: {
 					id: "",
 					parentId: "",
-					perm: "",
+					name: "",
 					path: "",
 					component: "",
-					redirect: "",
-					meta:{
-						title: "",
-						icon: "",
-						active: "",
-						color: "",
-						type: "MENU",
-						fullpage: false,
-						tag: "",
-					},
+					type: "MENU",
+					icon: '',
+					visible: 1,
+					sort: 0,
+					perm: '',
+					redirect: '',
 					apiList: []
 				},
 				menuOptions: [],
@@ -151,16 +145,17 @@
 					'#c71585'
 				],
 				rules: {
-					meta: {
-						title: [{required: true, message: '名称不能为空', trigger: 'blur'}]
-					},
+					name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
 					sort: [{required: false}],
 					path: [{required: true, message: '路径不能为空',trigger: 'blur'}]
 				},
 				apiListAddTemplate: {
+					id: "",
 					code: "",
 					url: "",
-					method: "GET"
+					method: "GET",
+					urlVisible: false,
+					codeVisible: false
 				},
 				loading: false,
 				isButton: false,
@@ -168,50 +163,13 @@
 				methodOptions: [],
 				apiListValidtor: true,
 				apiListValidObj:{},
-				apiListValidObjLoading: true
+				initApi: []
 			}
 		},
 		watch: {
 			menu: {
 				handler(){
 					this.menuOptions = this.treeToMap(this.menu)
-				},
-				deep: true
-			},
-			'form.apiList': {
-				handler(newV, oldV){
-					if(newV && this.apiListValidObjLoading){
-						this.apiListValidObjLoading = false
-						this.apiListValidtor=true
-						newV.forEach(api=> {
-							let key = api.code +":"+api.url+":"+api.method
-							this.apiListValidObj[key] = false
-							api['codeVisible'] = !this.validtorApiCode(api.code, api)
-							api['urlVisible'] = !this.validtorApiUrl(api.url, api)
-							if(api['codeVisible'] || api['urlVisible']) {
-								this.apiListValidtor = false
-							} 
-						})
-					}
-				},
-				deep: true
-			},
-			apiListValidObj: {
-				handler(newV, oldV){
-					if(JSON.stringify(newV) === '{}'){
-						this.apiListValidObjLoading = true
-						return
-					}
-					let comple = true
-					for (let key in newV) {
-					 if(!newV[key]){
-						 comple =false
-					 } 
-					}
-					if(comple){
-						this.apiListValidObj={}
-						this.apiListValidObjLoading = true
-					}
 				},
 				deep: true
 			}
@@ -226,6 +184,36 @@
 
 		},
 		methods: {
+			async validApiUrlParam(){
+				this.apiListValidtor = true
+				let requestValidApi = this.form.apiList.filter(api=>{
+					let key = api.id+"::"+api.code +":"+api.url+":"+api.method
+					this.apiListValidObj[key] = {data: api}
+					let apiCodeFlag = this.validtorApiCode(api.code, api)
+					let apiUrlFlag = this.validtorApiUrl(api.url, api)
+					if(!apiCodeFlag || !apiUrlFlag){
+						this.apiListValidtor = false
+					}
+					return apiUrlFlag
+				})
+				if(requestValidApi.length>0){
+					await this.handlerRequestApiUrlValid(requestValidApi)
+				}
+			},
+			async handlerRequestApiUrlValid(requestValidApi){
+				let validOptionsRes = await this.$API.system_permission.permission.validtorUrlPerm.post(requestValidApi)
+				if(validOptionsRes.code === '10000'){
+					validOptionsRes.data.forEach(item=>{
+						this.apiListValidObj[item.label]['data']['urlErrMsg'] = item.value ? '' : 'url与请求方式已存在'
+						this.apiListValidObj[item.label]['data']['urlVisible'] = !item.value
+						if(!item.value){
+							this.apiListValidtor = false
+						}
+					})
+				} else {
+					ElMessage.error('权限路径验证失败，请刷新重试！')
+				}
+			},
 			//简单化菜单
 			treeToMap(tree){
 				const map = []
@@ -233,7 +221,7 @@
 					var obj = {
 						id: item.id,
 						parentId: item.parentId,
-						title: item.meta.title,
+						title: item.name,
 						children: item.children&&item.children.length>0 ? this.treeToMap(item.children) : null
 					}
 					map.push(obj)
@@ -242,14 +230,12 @@
 			},
 			//处理保存的菜单数据
 			handlerMenu(form){
-				if(form.meta.type === 'BUTTON'){
-					form.meta.visible = true
-					form.meta.tag = ''
+				if(form.type === 'BUTTON'){
+					form.visible = 1
 					form.path = ''
 					form.redirect = ''
-					form.meta.icon = ''
-				} else if(form.meta.type === 'CATALOG'){
-					form.path = '/'
+					form.icon = ''
+				} else if(form.type === 'CATALOG'){
 					form.perm = ''
 				} else {
 					form.perm = ''
@@ -261,85 +247,108 @@
 				if(!valid) {
 					return
 				}
-				if(!this.apiListValidtor){
-					ElMessage.error('接口权限数据错误，请完善后点击保存！')
-					return
-				}
 				this.loading = true
 				this.handlerMenu(this.form)
+				await this.validApiUrlParam()
+				if(!this.apiListValidtor){
+					ElMessage.error('接口权限数据错误，请完善后点击保存！')
+					this.loading = false
+					return
+				}
 				var res = await this.$API.system_menu.menu.add.post(this.form)
+				var oldApiRes = await this.delOldApi()
+				if(oldApiRes.code === '10000'){
+					await this.addNewApi(this.form.id, this.form.apiList)
+				}
 				this.loading = false
 				this.apiListValidObj={}
-				if(res.code === "10000"){
-					if (this.form.apiList) {
-						this.form.apiList.forEach(apiList => {
-							var key = `${apiList.code}_${apiList.url}`
-							if (!apiList.id && res.data.apiList[key]) {
-								apiList.id = res.data.apiList[key].id
-							}
-						})
-					}
-					ElMessage.success("保存成功")
-				}else{
-					ElMessage.warning(res.message)
+				location.reload()
+			},
+			//保存权限
+			async addNewApi(menuId, apiArr){
+				let apiPermObj = apiArr.map(item=>({
+					name: item.code,
+					menuId: menuId,
+					urlPerm: item.method+":"+item.url
+				}))
+				for(var i = 0 ;i < apiPermObj.length; i++){
+					let item = apiPermObj[i]
+					await this.$API.system_permission.permission.add.post(item)
 				}
+			},
+			//删除权限
+			async delOldApi(){
+				if(this.initApi.length===0){
+					return { code: '10000'}
+				}
+				return await this.$API.system_permission.permission.del.delete(this.initApi.join(","))
 			},
 			//表单注入数据
 			setData(data, pid){
+				console.log('data', data)
 				this.form = data
-				this.form.apiList = data.apiList || []
+				data.createTime = null
+				this.form.path = data.routePath
 				this.form.parentId = pid
-				if(data.meta){
-					this.isCatalog = data.meta.type === 'CATALOG'
-					this.isButton = data.meta.type === 'BUTTON'
+				this.isCatalog = data.type === 'CATALOG'
+				this.isButton = data.type === 'BUTTON'
+				this.loadPermissionList(data)
+			},
+			async loadPermissionList(menuData){
+				if(!menuData.id){
+					this.form.apiList = []
+					return
 				}
+				let permListRes = await this.$API.system_permission.permission.list.get({menuId: menuData.id})
+				if(permListRes.code === '10000'){
+					this.form.apiList = permListRes.data.map(item=>({
+						id: item.id,
+						code: item.name,
+						url: item.urlPerm.split(":")[1],
+						method: item.urlPerm.split(":")[0],
+					}))
+					this.initApiList(this.form.apiList)
+					return
+				}
+				ElMessage.error('加载菜单权限列表失败！请重试！')
 			},
 			//验证是否能修复个别情况api权限列表鼠标hover显示红块问题
 			initApiList(apiList){
-				if(apiList) apiList.forEach(item=>{item['codeVisible']=false; item['urlVisible']=false;})
+				if(apiList) apiList.forEach(item=>{
+					item['codeVisible']=false; 
+					item['urlVisible']=false; 
+					this.initApi.push(item.id)
+				})
 			},
 			validtorApiCode(code, apiData){
 				if(code.trim().length === 0){
 					apiData['codeErrMsg'] = '标识不能为空'
+					apiData['codeVisible'] = true
 					return false
 				}
 				const reg = /^([\u4e00-\u9fa5]|[a-z]|[A-Z]|[0-9]|[_]|[\.])*$/
 				if(!reg.test(code)){
 					apiData['codeErrMsg'] = '标识含非法字符'
+					apiData['codeVisible'] = true
 					return false
 				}
+				apiData['codeVisible'] = false
 				return true
 			},
 			validtorApiUrl(url, apiData){
-				let key = apiData.code +":"+apiData.url+":"+apiData.method
+				let key = apiData.id+"::"+apiData.code +":"+apiData.url+":"+apiData.method
 				if(url.trim().length === 0){
 					apiData['urlErrMsg'] = 'url不能为空'
-					this.apiListValidObj[key] = true
+					apiData['urlVisible'] = true
 					return false
 				}
 				const reg = /^(\/[a-zA-Z0-9_#?&*]*)+$/
 				if(!reg.test(url)){
 					apiData['urlErrMsg'] = 'url含非法字符'
-					this.apiListValidObj[key] = true
+					apiData['urlVisible'] = true
 					return false
 				}
-				this.$API.system_permission.permission.validtorUrlPerm
-				.get({id: apiData.id, url: apiData.url, method: apiData.method})
-				.then(res=>{
-					if(res.code === '10000' && res.data){
-						apiData['urlVisible'] = false
-						this.apiListValidObj[key] = true
-						return
-					}
-					apiData['urlErrMsg'] = 'url与请求方式已存在'
-					apiData['urlVisible'] = true
-					this.apiListValidObj[key] = true
-					this.apiListValidtor = false
-				}).catch(err=>{
-					ElMessage.wran('验证apiUrl路径验证器请求异常')
-					apiData['urlVisible'] = false
-					this.apiListValidObj[key] = true
-				})
+				apiData['urlVisible'] = false
 				return true
 			}
 		}

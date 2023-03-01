@@ -139,7 +139,6 @@
 			//搜索
 			async upsearch(){
 				var res = await this.$API.system_menu.menu.routes.get()
-				console.log('res', res)
 				this.$refs.table.upData(this.search)
 			},
 			//本地更新数据
