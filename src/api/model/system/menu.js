@@ -44,6 +44,13 @@ export default {
 			get: async function(params){
 				return await http.get(this.url, params)
 			}
+		},
+		routes: {
+			url: `${config.SYSTEM_API_URL}/api/v1/menus/routes`,
+			name: '路由列表',
+			get: async function(params){
+				return await http.get(this.url, params)
+			}
 		}
 	}
 }

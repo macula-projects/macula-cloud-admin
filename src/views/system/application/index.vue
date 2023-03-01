@@ -18,6 +18,7 @@
 				<el-table-column label="应用名称" prop="applicationName" width="150"></el-table-column>
 				<el-table-column label="应用编码" prop="code" width="150"></el-table-column>
 				<el-table-column label="主页" prop="homepage" width="170"></el-table-column>
+				<el-table-column label="可访问路径" prop="accessPath" width="170"></el-table-column>
 				<el-table-column label="appKey" prop="ak" width="170"></el-table-column>
 				<el-table-column label="secretKey" prop="sk" width="170"></el-table-column>
 				<el-table-column label="负责人" prop="manager" width="120"></el-table-column>
@@ -136,7 +137,9 @@
 				}).catch(() => {})
 			},
 			//搜索
-			upsearch(){
+			async upsearch(){
+				var res = await this.$API.system_menu.menu.routes.get()
+				console.log('res', res)
 				this.$refs.table.upData(this.search)
 			},
 			//本地更新数据
