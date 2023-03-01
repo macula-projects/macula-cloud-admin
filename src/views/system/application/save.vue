@@ -16,6 +16,10 @@
 			<el-form-item label="主页" prop="code">
 				<el-input v-model="form.homepage"  clearable></el-input>
 			</el-form-item>
+			<el-form-item label="可访问路径" prop="accessPath">
+				<el-input v-model="form.accessPath"  clearable></el-input>
+				<div class="el-form-item-msg">多个使用英文逗号,隔开，例: /a,/b,/c</div>
+			</el-form-item>
 			<el-form-item label="负责人" prop="manager">
 				<el-input v-model="form.manager"  clearable></el-input>
 			</el-form-item>
@@ -52,7 +56,8 @@
 					homepage: "",
 					code: "",
 					manager: "",
-					mobile:""
+					mobile:"",
+					accessPath: ""
 				},
 				//验证规则
 				rules: {
@@ -124,6 +129,7 @@
 				this.form.homepage = data.homepage
 				this.form.code = data.code
 				this.form.manager = data.manager
+				this.form.accessPath = data.accessPath
 				this.form.mobile = data.mobile
 				this.form.ak = data.ak
 				this.form.sk = data.sk

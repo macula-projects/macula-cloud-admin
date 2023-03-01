@@ -90,6 +90,7 @@
 					ElMessage.warning(user.message)
 					return false
 				}
+
 				var userInfo = await this.$API.common_auth.getUserInfo.get()
 				if (userInfo.code && userInfo.code == 10000) {
 					this.$TOOL.data.set("USER_INFO", userInfo.data)
@@ -114,23 +115,36 @@
 					this.updateTenantId(tenantOptionsRes.data[0].value)
 					this.updateTenantLabel(tenantOptionsRes.data[0].label)
 				}
-				//获取菜单
-				var menu = await this.$API.system_menu.menu.myMenus.get()
-
-				if(menu.code && menu.code == 10000){
-					if(menu.data.menu.length==0){
-						this.islogin = false
-						ElMessageBox.alert("当前用户无任何菜单权限，请联系系统管理员", "无权限访问", {
-							type: 'error',
-							center: true
+				// 处理菜单
+				// 用户的角色是否包含路由返回菜单对应的角色
+				var res = await this.$API.system_menu.menu.routes.get()
+				var menu = []
+				if(res.code && res.code == 10000){
+					var routes = res.data
+					var roles = userInfo.data.role
+					var perms = userInfo.data.perm
+					roles.forEach((item) => {
+						routes.forEach((route) => {
+							var newChild = []
+							var isInclude = route.meta.roles.includes(item)
+							if (isInclude) {
+								var child = route.children
+								child.forEach((ch, index) => {
+									var result = ch.meta.roles.includes(item)
+									if (result) {
+										newChild.push(ch)
+									}
+								})
+								route.children = newChild
+								menu.push(route)
+							}
 						})
-						return false
-					}
-					this.$TOOL.data.set("MENU", menu.data.menu)
-					this.$TOOL.data.set("PERMISSIONS", menu.data.permissions)
-				}else{
+					})
+					this.$TOOL.data.set("MENU", menu)
+					this.$TOOL.data.set("PERMISSIONS", perms)
+				} else {
 					this.islogin = false
-					ElMessage.warning(menu.message)
+					ElMessage.warning(res.message)
 					return false
 				}
 

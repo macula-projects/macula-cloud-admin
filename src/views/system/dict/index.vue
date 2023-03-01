@@ -40,11 +40,6 @@
 			<el-main class="nopadding">
 				<scTable ref="table" :apiObj="listApi" row-key="id" :params="listApiParams" @selection-change="selectionChange" stripe :paginationLayout="'prev, pager, next'">
 					<el-table-column type="selection" width="50"></el-table-column>
-					<!-- <el-table-column label="" width="60">
-						<template #default>
-							<el-tag class="move" style="cursor: move;"><el-icon-d-caret style="width: 1em; height: 1em;"/></el-tag>
-						</template>
-					</el-table-column> -->
 					<el-table-column label="名称" prop="name" width="150"></el-table-column>
 					<el-table-column label="键值" prop="value" width="150"></el-table-column>
 					<el-table-column label="是否有效" prop="status" width="100">
@@ -111,7 +106,6 @@
 		},
 		mounted() {
 			this.getDic()
-			// this.rowDrop()
 		},
 		methods: {
 			//加载树数据
@@ -279,15 +273,6 @@
 				this.$refs.table.reload({
 					typeCode: data.oldTypeCode
 				})
-				// if(mode=='add'){
-				// 	this.$refs.table.reload({
-				// 		typeCode: data.oldTypeCode
-				// 	})
-				// }else if(mode=='edit'){
-				// 	this.$refs.table.tableData.filter(item => item.id===data.id ).forEach(item => {
-				// 		Object.assign(item, data)
-				// 	})
-				// }
 			}
 		}
 	}
