@@ -30,8 +30,9 @@
 					<el-form-item label="菜单图标" prop="meta.icon" v-if="form.type !== 'BUTTON'">
 						<sc-icon-select v-model="form.icon" clearable></sc-icon-select>
 					</el-form-item>
-					<el-form-item label="路由地址" prop="path" v-if="form.type !== 'BUTTON' && form.type !== 'CATALOG'">
+					<el-form-item label="路由地址" prop="path" v-if="form.type !== 'BUTTON'">
 						<el-input v-model="form.path" clearable placeholder=""></el-input>
+						<div class="el-form-item-msg">目录路由必须以/开头</div>
 					</el-form-item>
 					<el-form-item label="重定向" prop="redirect" v-if="form.type === 'MENU'">
 						<el-input v-model="form.redirect" clearable placeholder=""></el-input>
@@ -161,7 +162,8 @@
 				isCatalog: false,
 				methodOptions: [],
 				apiListValidtor: true,
-				apiListValidObj:{}
+				apiListValidObj:{},
+				initApi: []
 			}
 		},
 		watch: {
@@ -229,12 +231,11 @@
 			//处理保存的菜单数据
 			handlerMenu(form){
 				if(form.type === 'BUTTON'){
-					form.visible = true
+					form.visible = 1
 					form.path = ''
 					form.redirect = ''
 					form.icon = ''
 				} else if(form.type === 'CATALOG'){
-					form.path = ''
 					form.perm = ''
 				} else {
 					form.perm = ''
@@ -255,25 +256,38 @@
 					return
 				}
 				var res = await this.$API.system_menu.menu.add.post(this.form)
+				var oldApiRes = await this.delOldApi()
+				if(oldApiRes.code === '10000'){
+					await this.addNewApi(this.form.id, this.form.apiList)
+				}
 				this.loading = false
 				this.apiListValidObj={}
-				if(res.code === "10000"){
-					if (this.form.apiList) {
-						this.form.apiList.forEach(apiList => {
-							var key = `${apiList.code}_${apiList.url}`
-							if (!apiList.id && res.data.apiList[key]) {
-								apiList.id = res.data.apiList[key].id
-							}
-						})
-					}
-					ElMessage.success("保存成功")
-				}else{
-					ElMessage.warning(res.message)
+				location.reload()
+			},
+			//保存权限
+			async addNewApi(menuId, apiArr){
+				let apiPermObj = apiArr.map(item=>({
+					name: item.code,
+					menuId: menuId,
+					urlPerm: item.method+":"+item.url
+				}))
+				for(var i = 0 ;i < apiPermObj.length; i++){
+					let item = apiPermObj[i]
+					await this.$API.system_permission.permission.add.post(item)
 				}
+			},
+			//删除权限
+			async delOldApi(){
+				if(this.initApi.length===0){
+					return { code: '10000'}
+				}
+				return await this.$API.system_permission.permission.del.delete(this.initApi.join(","))
 			},
 			//表单注入数据
 			setData(data, pid){
+				console.log('data', data)
 				this.form = data
+				data.createTime = null
 				this.form.path = data.routePath
 				this.form.parentId = pid
 				this.isCatalog = data.type === 'CATALOG'
@@ -300,7 +314,11 @@
 			},
 			//验证是否能修复个别情况api权限列表鼠标hover显示红块问题
 			initApiList(apiList){
-				if(apiList) apiList.forEach(item=>{item['codeVisible']=false; item['urlVisible']=false;})
+				if(apiList) apiList.forEach(item=>{
+					item['codeVisible']=false; 
+					item['urlVisible']=false; 
+					this.initApi.push(item.id)
+				})
 			},
 			validtorApiCode(code, apiData){
 				if(code.trim().length === 0){

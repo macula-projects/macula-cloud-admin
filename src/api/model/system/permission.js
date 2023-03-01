@@ -15,6 +15,20 @@ export default {
 			get: async function(params){
 				return await http.get(this.url, params);
 			}
+		},
+		del: {
+			url: `${config.SYSTEM_API_URL}/api/v1/permissions`,
+			name: '删除权限',
+			delete: async function(ids, params){
+				return await http.delete(`${this.url}/${ids}`, params)
+			}
+		},
+		add: {
+			url: `${config.SYSTEM_API_URL}/api/v1/permissions`,
+			name: '添加权限',
+			post: async function(data){
+				return await http.post(this.url, data)
+			}
 		}
 	}
 }

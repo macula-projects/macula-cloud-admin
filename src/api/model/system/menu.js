@@ -17,18 +17,18 @@ export default {
 				return await http.get(this.url, params)
 			}
 		},
-		add: {
-			url: `${config.SYSTEM_API_URL}/api/v1/menus/add`,
-			name: "更新添加菜单",
-			post: async function(data = {}){
+		add:{
+			url: `${config.SYSTEM_API_URL}/api/v1/menus`,
+			name: '添加菜单',
+			post: async function(data){
 				return await http.post(this.url, data)
 			}
 		},
 		del: {
-			url: `${config.SYSTEM_API_URL}/api/v1/menus/delete`,
-			name: "删除菜单",
-			delete: async function(param = {}) {
-				return await http.delete(this.url, param)
+			url: `${config.SYSTEM_API_URL}/api/v1/menus`,
+			name: '删除菜单',
+			delete: async function(ids, params){
+					return await http.delete(`${this.url}/${ids}`, params)
 			}
 		},
 		methodOption: {

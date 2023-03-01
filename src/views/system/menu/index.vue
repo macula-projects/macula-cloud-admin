@@ -74,7 +74,7 @@
 			},
 			//树点击
 			menuClick(data, node){
-				var pid = node.level==1?undefined:node.parent.data.id
+				var pid = node.level==1? '0' :node.parent.data.id
 				this.$refs.save.setData(data, pid)
 				this.$refs.main.$el.scrollTop = 0
 			},
@@ -88,9 +88,9 @@
 				var newMenuName = "未命名" + newMenuIndex++;
 				var newMenuData = {
 					id: "",
-					parentId: data ? data.id : "",
+					parentId: data ? data.id : "0",
 					name: newMenuName,
-					path: "",
+					path: "/",
 					component: "",
 					type: (data && data.meta) ? (data.meta.type === 'MENU' ? 'BUTTON': 'CATALOG') : 'CATALOG',
 					icon: '',
@@ -99,17 +99,10 @@
 					perm: '',
 					redirect: ''
 				}
-				this.menuloading = true
 				var res = await this.$API.system_menu.menu.add.post(newMenuData)
-				if(res.code !== "10000") {
-					ElNotification.error({
-						title: '请求错误',
-						message: "请求服务器无响应！"
-					});
+				if(res.code === '10000'){
+					location.reload()
 				}
-				this.menuloading = false
-				newMenuData.id = res.data.menuId
-
 				this.$refs.menu.append(newMenuData, node)
 				this.$refs.menu.setCurrentKey(newMenuData.id)
 				var pid = node ? node.data.id : ""
@@ -133,7 +126,11 @@
 				}
 
 				this.menuloading = true
-				var reqData =  CheckedNodes.map(item => item.id)
+				var reqData = []
+				CheckedNodes.map(item => {
+					this.loadingSubMenuId(item, reqData)					
+				})
+				console.log(reqData)
 				var res = await this.$API.system_menu.menu.del.delete(reqData)
 				this.menuloading = false
 
@@ -147,6 +144,12 @@
 					})
 				}else{
 					ElMessage.warning(res.message)
+				}
+			},
+			loadingSubMenuId(item, reqData){
+				reqData.push(item.id)
+				if(item.children && item.children.length>0){
+					item.children.forEach(subItem=>this.loadingSubMenuId(subItem, reqData))
 				}
 			}
 		}
