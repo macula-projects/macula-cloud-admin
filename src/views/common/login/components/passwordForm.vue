@@ -89,8 +89,6 @@
 				}
 
 				var userInfo = await this.$API.common_auth.getUserInfo.get()
-				var roles = userInfo.data.role
-				var perms = userInfo.data.perm
 				if (userInfo.code && userInfo.code == 10000) {
 					this.$TOOL.data.set("USER_INFO", userInfo.data)
 				} else {
@@ -111,13 +109,14 @@
 					}
 					this.$TOOL.cookie.set('tenantId', tenantOptionsRes.data[0].value)
 				}
-
 				// 处理菜单
 				// 用户的角色是否包含路由返回菜单对应的角色
 				var res = await this.$API.system_menu.menu.routes.get()
 				var menu = []
 				if(res.code && res.code == 10000){
 					var routes = res.data
+					var roles = userInfo.data.role
+					var perms = userInfo.data.perm
 					roles.forEach((item) => {
 						routes.forEach((route) => {
 							var newChild = []
