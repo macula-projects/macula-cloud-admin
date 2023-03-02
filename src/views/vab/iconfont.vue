@@ -1,3 +1,20 @@
+<!--
+  - Copyright (c) 2023 Macula
+  -   macula.dev, China
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -    http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -->
+
 <template>
 	<el-main>
 		<el-alert title="扩展了Element Plus图标库,可以在@/assets/icons中新增自己的SVG图标组件,记得在@/assets/icons/index.js中引入. 建议前往阿里iconfont复制SVG代码 https://www.iconfont.cn/collections/detail?spm=a313x.7781069.0.da5a778a4&cid=25353" type="success" style="margin-bottom:20px;"></el-alert>
