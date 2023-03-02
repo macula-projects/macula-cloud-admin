@@ -185,9 +185,16 @@
 		},
 		methods: {
 			async validApiUrlParam(){
+				this.apiListValidObj={}
 				this.apiListValidtor = true
 				let requestValidApi = this.form.apiList.filter(api=>{
 					let key = api.id+"::"+api.code +":"+api.url+":"+api.method
+					if(this.apiListValidObj[key] && !this.apiListValidObj[key]['data'].id && !api.id){
+						api['urlVisible'] = true
+						api['urlErrMsg'] = 'url与请求方式已存在'
+						this.apiListValidtor = false
+						return false
+					}
 					this.apiListValidObj[key] = {data: api}
 					let apiCodeFlag = this.validtorApiCode(api.code, api)
 					let apiUrlFlag = this.validtorApiUrl(api.url, api)
@@ -230,13 +237,13 @@
 			},
 			//处理保存的菜单数据
 			handlerMenu(form){
+				// VO对象是form对象差距补偿
+				form.routePath = form.path
 				if(form.type === 'BUTTON'){
 					form.visible = 1
 					form.path = ''
 					form.redirect = ''
 					form.icon = ''
-				} else if(form.type === 'CATALOG'){
-					form.perm = ''
 				} else {
 					form.perm = ''
 				}
@@ -258,11 +265,12 @@
 				var res = await this.$API.system_menu.menu.add.post(this.form)
 				var oldApiRes = await this.delOldApi()
 				if(oldApiRes.code === '10000'){
+					this.initApi=[]
 					await this.addNewApi(this.form.id, this.form.apiList)
 				}
+				ElMessage.success('保存成功！')
 				this.loading = false
-				this.apiListValidObj={}
-				location.reload()
+				this.loadPermissionList(this.form)
 			},
 			//保存权限
 			async addNewApi(menuId, apiArr){
@@ -285,7 +293,6 @@
 			},
 			//表单注入数据
 			setData(data, pid){
-				console.log('data', data)
 				this.form = data
 				data.createTime = null
 				this.form.path = data.routePath
@@ -336,7 +343,6 @@
 				return true
 			},
 			validtorApiUrl(url, apiData){
-				let key = apiData.id+"::"+apiData.code +":"+apiData.url+":"+apiData.method
 				if(url.trim().length === 0){
 					apiData['urlErrMsg'] = 'url不能为空'
 					apiData['urlVisible'] = true
