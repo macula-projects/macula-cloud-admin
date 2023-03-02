@@ -98,7 +98,7 @@
 			async table_del(row){
 				var reqData = row.id
 				var res = await this.$API.system_dept.dept.del.delete(reqData);
-				if(res.code == 10000){
+				if(res.code === '00000'){
 					this.$refs.table.refresh()
 					ElMessage.success("删除成功")
 				}else{

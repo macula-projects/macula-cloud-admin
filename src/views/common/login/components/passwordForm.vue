@@ -81,7 +81,7 @@
 				}
 				//获取token
 				var user = await this.$API.common_auth.systemToken.post(data)
-				if(user.code && user.code == 10000){
+				if(user.code && user.code === '00000'){
 					this.$TOOL.cookie.set("TOKEN", user.data.access_token, {
 						expires: 24*60*60
 					})
@@ -92,7 +92,7 @@
 				}
 
 				var userInfo = await this.$API.common_auth.getUserInfo.get()
-				if (userInfo.code && userInfo.code == 10000) {
+				if (userInfo.code && userInfo.code === '00000') {
 					this.$TOOL.data.set("USER_INFO", userInfo.data)
 				} else {
 					this.islogin = false
@@ -101,7 +101,7 @@
 				}
 				//获取我的租户列表
 				var tenantOptionsRes = await this.$API.system_tenant.tenant.options.get()
-				if (tenantOptionsRes.code && tenantOptionsRes.code == 10000) {
+				if (tenantOptionsRes.code && tenantOptionsRes.code === '00000') {
 					if(tenantOptionsRes.data.length == 0){
 						this.islogin = false
 						ElMessageBox.alert("当前用户无任何菜单权限，请联系系统管理员", "无权限访问", {
@@ -119,7 +119,7 @@
 				// 用户的角色是否包含路由返回菜单对应的角色
 				var res = await this.$API.system_menu.menu.routes.get()
 				var menu = []
-				if(res.code && res.code == 10000){
+				if(res.code && res.code === '00000'){
 					var routes = res.data
 					var roles = userInfo.data.role
 					var perms = userInfo.data.perm

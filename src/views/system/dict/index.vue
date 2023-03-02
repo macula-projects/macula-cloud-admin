@@ -155,7 +155,7 @@
 			async dicDel(node, data){
 				this.showDicloading = true;
 				var res = await this.$API.system_dict.dict.delType.delete(data.id);
-				if(res.code == 10000){
+				if(res.code === '00000'){
 					var dicCurrentKey = this.$refs.dic.getCurrentKey();
 					this.$refs.dic.remove(data.id)
 					if(dicCurrentKey == data.id){
@@ -208,7 +208,7 @@
 			//删除明细
 			async table_del(row, index){
 				var res = await this.$API.system_dict.dict.delItem.delete(row.id);
-				if(res.code == 10000){
+				if(res.code === '00000'){
 					this.$refs.table.tableData.splice(index, 1);
 					ElMessage.success("删除成功")
 				}else{
