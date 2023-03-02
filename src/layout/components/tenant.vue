@@ -36,7 +36,6 @@
 				} else {
 					location.href = location.href.replace(reg, '')
 				}
-				location.reload()
 			}
 		}
 	}
