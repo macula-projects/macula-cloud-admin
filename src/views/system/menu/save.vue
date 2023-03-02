@@ -16,9 +16,9 @@
 					<el-form-item label="类型" prop="type">
 						<el-radio-group v-model="form.type">
 							<el-radio-button :disabled="!isCatalog" label="CATALOG">目录</el-radio-button>
-							<el-radio-button :disabled="isButton" label="MENU">菜单</el-radio-button>
-							<el-radio-button :disabled="isButton" label="EXTLINK">外链</el-radio-button>
-							<el-radio-button :disabled="isButton" label="IFRAME">Iframe</el-radio-button>
+							<el-radio-button :disabled="isButton || onlyCatalog" label="MENU">菜单</el-radio-button>
+							<el-radio-button :disabled="isButton || onlyCatalog" label="EXTLINK">外链</el-radio-button>
+							<el-radio-button :disabled="isButton || onlyCatalog" label="IFRAME">Iframe</el-radio-button>
 							<el-radio-button :disabled="isCatalog" label="BUTTON">按钮</el-radio-button>
 						</el-radio-group>
 						<div class="el-form-item-msg">菜单、Iframe和外链是同级显示</div>
@@ -158,6 +158,7 @@
 				loading: false,
 				isButton: false,
 				isCatalog: false,
+				onlyCatalog: false,
 				methodOptions: [],
 				apiListValidtor: true,
 				apiListValidObj:{},
@@ -291,12 +292,14 @@
 			},
 			//表单注入数据
 			setData(data, pid){
+				console.log('data', data)
 				this.form = data
 				data.createTime = null
 				this.form.path = data.routePath
 				this.form.parentId = pid
 				this.isCatalog = data.type === 'CATALOG'
 				this.isButton = data.type === 'BUTTON'
+				this.onlyCatalog = data.type === 'CATALOG' && data.children && data.children.length !== 0
 				this.loadPermissionList(data)
 			},
 			async loadPermissionList(menuData){

@@ -102,6 +102,10 @@
 				}
 				var res = await this.$API.system_menu.menu.add.post(newMenuData)
 				if(res.code === '00000'){
+					let parentDate = node.parent.data
+					parentDate.children = parentDate.children || []
+					parentDate.children.push(newMenuData)
+					this.$refs.save.setData(parentDate, parentDate.parentId || "0")
 					this.getMenu()
 					this.defaultExpandedIds = []
 					this.loopPushDefaultExpandedIds(node)
