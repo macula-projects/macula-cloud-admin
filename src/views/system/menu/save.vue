@@ -58,49 +58,47 @@
 			</el-col>
 			<el-col :lg="12" class="apilist">
 				<h2>接口权限</h2>
-				<el-form>
-					<sc-form-table v-model="form.apiList" :addTemplate="apiListAddTemplate" placeholder="暂无匹配接口权限">
-						<el-table-column prop="code" label="标识" width="150">
-							<template #default="scope">
-								<el-popover :visible="scope.row.codeVisible" placement="bottom" popper-style="padding: 0px;">
-									<el-tag
-											class="mx-1"
-											type="danger"
-											style="width: 100%;"
-										>
-											{{ scope.row.codeErrMsg }}
-										</el-tag>
-									<template #reference>
-										<el-input ref="apiListCodeRef"  v-model="scope.row.code" placeholder="请输入内容"></el-input>
-									</template>
-								</el-popover>
-							</template>
-						</el-table-column>
-						<el-table-column prop="url" label="Api url">
-							<template #default="scope">
-								<el-popover :visible="scope.row.urlVisible" placement="bottom" popper-style="padding: 0px;">
-									<el-tag
-											class="mx-1"
-											type="danger"
-											style="width: 100%;"
-										>
-											{{ scope.row.urlErrMsg }}
-										</el-tag>
-									<template #reference>
-										<el-input ref="apiListUrlRef" v-model="scope.row.url" placeholder="请输入内容"></el-input>
-									</template>
-								</el-popover>
-							</template>
-						</el-table-column>
-						<el-table-column prop="method" label="请求方式">
-							<template #default="scope">
-								<el-select v-model="scope.row.method">
-									<el-option v-for="(item, index) in methodOptions" :key="index" :label="item.label" :value="item.value"></el-option>
-								</el-select>
-							</template>
-						</el-table-column>
-					</sc-form-table>
-				</el-form>
+				<sc-form-table v-model="form.apiList" :addTemplate="apiListAddTemplate" placeholder="暂无匹配接口权限">
+					<el-table-column prop="code" label="标识" width="150">
+						<template #default="scope">
+							<el-popover :visible="scope.row.codeVisible" placement="bottom" popper-style="padding: 0px;">
+								<el-tag
+										class="mx-1"
+										type="danger"
+										style="width: 100%;"
+									>
+										{{ scope.row.codeErrMsg }}
+									</el-tag>
+								<template #reference>
+									<el-input ref="apiListCodeRef"  v-model="scope.row.code" placeholder="请输入内容"></el-input>
+								</template>
+							</el-popover>
+						</template>
+					</el-table-column>
+					<el-table-column prop="url" label="Api url">
+						<template #default="scope">
+							<el-popover :visible="scope.row.urlVisible" placement="bottom" popper-style="padding: 0px;">
+								<el-tag
+										class="mx-1"
+										type="danger"
+										style="width: 100%;"
+									>
+										{{ scope.row.urlErrMsg }}
+									</el-tag>
+								<template #reference>
+									<el-input ref="apiListUrlRef" v-model="scope.row.url" placeholder="请输入内容"></el-input>
+								</template>
+							</el-popover>
+						</template>
+					</el-table-column>
+					<el-table-column prop="method" label="请求方式">
+						<template #default="scope">
+							<el-select v-model="scope.row.method">
+								<el-option v-for="(item, index) in methodOptions" :key="index" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</template>
+					</el-table-column>
+				</sc-form-table>
 			</el-col>
 		</template>
 	</el-row>
