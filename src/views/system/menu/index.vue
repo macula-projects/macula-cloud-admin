@@ -69,7 +69,7 @@
 				this.menuloading = true
 				var res = await this.$API.system_menu.menu.list.get(params)
 				this.menuloading = false
-				if(res.code === '10000') {
+				if(res.code === '00000') {
 					this.menuList = res.data
 				}
 			},
@@ -101,7 +101,7 @@
 					redirect: ''
 				}
 				var res = await this.$API.system_menu.menu.add.post(newMenuData)
-				if(res.code === '10000'){
+				if(res.code === '00000'){
 					this.getMenu()
 					this.defaultExpandedIds = []
 					this.loopPushDefaultExpandedIds(node)
@@ -141,7 +141,7 @@
 				await this.delMenuPermission(reqData)
 				this.menuloading = false
 
-				if(res.code === "10000"){
+				if(res.code === "00000"){
 					CheckedNodes.forEach(item => {
 						var node = this.$refs.menu.getNode(item)
 						if(node.isCurrent){
@@ -166,7 +166,7 @@
 				let permIds = []
 				for(var i=0; i<reqData.length; i++){
 					let permListRes = await this.$API.system_permission.permission.list.get({menuId: reqData[i]})
-					if(permListRes.code === '10000' && permListRes.data.length>0){
+					if(permListRes.code === '00000' && permListRes.data.length>0){
 						permListRes.data.forEach(item=>permIds.push(item.id))
 					}
 				}

@@ -94,7 +94,7 @@ export default{
 		},
 		async del(row, index){
 			var res = await this.$API.system_tenant.tenant.del.delete(row.id)
-			if(res.code == "10000"){
+			if(res.code === "00000"){
 				this.$refs.table.refresh()
 				ElMessage.success("删除成功")
 			}else{

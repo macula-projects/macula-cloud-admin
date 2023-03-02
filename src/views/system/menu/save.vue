@@ -176,7 +176,7 @@
 		},
 		async created() {
 			const methodOptionRes = await this.$API.system_menu.menu.methodOption.get()
-			if(methodOptionRes.code === '10000'){
+			if(methodOptionRes.code === '00000'){
 				this.methodOptions = methodOptionRes.data
 			}
 		},
@@ -209,7 +209,7 @@
 			},
 			async handlerRequestApiUrlValid(requestValidApi){
 				let validOptionsRes = await this.$API.system_permission.permission.validtorUrlPerm.post(requestValidApi)
-				if(validOptionsRes.code === '10000'){
+				if(validOptionsRes.code === '00000'){
 					validOptionsRes.data.forEach(item=>{
 						this.apiListValidObj[item.label]['data']['urlErrMsg'] = item.value ? '' : 'url与请求方式已存在'
 						this.apiListValidObj[item.label]['data']['urlVisible'] = !item.value
@@ -264,7 +264,7 @@
 				}
 				var res = await this.$API.system_menu.menu.add.post(this.form)
 				var oldApiRes = await this.delOldApi()
-				if(oldApiRes.code === '10000'){
+				if(oldApiRes.code === '00000'){
 					this.initApi=[]
 					await this.addNewApi(this.form.id, this.form.apiList)
 				}
@@ -287,7 +287,7 @@
 			//删除权限
 			async delOldApi(){
 				if(this.initApi.length===0){
-					return { code: '10000'}
+					return { code: '00000'}
 				}
 				return await this.$API.system_permission.permission.del.delete(this.initApi.join(","))
 			},
@@ -307,7 +307,7 @@
 					return
 				}
 				let permListRes = await this.$API.system_permission.permission.list.get({menuId: menuData.id})
-				if(permListRes.code === '10000'){
+				if(permListRes.code === '00000'){
 					this.form.apiList = permListRes.data.map(item=>({
 						id: item.id,
 						code: item.name,

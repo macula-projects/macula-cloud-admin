@@ -79,7 +79,7 @@ export default{
 	},
 	async created(){
 		let dataScopeRes = await this.$API.system_role.role.optionsByDataScope.get()
-		if(dataScopeRes.code === '10000'){
+		if(dataScopeRes.code === '00000'){
 			this.dataScopeEnum = dataScopeRes.data
 			this.handlerDataScopeEnum()
 		}
@@ -132,7 +132,7 @@ export default{
 		},
 		async del(row){
 			var res = await this.$API.system_role.role.del.delete(row.id)
-			if(res.code == "10000"){
+			if(res.code === "00000"){
 				this.$refs.table.refresh()
 				ElMessage.success("删除成功")
 			}else{

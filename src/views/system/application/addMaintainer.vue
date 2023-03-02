@@ -110,7 +110,7 @@
                     })
                     var res = await this.$API.system_application.application.addMaintainer.put(params, this.row.id);
 					this.isSaveing = false;
-					if(res.code == 10000){
+					if(res.code === '00000'){
 						this.$emit('success', this.form, this.mode)
 						this.visible = false;
 						ElMessage.success("操作成功")
