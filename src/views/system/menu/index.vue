@@ -108,6 +108,9 @@
 				}
 			},
 			loopPushDefaultExpandedIds(node){
+				if(!node){
+					return
+				}
 				if(node.data && node.data.id){
 					this.defaultExpandedIds.push(node.data.id)
 				}
