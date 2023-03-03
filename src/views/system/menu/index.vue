@@ -52,7 +52,8 @@
 					}
 				},
 				menuFilterText: "",
-				defaultExpandedIds: []
+				defaultExpandedIds: [],
+				curMenuType: ""
 			}
 		},
 		watch: {
@@ -76,6 +77,7 @@
 			//树点击
 			menuClick(data, node){
 				var pid = node.level==1? '0' :node.parent.data.id
+				this.curMenuType = data.type
 				this.$refs.save.setData(data, pid)
 				this.$refs.main.$el.scrollTop = 0
 			},
@@ -102,10 +104,15 @@
 				}
 				var res = await this.$API.system_menu.menu.add.post(newMenuData)
 				if(res.code === '00000'){
-					let parentDate = node.parent.data
-					parentDate.children = parentDate.children || []
-					parentDate.children.push(newMenuData)
-					this.$refs.save.setData(parentDate, parentDate.parentId || "0")
+					if(newMenuData.type === 'BUTTON' && this.curMenuType === 'CATALOG'){
+						//目录后选择菜单然后创建下级菜单将自动更新
+						data.createTime = ''
+						data.path = data.routePath
+						await this.$API.system_menu.menu.add.post(data)
+					}
+					data.children = data.children || []
+					data.children.push(newMenuData)
+					this.$refs.save.setData(data, data.parentId || "0")
 					this.getMenu()
 					this.defaultExpandedIds = []
 					this.loopPushDefaultExpandedIds(node)

@@ -171,6 +171,11 @@
 					this.menuOptions = this.treeToMap(this.menu)
 				},
 				deep: true
+			},
+			'form.path': {
+				handler(){
+					this.form.routePath = this.form.path
+				}
 			}
 		},
 		async created() {
@@ -292,7 +297,6 @@
 			},
 			//表单注入数据
 			setData(data, pid){
-				console.log('data', data)
 				this.form = data
 				data.createTime = null
 				this.form.path = data.routePath
