@@ -103,7 +103,7 @@
 					redirect: ''
 				}
 				var res = await this.$API.system_menu.menu.add.post(newMenuData)
-				if(res.code === '00000'){
+				if(res.code === '00000' && data){
 					if(newMenuData.type === 'BUTTON' && this.curMenuType === 'CATALOG'){
 						//目录后选择菜单然后创建下级菜单将自动更新
 						data.createTime = ''
@@ -113,10 +113,10 @@
 					data.children = data.children || []
 					data.children.push(newMenuData)
 					this.$refs.save.setData(data, data.parentId || "0")
-					this.getMenu()
-					this.defaultExpandedIds = []
-					this.loopPushDefaultExpandedIds(node)
 				}
+				this.getMenu()
+				this.defaultExpandedIds = []
+				this.loopPushDefaultExpandedIds(node)
 			},
 			loopPushDefaultExpandedIds(node){
 				if(!node){
@@ -158,7 +158,7 @@
 				if(res.code === "00000"){
 					CheckedNodes.forEach(item => {
 						var node = this.$refs.menu.getNode(item)
-						if(node.isCurrent){
+						if(node && node.isCurrent){
 							this.$refs.save.setData({})
 						}
 						this.$refs.menu.remove(item)
