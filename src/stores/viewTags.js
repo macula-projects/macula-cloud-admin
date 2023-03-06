@@ -18,6 +18,8 @@
 import router from '@/router'
 import { defineStore } from "pinia";
 
+const reg = /\#reloaded$/
+
 export const useViewTagsStore = defineStore({
 	id: 'viewTags',
 	state: () => ({
@@ -26,7 +28,7 @@ export const useViewTagsStore = defineStore({
 	actions: {
 		pushViewTags(route){
 			let backPathIndex = this.viewTags.findIndex(item => item.fullPath == router.options.history.state.back)
-			let target = this.viewTags.find((item) => item.fullPath === route.fullPath)
+			let target = this.viewTags.find((item) => item.fullPath.replace(reg, '') === route.fullPath.replace(reg, ''))
 			let isName = route.name
 			if(!target && isName){
 				if(backPathIndex == -1){

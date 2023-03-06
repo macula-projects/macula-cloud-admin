@@ -17,51 +17,10 @@
 
 <template>
 	<div class="user-bar">
-		<div class="panel-item hidden-sm-and-down" @click="search">
-			<el-icon><el-icon-search /></el-icon>
-		</div>
 		<div class="screen panel-item hidden-sm-and-down" @click="screen">
 			<el-icon><el-icon-full-screen /></el-icon>
 		</div>
-		<div class="tasks panel-item" @click="tasks">
-			<el-icon><el-icon-sort /></el-icon>
-		</div>
-		<div class="msg panel-item" @click="showMsg">
-			<el-badge :hidden="msgList.length==0" :value="msgList.length" class="badge" type="danger">
-				<el-icon><el-icon-chat-dot-round /></el-icon>
-			</el-badge>
-			<el-drawer title="新消息" v-model="msg" :size="400" append-to-body destroy-on-close>
-				<el-container>
-					<el-main class="nopadding">
-						<el-scrollbar>
-							<ul class="msg-list">
-								<li v-for="item in msgList" v-bind:key="item.id">
-									<a :href="item.link" target="_blank">
-										<div class="msg-list__icon">
-											<el-badge is-dot type="danger">
-												<el-avatar :size="40" :src="item.avatar"></el-avatar>
-											</el-badge>
-										</div>
-										<div class="msg-list__main">
-											<h2>{{item.title}}</h2>
-											<p>{{item.describe}}</p>
-										</div>
-										<div class="msg-list__time">
-											<p>{{item.time}}</p>
-										</div>
-									</a>
-								</li>
-								<el-empty v-if="msgList.length==0" description="暂无新消息" :image-size="100"></el-empty>
-							</ul>
-						</el-scrollbar>
-					</el-main>
-					<el-footer>
-						<el-button type="primary">消息中心</el-button>
-						<el-button @click="markRead">全部设为已读</el-button>
-					</el-footer>
-				</el-container>
-			</el-drawer>
-		</div>
+		<tenant></tenant>
 		<el-dropdown class="user panel-item" trigger="click" @command="handleUser">
 			<div class="user-avatar">
 				<el-avatar :size="30">{{ userNameF }}</el-avatar>
@@ -70,7 +29,6 @@
 			</div>
 			<template #dropdown>
 				<el-dropdown-menu>
-					<el-dropdown-item command="uc">帐号信息</el-dropdown-item>
 					<el-dropdown-item command="clearCache">清除缓存</el-dropdown-item>
 					<el-dropdown-item divided command="outLogin">退出登录</el-dropdown-item>
 				</el-dropdown-menu>
@@ -78,61 +36,20 @@
 		</el-dropdown>
 	</div>
 
-	<el-dialog v-model="searchVisible" :width="700"  title="搜索" custom-class="drawerBG" center destroy-on-close>
-		<search @success="searchVisible=false"></search>
-	</el-dialog>
-
-	<el-drawer v-model="tasksVisible" :size="450"  title="任务中心" custom-class="drawerBG" destroy-on-close>
-		<tasks></tasks>
-	</el-drawer>
-
 </template>
 
 <script>
-	import search from './search.vue'
-	import tasks from './tasks.vue'
-
+	import tenant from './tenant'
+	import { useTenantStore } from '@/stores/tenant';
+	import { mapActions } from 'pinia';
 	export default {
-		components: {
-			search,
-			tasks
+		components:{
+			tenant
 		},
 		data(){
 			return {
 				userName: "",
-				userNameF: "",
-				searchVisible: false,
-				tasksVisible: false,
-				msg: false,
-				msgList: [
-					{
-						id: 1,
-						type: 'user',
-						avatar: "img/avatar.jpg",
-						title: "Skuya",
-						describe: "如果喜欢就点个星星支持一下哦",
-						link: "https://gitee.com/lolicode/scui",
-						time: "5分钟前"
-					},
-					{
-						id: 2,
-						type: 'user',
-						avatar: "img/avatar2.gif",
-						title: "Lolowan",
-						describe: "点进去Gitee获取最新开源版本",
-						link: "https://gitee.com/lolicode/scui",
-						time: "14分钟前"
-					},
-					{
-						id: 3,
-						type: 'system',
-						avatar: "img/logo.png",
-						title: "感谢登录SCUI Admin",
-						describe: "Vue 3.0 + Vue-Router 4.0 + ElementPlus + Axios 后台管理系统。",
-						link: "https://gitee.com/lolicode/scui",
-						time: "2020年7月24日"
-					}
-				]
+				userNameF: ""
 			}
 		},
 		created() {
@@ -141,20 +58,16 @@
 			this.userNameF = this.userName.substring(0,1);
 		},
 		methods: {
+			...mapActions(useTenantStore, ['clearTenantOptions']),
 			//个人信息
 			handleUser(command) {
-				if(command == "uc"){
-					this.$router.push({path: '/usercenter'});
-				}
-				if(command == "cmd"){
-					this.$router.push({path: '/cmd'});
-				}
 				if(command == "clearCache"){
 					ElMessageBox.confirm('清除缓存会将系统初始化，包括登录状态、主题、语言设置等，是否继续？','提示', {
 						type: 'info',
 					}).then(() => {
-						const loading = this.$loading()
+						const loading = ElLoading.service({ fullscreen: true })
 						this.$TOOL.data.clear()
+						this.clearTenantOptions()
 						this.$router.replace({path: '/login'})
 						setTimeout(()=>{
 							loading.close()
@@ -180,22 +93,6 @@
 			screen(){
 				var element = document.documentElement;
 				this.$TOOL.screen(element)
-			},
-			//显示短消息
-			showMsg(){
-				this.msg = true
-			},
-			//标记已读
-			markRead(){
-				this.msgList = []
-			},
-			//搜索
-			search(){
-				this.searchVisible = true
-			},
-			//任务
-			tasks(){
-				this.tasksVisible = true
 			}
 		}
 	}

@@ -164,7 +164,7 @@
 					</el-scrollbar>
 				</div>
 			</div>
-			<div v-if="!ismobile && nextMenu.length>0 || !pmenu.component" :class="menuIsCollapse?'aminui-side isCollapse':'aminui-side'">
+			<div v-if="(pmenu.meta) && (!ismobile && nextMenu.length>0 || !pmenu.component)" :class="menuIsCollapse?'aminui-side isCollapse':'aminui-side'">
 				<div v-if="!menuIsCollapse" class="adminui-side-top">
 					<h2>{{ pmenu.meta.title }}</h2>
 				</div>
@@ -261,7 +261,7 @@
 			}
 		},
 		methods: {
-			...mapActions(useGlobalStore, ['setIsMobile']),
+			...mapActions(useGlobalStore, ['setIsMobile', 'toggleMenuIsCollapse']),
 			openSetting(){
 				this.settingDialog = true;
 			},
@@ -290,12 +290,12 @@
 				map && map.forEach(item => {
 					item.meta = item.meta?item.meta:{};
 					//处理隐藏
-					if(item.meta.hidden || item.meta.type=="button"){
+					if(!item.meta.visible || item.meta.type=="BUTTON"){
 						return false
 					}
 					//处理http
-					if(item.meta.type=='iframe'){
-						item.path = `/i/${item.name}`;
+					if(item.meta.type=='IFRAME'){
+						item.path = `/i/${item.meta.title}`;
 					}
 					//递归循环
 					if(item.children&&item.children.length > 0){
