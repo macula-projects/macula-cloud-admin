@@ -78,12 +78,13 @@
 				map && map.forEach(item => {
 					item.meta = item.meta?item.meta:{};
 					//处理隐藏
-					if(item.meta.hidden || item.meta.type=="button"){
+					if(!item.meta.visible || item.meta.type=="BUTTON"){
+						console.log('sideM', item)
 						return false
 					}
 					//处理http
-					if(item.meta.type=='iframe'){
-						item.path = `/i/${item.name}`;
+					if(item.meta.type=='IFRAME'){
+						item.path = `/i/${item.meta.title}`;
 					}
 					//递归循环
 					if(item.children&&item.children.length > 0){

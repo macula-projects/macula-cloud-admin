@@ -147,6 +147,8 @@
 				userColumn: [],
 				customColumnShow: false,
 				summary: {},
+				isPaging: false,
+				isPagingSize: false,
 				config: {
 					size: this.size,
 					border: this.border,
@@ -231,10 +233,12 @@
 			},
 			//分页点击
 			paginationChange(){
+				this.isPaging = true
 				this.getData();
 			},
 			//条数变化
 			pageSizeChange(size){
+				this.isPagingSize = true
 				this.scPageSize = size
 				this.getData();
 			},

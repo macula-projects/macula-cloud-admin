@@ -17,7 +17,7 @@
 
 const DEFAULT_CONFIG = {
 	//标题
-	APP_NAME: "SCUI",
+	APP_NAME: "MACULA V5",
 
 	//首页地址
 	DASHBOARD_URL: "/dashboard",
@@ -30,12 +30,18 @@ const DEFAULT_CONFIG = {
 
 	//接口地址
 	API_URL: "/api",
+	
+	//system模块接口地址
+	SYSTEM_API_URL: `${import.meta.env.VITE_SYSTEM_API_PREFIX}/system`,
 
 	//请求超时
 	TIMEOUT: 10000,
 
 	//TokenName
 	TOKEN_NAME: "Authorization",
+	
+	//TenantId
+	TENANT_ID: "tenantId",
 
 	//Token前缀，注意最后有个空格，如不需要需设置空字符串
 	TOKEN_PREFIX: "Bearer ",
@@ -48,7 +54,7 @@ const DEFAULT_CONFIG = {
 
 	//布局 默认：default | 通栏：header | 经典：menu | 功能坞：dock
 	//dock将关闭标签和面包屑栏
-	LAYOUT: 'header',
+	LAYOUT: 'default',
 
 	//菜单是否折叠
 	MENU_IS_COLLAPSE: false,
@@ -57,7 +63,7 @@ const DEFAULT_CONFIG = {
 	MENU_UNIQUE_OPENED: false,
 
 	//是否开启多标签
-	LAYOUT_TAGS: false,
+	LAYOUT_TAGS: true,
 
 	//语言
 	LANG: 'zh-cn',
