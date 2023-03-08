@@ -16,7 +16,7 @@
  */
 
 import axios from 'axios';
-import { ElNotification, ElMessageBox } from 'element-plus';
+import {ElMessageBox, ElNotification} from 'element-plus';
 import sysConfig from "@/config";
 import tool from '@/utils/tool';
 import router from '@/router';
@@ -34,17 +34,14 @@ axios.interceptors.request.use(
 		if(token){
 			config.headers[sysConfig.TOKEN_NAME] = sysConfig.TOKEN_PREFIX + token
 		}
-		if(!sysConfig.REQUEST_CACHE && config.method == 'get'){
-			config.params = config.params || {};
-			config.params['_'] = new Date().getTime();
-		}
-		// 菜单路由获取通过环境配置文件的VITE_SYSTEM_TENANT_ID
-		if(menuRouteSuffixReg.test(config.url)){
-			config.headers[sysConfig.TENANT_ID] = `${import.meta.env.VITE_SYSTEM_TENANT_ID}`
-		} else if(tool.data.get(sysConfig.TENANT_ID)){
-			// tool.cookie含有tenantId, 则遍历config的参数，如果包含tenantId则不添加，不包含则从tool.cookie中获取并添加到header属下
-			config.headers[sysConfig.TENANT_ID] = tool.data.get(sysConfig.TENANT_ID)
-		}
+		if (!sysConfig.REQUEST_CACHE && config.method == 'get') {
+            config.params = config.params || {};
+            config.params['_'] = new Date().getTime();
+        }
+        if (tool.data.get(sysConfig.TENANT_ID)) {
+            // tool.cookie含有tenantId, 则遍历config的参数，如果包含tenantId则不添加，不包含则从tool.cookie中获取并添加到header属下
+            config.headers[sysConfig.TENANT_ID] = tool.data.get(sysConfig.TENANT_ID)
+        }
 		
 		Object.assign(config.headers, sysConfig.HEADERS)
 		return config;

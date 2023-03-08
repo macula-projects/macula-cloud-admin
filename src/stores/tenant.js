@@ -1,5 +1,5 @@
-import config from '@/config'
-import { defineStore } from "pinia"
+import sysConfig from '@/config'
+import {defineStore} from "pinia"
 import tool from '@/utils/tool'
 
 function getToolDataTenantOptions(){
@@ -12,10 +12,10 @@ function getToolDataTenantOptions(){
 export const useTenantStore = defineStore({
 	id: 'tenant',
 	state: ()=>({
-		tenantOptions: getToolDataTenantOptions() || [],
-		tenantId: tool.data.get('tenantId') || null,
-		tenantLabel: tool.data.get('tenantLabel') || ''
-	}),
+        tenantOptions: getToolDataTenantOptions() || [],
+        tenantId: tool.data.get(sysConfig.TENANT_ID) || null,
+        tenantLabel: tool.data.get('tenantLabel') || ''
+    }),
 	actions: {
 		pushTenantOptions(tenantOptions){
 			if(tenantOptions && tenantOptions instanceof Array){
@@ -26,8 +26,8 @@ export const useTenantStore = defineStore({
 			}
 		},
 		updateTenantId(tenantId){
-			this.tenantId = tenantId
-			tool.data.set('tenantId', this.tenantId)
+            this.tenantId = tenantId
+            tool.data.set(sysConfig.TENANT_ID, this.tenantId)
 		},
 		updateTenantLabel(tenantLabel){
 			this.tenantLabel = tenantLabel
