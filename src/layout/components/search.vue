@@ -62,12 +62,12 @@
 			},
 			filterMenu(map){
 				map.forEach(item => {
-					if(!item.meta.visible || item.meta.type=="BUTTON"){
-						return false
-					}
-					if(item.meta.type=='IFRAME'){
-						item.path = `/i/${item.meta.title}`
-					}
+					if (item.meta.hidden || item.meta.type == "BUTTON") {
+            return false
+          }
+          if (item.meta.type == 'IFRAME') {
+            item.path = `/i/${item.name}`
+          }
 					if(item.children&&item.children.length > 0&&!item.component){
 						this.filterMenu(item.children)
 					}else{
@@ -89,41 +89,41 @@
 				//匹配系统路由
 				var router = this.$router.getRoutes()
 				var filterRouter= filterMenu.map((m) => {
-					if(m.meta.type == "EXTLINK"){
-						return router.find(r => r.path == '/'+m.path)
-					}else{
-						return router.find(r => r.path == m.path)
-					}
+          if (m.meta.type == "LINK") {
+            return router.find(r => r.path == '/' + m.path)
+          } else {
+            return router.find(r => r.path == m.path)
+          }
 				})
 				//重组对象
 				filterRouter.forEach(item => {
 					res.push({
-						name: item.name,
-						type: item.meta.type,
-						path: item.meta.type=="EXTLINK"?item.path.slice(1):item.path,
-						icon: item.meta.icon,
-						title: item.meta.title,
-						breadcrumb: item.meta.breadcrumb.map(v => v.meta.title).join(' - ')
-					})
+            name: item.name,
+            type: item.meta.type,
+            path: item.meta.type == "LINK" ? item.path.slice(1) : item.path,
+            icon: item.meta.icon,
+            title: item.meta.title,
+            breadcrumb: item.meta.breadcrumb.map(v => v.meta.title).join(' - ')
+          })
 				})
 				return res
 			},
 			to(item){
-				if(!this.history.includes(this.input)){
-					this.history.push(this.input)
-					this.$TOOL.data.set("SEARCH_HISTORY", this.history)
-				}
-				if(item.type=="EXTLINK"){
-					setTimeout(()=>{
-						let a = document.createElement("a")
-							a.style = "display: none"
-							a.target = "_blank"
-							a.href = item.path
-							document.body.appendChild(a)
-							a.click()
-							document.body.removeChild(a)
-					}, 10);
-				}else{
+        if (!this.history.includes(this.input)) {
+          this.history.push(this.input)
+          this.$TOOL.data.set("SEARCH_HISTORY", this.history)
+        }
+        if (item.type == "link") {
+          setTimeout(() => {
+            let a = document.createElement("a")
+            a.style = "display: none"
+            a.target = "_blank"
+            a.href = item.path
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+          }, 10);
+        } else {
 					this.$router.push({path: item.path})
 				}
 				this.$emit('success', true)

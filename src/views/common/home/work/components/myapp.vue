@@ -19,10 +19,12 @@
 	<div>
 		<ul class="myMods">
 			<li v-for="mod in myMods" :key="mod.path" :style="{background:mod.meta.color||'#909399'}">
-				<a v-if="mod.meta.type=='EXTLINK'" :href="mod.path" target="_blank">
-					<el-icon><component :is="mod.meta.icon||el-icon-menu" /></el-icon>
-					<p>{{ mod.meta.title }}</p>
-				</a>
+				<a v-if="mod.meta.type=='LINK'" :href="mod.path" target="_blank">
+          <el-icon>
+            <component :is="mod.meta.icon||el-icon-menu"/>
+          </el-icon>
+          <p>{{ mod.meta.title }}</p>
+        </a>
 				<router-link v-else :to="{ path: mod.path }">
 					<el-icon><component :is="mod.meta.icon||el-icon-menu" /></el-icon>
 					<p>{{ mod.meta.title }}</p>

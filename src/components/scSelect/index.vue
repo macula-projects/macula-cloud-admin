@@ -17,11 +17,11 @@
 
 <!--
  * @Descripttion: 异步选择器
- * @version: 1.0
+ * @version: 1.1
  * @Author: sakuya
  * @Date: 2021年8月3日15:53:37
- * @LastEditors:
- * @LastEditTime:
+ * @LastEditors: sakuya
+ * @LastEditTime: 2023年2月23日15:17:24
 -->
 
 <template>
@@ -30,9 +30,10 @@
 			<el-icon class="is-loading"><el-icon-loading /></el-icon>
 		</div>
 		<el-select v-bind="$attrs" :loading="loading" @visible-change="visibleChange">
-			<el-option v-for="item in options" :key="item[props.value]" :label="item[props.label]" :value="item[props.value]">
-				<slot name="option" :data="item"></slot>
-			</el-option>
+      <el-option v-for="item in options" :key="item[props.value]" :label="item[props.label]"
+                 :value="objValueType ? item : item[props.value]">
+        <slot :data="item" name="option"></slot>
+      </el-option>
 		</el-select>
 	</div>
 </template>
@@ -42,10 +43,14 @@
 
 	export default {
 		props: {
-			apiObj: { type: Object, default: () => {} },
-			dic: { type: String, default: "" },
-			params: { type: Object, default: () => ({}) }
-		},
+      apiObj: {
+        type: Object, default: () => {
+        }
+      },
+      dic: {type: String, default: ""},
+      objValueType: {type: Boolean, default: false},
+      params: {type: Object, default: () => ({})}
+    },
 		data() {
 			return {
 				dicParams: this.params,
@@ -57,10 +62,10 @@
 		},
 		created() {
 			//如果有默认值就去请求接口获取options
-			if(this.$attrs.modelValue && this.$attrs.modelValue.length > 0){
-				this.initloading = true
-				this.getRemoteData()
-			}
+      if (this.hasValue()) {
+        this.initloading = true
+        this.getRemoteData()
+      }
 		},
 		methods: {
 			//选项显示隐藏事件
@@ -73,18 +78,28 @@
 			async getRemoteData(){
 				this.loading = true
 				this.dicParams[config.request.name] = this.dic
-				var res = {}
-				if(this.apiObj){
-					res = await this.apiObj.get(this.params)
-				}else if(this.dic){
-					res = await config.dicApiObj.get(this.params)
-				}
-				var response = config.parseData(res)
-				this.options = response.data
-				this.loading = false
-				this.initloading = false
-			}
-		}
+        var res = {}
+        if (this.apiObj) {
+          res = await this.apiObj.get(this.params)
+        } else if (this.dic) {
+          res = await config.dicApiObj.get(this.params)
+        }
+        var response = config.parseData(res)
+        this.options = response.data
+        this.loading = false
+        this.initloading = false
+      },
+      //判断是否有回显默认值
+      hasValue() {
+        if (Array.isArray(this.$attrs.modelValue) && this.$attrs.modelValue.length <= 0) {
+          return false
+        } else if (this.$attrs.modelValue) {
+          return true
+        } else {
+          return false
+        }
+      }
+    }
 	}
 </script>
 

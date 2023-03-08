@@ -15,25 +15,37 @@
   - limitations under the License.
   -->
 
+<!--
+ * @Descripttion: 表单表格
+ * @version: 1.3
+ * @Author: sakuya
+ * @Date: 2023年2月9日12:32:26
+ * @LastEditors: sakuya
+ * @LastEditTime: 2023年2月17日10:41:47
+-->
+
 <template>
-	<div class="sc-form-table">
-		<el-table :data="data" ref="table" :key="toggleIndex" border stripe>
-			<el-table-column type="index" width="50" fixed="left">
-				<template #header>
-					<el-button type="primary" icon="el-icon-plus" size="small" circle @click="rowAdd"></el-button>
-				</template>
-				<template #default="scope">
-					<div class="sc-form-table-handle">
-						<span>{{scope.$index + 1}}</span>
-						<el-button type="danger" icon="el-icon-delete" size="small" plain circle @click="rowDel(scope.row, scope.$index)"></el-button>
-					</div>
-				</template>
+  <div ref="scFormTable" class="sc-form-table">
+    <el-table ref="table" :data="data" border stripe>
+      <el-table-column fixed="left" type="index" width="50">
+        <template #header>
+          <el-button v-if="!hideAdd" circle icon="el-icon-plus" size="small" type="primary" @click="rowAdd"></el-button>
+        </template>
+        <template #default="scope">
+          <div :class="['sc-form-table-handle', {'sc-form-table-handle-delete':!hideDelete}]">
+            <span>{{ scope.$index + 1 }}</span>
+            <el-button v-if="!hideDelete" circle icon="el-icon-delete" plain size="small" type="danger"
+                       @click="rowDel(scope.row, scope.$index)"></el-button>
+          </div>
+        </template>
 			</el-table-column>
-			<el-table-column label="" width="58" v-if="dragSort">
-				<template #default>
-					<el-tag class="move" style="cursor: move;"><el-icon-d-caret style="width: 1em; height: 1em;"/></el-tag>
-				</template>
-			</el-table-column>
+      <el-table-column v-if="dragSort" label="" width="50">
+        <template #default>
+          <div class="move" style="cursor: move;">
+            <el-icon-d-caret style="width: 1em; height: 1em;"/>
+          </div>
+        </template>
+      </el-table-column>
 			<slot></slot>
 			<template #empty>
 				{{placeholder}}
@@ -47,15 +59,19 @@
 
 	export default {
 		props: {
-			modelValue: { type: Array, default: () => [] },
-			addTemplate: { type: Object, default: () => {} },
-			placeholder: { type: String, default: "暂无数据" },
-			dragSort: { type: Boolean, default: false }
-		},
+      modelValue: {type: Array, default: () => []},
+      addTemplate: {
+        type: Object, default: () => {
+        }
+      },
+      placeholder: {type: String, default: "暂无数据"},
+      dragSort: {type: Boolean, default: false},
+      hideAdd: {type: Boolean, default: false},
+      hideDelete: {type: Boolean, default: false}
+    },
 		data(){
 			return {
-				data: [],
-				toggleIndex: 0
+        data: []
 			}
 		},
 		mounted(){
@@ -84,14 +100,19 @@
 					animation: 300,
 					ghostClass: "ghost",
 					onEnd({ newIndex, oldIndex }) {
-						const tableData = _this.data
-						const currRow = tableData.splice(oldIndex, 1)[0]
-						tableData.splice(newIndex, 0, currRow)
-						_this.toggleIndex += 1
-						_this.$nextTick(() => {
-							_this.rowDrop()
-						})
-					}
+            _this.data.splice(newIndex, 0, _this.data.splice(oldIndex, 1)[0])
+            const newArray = _this.data.slice(0)
+            const tmpHeight = _this.$refs.scFormTable.offsetHeight
+            _this.$refs.scFormTable.style.setProperty('height', tmpHeight + 'px')
+            _this.data = []
+            _this.$nextTick(() => {
+              _this.data = newArray
+              _this.$nextTick(() => {
+                _this.$refs.scFormTable.style.removeProperty('height')
+              })
+
+            })
+          }
 				})
 			},
 			rowAdd(){

@@ -48,9 +48,19 @@
 .el-header {background: #fff;border-bottom: 1px solid var(--el-border-color-light);padding:13px 15px;display: flex;justify-content: space-between;align-items: center;}
 .el-header .left-panel {display: flex;align-items: center;}
 .el-header .right-panel {display: flex;align-items: center;}
-.el-header .right-panel > * + * {margin-left:10px;}
-.el-footer {background: #fff;border-top: 1px solid var(--el-border-color-light);padding:13px 15px;height: 51px;}
-.el-main {padding:15px;}
+.el-header .right-panel > * + * {
+  margin-left: 10px;
+}
+
+.el-footer {
+  background: #fff;
+  border-top: 1px solid var(--el-border-color-light);
+  padding: 13px 15px;
+}
+
+.el-main {
+  padding: 15px;
+}
 .el-main.nopadding {padding:0;background: #fff;}
 .el-drawer__body {overflow: auto;padding:0;}
 .el-popconfirm__main {margin: 14px 0;}
@@ -85,16 +95,51 @@
 .el-table {font-size: 12px;}
 .el-radio-button__inner {font-size: 12px;}
 .el-checkbox-button__inner {font-size: 12px;}
-.el-sub-menu .el-icon {font-size: 17px;}
-.el-sub-menu .el-sub-menu__icon-arrow {font-size: 12px;}
 
-.aminui-side-split li.active {background-color: var(--el-color-primary);}
-.adminui-tags li:hover {background-color: var(--el-color-primary-light-9);}
-.adminui-tags li.active {background-color: var(--el-color-primary)!important;}
-.contextmenu li:hover {background-color: var(--el-color-primary-light-9)!important;color: var(--el-color-primary-light-2)!important;}
-.data-box .item-background {background-color: var(--el-color-primary)!important;}
-.layout-setting,.diy-grid-setting {background-color: var(--el-color-primary)!important;}
+.el-sub-menu .el-icon {
+  font-size: 17px;
+}
+
+.el-sub-menu .el-sub-menu__icon-arrow {
+  font-size: 12px;
+}
+
+.aminui-side-split li.active {
+  background-color: var(--el-color-primary);
+}
+
+.adminui-tags li:hover {
+  background-color: var(--el-color-primary-light-9);
+}
+
+.adminui-tags li.active {
+  background-color: var(--el-color-primary) !important;
+}
+
+.contextmenu li:hover {
+  background-color: var(--el-color-primary-light-9) !important;
+  color: var(--el-color-primary-light-2) !important;
+}
+
+.data-box .item-background {
+  background-color: var(--el-color-primary) !important;
+}
+
+.layout-setting, .diy-grid-setting {
+  background-color: var(--el-color-primary) !important;
+}
+
+/* 全部禁用el-tag动画 */
+.el-tag {
+  transition: all 0s !important;
+}
 
 /* 覆盖tinymce样式 */
-.sceditor .tox-tinymce {border: 1px solid #DCDFE6;border-radius: 0;}
-body .tox-tinymce-aux {z-index: 5700;}
+.sceditor .tox-tinymce {
+  border: 1px solid #DCDFE6;
+  border-radius: 0;
+}
+
+body .tox-tinymce-aux {
+  z-index: 5700;
+}

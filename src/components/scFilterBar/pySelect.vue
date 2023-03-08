@@ -26,7 +26,8 @@
 
 <template>
 	<el-select v-bind="$attrs" :filter-method="filterMethod" @visible-change="visibleChange">
-		<el-option v-for="field in optionsList" :key="field.value" :label="field.label" :value="field"></el-option>
+		<el-option v-for="field in optionsList" :key="field.value" :disabled="isDisabled(field.value)" :label="field.label"
+               :value="field"></el-option>
 	</el-select>
 </template>
 
@@ -35,8 +36,9 @@
 
 	export default {
 		props: {
-			options: { type: Array, default: () => [] }
-		},
+      options: {type: Array, default: () => []},
+      filter: {type: Array, default: () => []}
+    },
 		data() {
 			return {
 				optionsList: [],
@@ -52,17 +54,24 @@
 				if(keyword){
 					this.optionsList = this.optionsList_
 					this.optionsList = this.optionsList.filter((item) =>
-						pinyin.match(item.label, keyword)
-					);
-				}else{
-					this.optionsList = this.optionsList_
-				}
-			},
-			visibleChange(isopen){
-				if(isopen){
-					this.optionsList = this.optionsList_
-				}
-			}
-		}
+              pinyin.match(item.label, keyword)
+          );
+        } else {
+          this.optionsList = this.optionsList_
+        }
+      },
+      visibleChange(isopen) {
+        if (isopen) {
+          this.optionsList = this.optionsList_
+        }
+      },
+      isDisabled(key) {
+        if (this.filter.find(item => item.field.value == key && !item.field.repeat)) {
+          return true
+        } else {
+          return false
+        }
+      }
+    }
 	}
 </script>

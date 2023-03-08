@@ -112,16 +112,19 @@
 			paginationLayout: { type: String, default: config.paginationLayout },
 		},
 		watch: {
-			//监听从props里拿到值了
-			data(){
-				this.tableData = this.data;
-				this.total = this.tableData.length;
-			},
-			apiObj(){
-				this.tableParams = this.params;
-				this.refresh();
-			}
-		},
+      //监听从props里拿到值了
+      data() {
+        this.tableData = this.data;
+        this.total = this.tableData.length;
+      },
+      apiObj() {
+        this.tableParams = this.params;
+        this.refresh();
+      },
+      column() {
+        this.userColumn = this.column;
+      }
+    },
 		computed: {
 			_height() {
 				return Number(this.height)?Number(this.height)+'px':this.height
@@ -147,8 +150,6 @@
 				userColumn: [],
 				customColumnShow: false,
 				summary: {},
-				isPaging: false,
-				isPagingSize: false,
 				config: {
 					size: this.size,
 					border: this.border,
@@ -233,12 +234,10 @@
 			},
 			//分页点击
 			paginationChange(){
-				this.isPaging = true
 				this.getData();
 			},
 			//条数变化
 			pageSizeChange(size){
-				this.isPagingSize = true
 				this.scPageSize = size
 				this.getData();
 			},

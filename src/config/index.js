@@ -16,32 +16,29 @@
  */
 
 const DEFAULT_CONFIG = {
-	//标题
-	APP_NAME: "MACULA V5",
+    //标题
+    APP_NAME: import.meta.env.VITE_APP_TITLE,
 
-	//首页地址
-	DASHBOARD_URL: "/dashboard",
+    //首页地址
+    DASHBOARD_URL: "/dashboard",
 
-	//版本号
-	APP_VER: "1.6.6",
+    //版本号
+    APP_VER: "1.6.9",
 
-	//内核版本号
-	CORE_VER: "1.6.6",
+    //内核版本号
+    CORE_VER: "1.6.9",
 
-	//接口地址
-	API_URL: "/api",
-	
-	//system模块接口地址
-	SYSTEM_API_URL: `${import.meta.env.VITE_SYSTEM_API_PREFIX}/system`,
+    //接口地址
+    API_URL: import.meta.env.NODE_ENV === 'development' && import.meta.env.VITE_APP_PROXY === 'true' ? "/api" : import.meta.env.VITE_APP_API_BASEURL,
 
-	//请求超时
-	TIMEOUT: 10000,
+    //请求超时
+    TIMEOUT: 10000,
 
-	//TokenName
-	TOKEN_NAME: "Authorization",
-	
-	//TenantId
-	TENANT_ID: "tenantId",
+    //TokenName
+    TOKEN_NAME: "Authorization",
+
+    //TenantId
+    TENANT_ID: "tenantId",
 
 	//Token前缀，注意最后有个空格，如不需要需设置空字符串
 	TOKEN_PREFIX: "Bearer ",
@@ -68,24 +65,30 @@ const DEFAULT_CONFIG = {
 	//语言
 	LANG: 'zh-cn',
 
-	//主题颜色
-	COLOR: '',
+    //主题颜色
+    COLOR: '',
 
-	//是否加密localStorage, 为空不加密，可填写AES(模式ECB,移位Pkcs7)加密
-	LS_ENCRYPTION: '',
+    //是否加密localStorage, 为空不加密，可填写AES(模式ECB,移位Pkcs7)加密
+    LS_ENCRYPTION: '',
 
-	//localStorageAES加密秘钥，位数建议填写8的倍数
-	LS_ENCRYPTION_key: '2XNN4K8LC0ELVWN4',
+    //localStorageAES加密秘钥，位数建议填写8的倍数
+    LS_ENCRYPTION_key: '2XNN4K8LC0ELVWN4',
 
-	//控制台首页默认布局
-	DEFAULT_GRID: {
-		//默认分栏数量和宽度 例如 [24] [18,6] [8,8,8] [6,12,6]
-		layout: [12, 6, 6],
-		//小组件分布，com取值:views/home/components 文件名
-		copmsList: [
-			['welcome'],
-			['about', 'ver'],
-			['time', 'progress']
+    MODEL: {
+        system: 'system',
+        oss: 'oss',
+
+    },
+
+    //控制台首页默认布局
+    DEFAULT_GRID: {
+        //默认分栏数量和宽度 例如 [24] [18,6] [8,8,8] [6,12,6]
+        layout: [12, 6, 6],
+        //小组件分布，com取值:views/home/components 文件名
+        copmsList: [
+            ['welcome'],
+            ['about', 'ver'],
+            ['time', 'progress']
 		]
 	}
 }

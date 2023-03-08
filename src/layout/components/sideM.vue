@@ -21,7 +21,7 @@
 	<el-drawer ref="mobileNavBox" title="移动端菜单" :size="240" v-model="nav" direction="ltr" :with-header="false" destroy-on-close>
 		<el-container class="mobile-nav">
 			<el-header>
-				<div class="logo-bar"><img class="logo" src="/img/logo.png"><span>{{ $CONFIG.APP_NAME }}</span></div>
+				<div class="logo-bar"><img class="logo" src="img/logo.png"><span>{{ $CONFIG.APP_NAME }}</span></div>
 			</el-header>
 			<el-main>
 				<el-scrollbar>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-	import NavMenu from './navMenu.vue';
+import NavMenu from './NavMenu.vue';
 
 	export default {
 		components: {
@@ -78,13 +78,12 @@
 				map && map.forEach(item => {
 					item.meta = item.meta?item.meta:{};
 					//处理隐藏
-					if(!item.meta.visible || item.meta.type=="BUTTON"){
-						console.log('sideM', item)
-						return false
-					}
+          if (item.meta.hidden || item.meta.type == "BUTTON") {
+            return false
+          }
 					//处理http
 					if(item.meta.type=='IFRAME'){
-						item.path = `/i/${item.meta.title}`;
+            item.path = `/i/${item.name}`;
 					}
 					//递归循环
 					if(item.children&&item.children.length > 0){

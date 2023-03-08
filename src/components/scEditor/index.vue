@@ -66,18 +66,23 @@
 			plugins: {
 				type: [String, Array],
 				default: 'code image media link preview table quickbars template pagebreak lists advlist'
-			},
-			toolbar: {
-				type: [String, Array],
-				default: 'undo redo |  forecolor backcolor bold italic underline strikethrough link | blocks fontfamily fontsize | \
+      },
+      toolbar: {
+        type: [String, Array],
+        default: 'undo redo |  forecolor backcolor bold italic underline strikethrough link | blocks fontfamily fontsize | \
 					alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | pagebreak | \
 					image media table template preview | code selectall'
-			},
-			templates: {
-				type: Array,
-				default: () => []
-			}
-		},
+      },
+      templates: {
+        type: Array,
+        default: () => []
+      },
+      options: {
+        type: Object,
+        default: () => {
+        }
+      }
+    },
 		data() {
 			return {
 				init: {
@@ -93,26 +98,27 @@
 					font_size_formats: '12px 14px 16px 18px 22px 24px 36px 72px',
 					height: this.height,
 					placeholder: this.placeholder,
-					branding: false,
-					resize: true,
-					elementpath: true,
-					content_style: "",
-					templates: this.templates,
-					quickbars_selection_toolbar: 'forecolor backcolor bold italic underline strikethrough link',
-					quickbars_image_toolbar: 'alignleft aligncenter alignright',
-					quickbars_insert_toolbar: false,
-					image_caption: true,
-					image_advtab: true,
-					images_upload_handler: function(blobInfo) {
-						return new Promise((resolve, reject) => {
-							const data = new FormData();
-							data.append("file", blobInfo.blob() ,blobInfo.filename());
-							API.common.upload.post(data).then((res) => {
-								resolve(res.data.src)
-							}).catch(() => {
-								reject("Image upload failed")
-							})
-						})
+          branding: false,
+          resize: true,
+          elementpath: true,
+          content_style: "",
+          templates: this.templates,
+          quickbars_selection_toolbar: 'forecolor backcolor bold italic underline strikethrough link',
+          quickbars_image_toolbar: 'alignleft aligncenter alignright',
+          quickbars_insert_toolbar: false,
+          image_caption: true,
+          image_advtab: true,
+          convert_urls: false,
+          images_upload_handler: function (blobInfo) {
+            return new Promise((resolve, reject) => {
+              const data = new FormData();
+              data.append("file", blobInfo.blob(), blobInfo.filename());
+              API.common.upload.post(data).then((res) => {
+                resolve(res.data.src)
+              }).catch(() => {
+                reject("Image upload failed")
+              })
+            })
 					},
 					setup: function(editor) {
 						editor.on('init', function() {
@@ -120,18 +126,19 @@
 						})
 						editor.on('OpenWindow', function(e) {
 							//FIX 编辑器在el-drawer中，编辑器的弹框无法获得焦点
-							var D = document.querySelector('.el-drawer.open')
-							var E = e.target.editorContainer
-							if(D && D.contains(E)){
-								var nowDA = document.activeElement
-								setTimeout(()=>{
-									document.activeElement.blur()
-									nowDA.focus()
-								},0)
-							}
-						})
-					}
-				},
+              var D = document.querySelector('.el-drawer.open')
+              var E = e.target.editorContainer
+              if (D && D.contains(E)) {
+                var nowDA = document.activeElement
+                setTimeout(() => {
+                  document.activeElement.blur()
+                  nowDA.focus()
+                }, 0)
+              }
+            })
+          },
+          ...this.options
+        },
 				contentValue: this.modelValue
 			}
 		},

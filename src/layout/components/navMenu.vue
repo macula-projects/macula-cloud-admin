@@ -21,7 +21,7 @@
 	</div>
 	<template v-for="navMenu in navMenus" v-bind:key="navMenu">
 		<el-menu-item v-if="!hasChildren(navMenu)" :index="navMenu.path">
-			<a v-if="navMenu.meta&&navMenu.meta.type=='EXTLINK'" :href="navMenu.path" target="_blank" @click.stop='()=>{}'></a>
+			<a v-if="navMenu.meta&&navMenu.meta.type=='LINK'" :href="navMenu.path" target="_blank" @click.stop='()=>{}'></a>
 			<el-icon v-if="navMenu.meta&&navMenu.meta.icon"><component :is="navMenu.meta.icon || 'el-icon-menu'"/></el-icon>
 			<template #title>
 				<span>{{navMenu.meta.title}}</span>
@@ -41,7 +41,7 @@
 
 <script>
 export default {
-  name: 'navMenu',
+  name: 'NavMenu',
   props: ['navMenus'],
   data() {
     return {}

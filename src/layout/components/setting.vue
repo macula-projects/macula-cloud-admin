@@ -86,15 +86,19 @@
 				this.$TOOL.data.set("APP_LANG", val);
 			},
 			colorPrimary(val){
-				document.documentElement.style.setProperty('--el-color-primary', val);
-				for (let i = 1; i <= 9; i++) {
-					document.documentElement.style.setProperty(`--el-color-primary-light-${i}`, colorTool.lighten(val,i/10));
-				}
-				for (let i = 1; i <= 9; i++) {
-					document.documentElement.style.setProperty(`--el-color-primary-dark-${i}`, colorTool.darken(val,i/10));
-				}
-				this.$TOOL.data.set("APP_COLOR", val);
-			}
+        if (!val) {
+          val = '#409EFF'
+          this.colorPrimary = '#409EFF'
+        }
+        document.documentElement.style.setProperty('--el-color-primary', val);
+        for (let i = 1; i <= 9; i++) {
+          document.documentElement.style.setProperty(`--el-color-primary-light-${i}`, colorTool.lighten(val, i / 10));
+        }
+        for (let i = 1; i <= 9; i++) {
+          document.documentElement.style.setProperty(`--el-color-primary-dark-${i}`, colorTool.darken(val, i / 10));
+        }
+        this.$TOOL.data.set("APP_COLOR", val);
+      }
 		}
 	}
 </script>

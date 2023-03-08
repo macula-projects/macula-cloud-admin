@@ -16,16 +16,19 @@
   -->
 
 <template>
-	<div class="adminui-tags" v-show="tagList.length > 0">
-		<ul ref="tags">
-			<li v-for="tag in tagList" v-bind:key="tag" :class="[isActive(tag)?'active':'',tag.meta.affix?'affix':'' ]" @contextmenu.prevent="openContextMenu($event, tag)">
-				<router-link :to="tag">
-				<span>{{ tag.meta.title }}</span>
-				<el-icon v-if="!tag.meta.affix" @click.prevent.stop='closeSelectedTag(tag)'><el-icon-close/></el-icon>
-				</router-link>
-			</li>
-		</ul>
-	</div>
+	<div class="adminui-tags">
+    <ul ref="tags">
+      <li v-for="tag in tagList" v-bind:key="tag" :class="[isActive(tag)?'active':'',tag.meta.affix?'affix':'' ]"
+          @contextmenu.prevent="openContextMenu($event, tag)">
+        <router-link :to="tag">
+          <span>{{ tag.meta.title }}</span>
+          <el-icon v-if="!tag.meta.affix" @click.prevent.stop='closeSelectedTag(tag)'>
+            <el-icon-close/>
+          </el-icon>
+        </router-link>
+      </li>
+    </ul>
+  </div>
 
 	<transition name="el-zoom-in-top">
 		<ul v-if="contextMenuVisible" :style="{left:left+'px',top:top+'px'}" class="contextmenu" id="contextmenu">
@@ -90,19 +93,18 @@
 				})
 			},
 			contextMenuVisible(value) {
-				var _this = this;
-				var cm = function(e){
-					let sp = document.getElementById("contextmenu");
-					if(sp&&!sp.contains(e.target)){
-						_this.closeMenu()
-					}
-				}
-				if (value) {
-					document.body.addEventListener('click', e=>cm(e))
-				}else{
-					document.body.removeEventListener('click',  e=>cm(e))
-				}
-			}
+        const cm = (e) => {
+          const sp = document.getElementById("contextmenu");
+          if (sp && !sp.contains(e.target)) {
+            this.closeMenu()
+          }
+        }
+        if (value) {
+          document.body.addEventListener('click', e => cm(e))
+        } else {
+          document.body.removeEventListener('click', e => cm(e))
+        }
+      }
 		},
 		created() {
 			var menu = this.$router.sc_getMenu()

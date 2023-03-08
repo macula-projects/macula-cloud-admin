@@ -17,11 +17,11 @@
 
 <!--
  * @Descripttion: 过滤器V2
- * @version: 2.5
+ * @version: 2.6
  * @Author: sakuya
  * @Date: 2021年7月30日14:48:41
  * @LastEditors: sakuya
- * @LastEditTime: 2022年5月13日21:15:44
+ * @LastEditTime: 2023年2月7日09:46:45
 -->
 
 <template>
@@ -56,11 +56,12 @@
 										</colgroup>
 										<tr v-for="(item,index) in filter" :key="index">
 											<td>
-												<el-tag>{{index+1}}</el-tag>
+                        <el-tag :disable-transitions="true">{{ index + 1 }}</el-tag>
 											</td>
 											<td>
-												<py-select v-model="item.field" :options="fields" placeholder="过滤字段" filterable @change="fieldChange(item)">
-												</py-select>
+                        <py-select v-model="item.field" :filter="filter" :options="fields" filterable
+                                   placeholder="过滤字段" @change="fieldChange(item)">
+                        </py-select>
 											</td>
 											<td v-if="showOperator">
 												<el-select v-model="item.operator" placeholder="运算符">
@@ -73,21 +74,41 @@
 												<el-input v-if="item.field.type=='text'" v-model="item.value" :placeholder="item.field.placeholder||'请输入'"></el-input>
 												<!-- 下拉框 -->
 												<el-select v-if="item.field.type=='select'" v-model="item.value" :placeholder="item.field.placeholder||'请选择'" filterable :multiple="item.field.extend.multiple" :loading="item.selectLoading" @visible-change="visibleChange($event, item)" :remote="item.field.extend.remote" :remote-method="(query)=>{remoteMethod(query, item)}">
-													<el-option v-for="field in item.field.extend.data" :key="field.value" :label="field.label" :value="field.value"></el-option>
-												</el-select>
-												<!-- 日期 -->
-												<el-date-picker v-if="item.field.type=='date'" v-model="item.value" type="date" value-format="YYYY-MM-DD" :placeholder="item.field.placeholder||'请选择日期'" style="width: 100%;"></el-date-picker>
-												<!-- 日期范围 -->
-												<el-date-picker v-if="item.field.type=='daterange'" v-model="item.value" type="daterange" value-format="YYYY-MM-DD"  start-placeholder="开始日期" end-placeholder="结束日期" style="width: 100%;"></el-date-picker>
-												<!-- 日期时间 -->
-												<el-date-picker v-if="item.field.type=='datetime'" v-model="item.value" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" :placeholder="item.field.placeholder||'请选择日期'" style="width: 100%;"></el-date-picker>
-												<!-- 日期时间范围 -->
-												<el-date-picker v-if="item.field.type=='datetimerange'" v-model="item.value" type="datetimerange" value-format="YYYY-MM-DD HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" style="width: 100%;"></el-date-picker>
-												<!-- 开关 -->
-												<el-switch v-if="item.field.type=='switch'" v-model="item.value" active-value="1" inactive-value="0"></el-switch>
-												<!-- 标签 -->
-												<el-select v-if="item.field.type=='tags'" v-model="item.value" multiple filterable allow-create default-first-option no-data-text="输入关键词后按回车确认" :placeholder="item.field.placeholder||'请输入'"></el-select>
-											</td>
+                          <el-option v-for="field in item.field.extend.data" :key="field.value" :label="field.label"
+                                     :value="field.value"></el-option>
+                        </el-select>
+                        <!-- 日期 -->
+                        <el-date-picker v-if="item.field.type=='date'" v-model="item.value" :placeholder="item.field.placeholder||'请选择日期'"
+                                        style="width: 100%;" type="date"
+                                        value-format="YYYY-MM-DD"></el-date-picker>
+                        <!-- 日期范围 -->
+                        <el-date-picker v-if="item.field.type=='daterange'" v-model="item.value" end-placeholder="结束日期"
+                                        start-placeholder="开始日期" style="width: 100%;"
+                                        type="daterange" value-format="YYYY-MM-DD"></el-date-picker>
+                        <!-- 日期时间 -->
+                        <el-date-picker v-if="item.field.type=='datetime'" v-model="item.value" :placeholder="item.field.placeholder||'请选择日期'"
+                                        style="width: 100%;"
+                                        type="datetime"
+                                        value-format="YYYY-MM-DD HH:mm:ss"></el-date-picker>
+                        <!-- 日期时间范围 -->
+                        <el-date-picker v-if="item.field.type=='datetimerange'" v-model="item.value"
+                                        end-placeholder="结束日期" start-placeholder="开始日期"
+                                        style="width: 100%;" type="datetimerange"
+                                        value-format="YYYY-MM-DD HH:mm:ss"></el-date-picker>
+                        <!-- 自定义日期 -->
+                        <el-date-picker v-if="item.field.type=='customDate'" v-model="item.value"
+                                        :placeholder="item.field.placeholder||'请选择'"
+                                        :type="item.field.extend.dateType||'date'"
+                                        :value-format="item.field.extend.valueFormat" end-placeholder="结束日期"
+                                        start-placeholder="开始日期" style="width: 100%;"></el-date-picker>
+                        <!-- 开关 -->
+                        <el-switch v-if="item.field.type=='switch'" v-model="item.value" active-value="1"
+                                   inactive-value="0"></el-switch>
+                        <!-- 标签 -->
+                        <el-select v-if="item.field.type=='tags'" v-model="item.value" :placeholder="item.field.placeholder||'请输入'" allow-create default-first-option
+                                   filterable multiple
+                                   no-data-text="输入关键词后按回车确认"></el-select>
+                      </td>
 											<td>
 												<el-icon class="del" @click="delFilter(index)"><el-icon-delete /></el-icon>
 											</td>
@@ -123,26 +144,30 @@
 	import my from './my'
 
 	export default {
-		name: 'filterBar',
-		components: {
-			pySelect,
-			my
-		},
-		props: {
-			filterName: { type: String, default: "" },
-			showOperator: { type: Boolean, default: true },
-			options: { type: Object, default: () => {} }
-		},
-		data() {
-			return {
-				drawer: false,
-				operator: config.operator,
-				fields: this.options,
-				filter: [],
-				myFilter: [],
-				filterObjLength: 0,
-				saveLoading: false
-			}
+    name: 'filterBar',
+    components: {
+      pySelect,
+      my
+    },
+    props: {
+      filterName: {type: String, default: ""},
+      showOperator: {type: Boolean, default: true},
+      options: {
+        type: Object, default: () => {
+        }
+      }
+    },
+    emits: ['filterChange'],
+    data() {
+      return {
+        drawer: false,
+        operator: config.operator,
+        fields: this.options,
+        filter: [],
+        myFilter: [],
+        filterObjLength: 0,
+        saveLoading: false
+      }
 		},
 		computed: {
 			filterObj(){
@@ -171,18 +196,20 @@
 				this.drawer = true
 			},
 			//增加过滤项
-			addFilter(){
-				if(this.fields.length<=0){
-					ElMessage.warning('无过滤项');
-					return false
-				}
-				const filterNum = this.fields[this.filter.length] || this.fields[0]
-				this.filter.push({
-					field: filterNum,
-					operator: filterNum.operator || 'include',
-					value: ''
-				})
-			},
+			addFilter() {
+        //下一组新增过滤
+        var filterArr = this.fields.filter(field => !this.filter.some(item => field.value == item.field.value && !item.field.repeat))
+        if (this.fields.length <= 0 || filterArr.length <= 0) {
+          this.$message.warning('无过滤项');
+          return false
+        }
+        const filterNum = filterArr[0]
+        this.filter.push({
+          field: filterNum,
+          operator: filterNum.operator || 'include',
+          value: ''
+        })
+      },
 			//删除过滤项
 			delFilter(index){
 				this.filter.splice(index, 1)
@@ -211,17 +238,20 @@
 				}
 			},
 			//下拉框显示事件处理异步搜索
-			async remoteMethod(query, item){
-				if(query !== ''){
-					item.selectLoading = true;
-					try {
-					var data = await item.field.extend.request(query);
-					}catch (error) {
-						console.log(error);
-					}
-					item.field.extend.data = data;
-					item.selectLoading = false;
-				}else{
+			async remoteMethod(query, item) {
+        if (!item.field.extend.request) {
+          return false;
+        }
+        if (query !== '') {
+          item.selectLoading = true;
+          try {
+            var data = await item.field.extend.request(query);
+          } catch (error) {
+            console.log(error);
+          }
+          item.field.extend.data = data;
+          item.selectLoading = false;
+        } else {
 					item.field.extend.data = [];
 				}
 			},

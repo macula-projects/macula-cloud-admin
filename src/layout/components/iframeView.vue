@@ -26,7 +26,8 @@
 
 <template>
 	<div v-show="$route.meta.type=='IFRAME'" class="iframe-pages">
-		<iframe v-for="item in iframeStore.iframeList" :key="item.meta.url" v-show="$route.meta.url==item.meta.url" :src="item.meta.url" frameborder='0'></iframe>
+		<iframe v-for="item in iframeList" v-show="$route.meta.url==item.meta.url" :key="item.meta.url" :src="item.meta.url"
+            frameborder='0'></iframe>
 	</div>
 </template>
 
@@ -58,13 +59,13 @@
 		methods: {
 			...mapActions(useIframeStore, ['setIframeList', 'pushIframeList', 'clearIframeList']),
 			push(route){
-				if(route.meta.type == 'IFRAME'){
-					if(this.globalStore.ismobile || !this.globalStore.layoutTags){
-						this.setIframeList(route)
-					}else{
-						this.pushIframeList(route)
-					}
-				}else{
+				if(route.meta.type == 'IFRAME') {
+          if (this.ismobile || !this.layoutTags) {
+            this.$store.commit("setIframeList", route)
+          } else {
+            this.pushIframeList(route)
+          }
+        }else{
 					if(this.globalStore.ismobile || !this.globalStore.layoutTags){
 						this.clearIframeList()
 					}
