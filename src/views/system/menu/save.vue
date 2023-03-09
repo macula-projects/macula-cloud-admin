@@ -17,7 +17,7 @@
 						<el-radio-group v-model="form.type">
 							<el-radio-button :disabled="!isCatalog" label="CATALOG">目录</el-radio-button>
 							<el-radio-button :disabled="isButton || onlyCatalog" label="MENU">菜单</el-radio-button>
-							<el-radio-button :disabled="isButton || onlyCatalog" label="EXTLINK">外链</el-radio-button>
+							<el-radio-button :disabled="isButton || onlyCatalog" label="LINK">外链</el-radio-button>
 							<el-radio-button :disabled="isButton || onlyCatalog" label="IFRAME">Iframe</el-radio-button>
 							<el-radio-button :disabled="isCatalog" label="BUTTON">按钮</el-radio-button>
 						</el-radio-group>

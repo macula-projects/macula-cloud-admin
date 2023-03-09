@@ -29,8 +29,8 @@
 								<span class="label">
 									{{ node.label }}
 								</span>
-								<span class="do" v-if="data.type !== 'BUTTON' && data.type !== 'IFRAME' && data.type !== 'EXTLINK'">
-									<el-icon @click.stop="add(node, data)"><el-icon-plus /></el-icon>
+								<span v-if="data.type !== 'BUTTON' && data.type !== 'IFRAME' && data.type !== 'LINK'" class="do">
+									<el-icon @click.stop="add(node, data)"><el-icon-plus/></el-icon>
 								</span>
 							</span>
 						</template>
@@ -52,9 +52,9 @@
 
 <script>
 	let newMenuIndex = 1;
-	import save from './save'
+  import save from './save'
 
-	export default {
+  export default {
 		name: "settingMenu",
 		components: {
 			save
