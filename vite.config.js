@@ -64,7 +64,7 @@ export default defineConfig({
     Inspect(),
   ],
   server: {
-    port: 5800,
+    port: 5900,
     host: true,
     open: true,
     proxy: {

@@ -41,5 +41,12 @@ export default {
                 return await http.put(reqUrl, data)
             }
         },
+        validtorCode: {
+            url: `${config.API_URL}/${config.MODEL.system}/api/v1/app/validtor/appCode`,
+            name: "验证应用编码合规",
+            get: async function (data = {}){
+                return await http.get(this.url, data)
+            }
+        }
 	},
 }

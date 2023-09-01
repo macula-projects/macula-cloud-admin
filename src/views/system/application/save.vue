@@ -5,15 +5,15 @@
 				<el-input v-model="form.applicationName" clearable></el-input>
 			</el-form-item>
 			<el-form-item label="应用编码" prop="code">
-				<el-input v-model="form.code"  clearable></el-input>
+				<el-input v-model="form.code"  clearable :disabled="form.id != ''"></el-input>
 			</el-form-item>
-			<el-form-item label="appKey" prop="ak">
-				<el-input v-model="form.ak"  disabled></el-input>
+			<el-form-item label="appKey" prop="ak" :span="20">
+				<el-input v-model="form.ak" disabled></el-input>
 			</el-form-item>
 			<el-form-item label="secretKey" prop="sk">
 				<el-input v-model="form.sk"  disabled></el-input>
 			</el-form-item>
-			<el-form-item label="主页" prop="code">
+			<el-form-item label="主页" prop="homepage">
 				<el-input v-model="form.homepage"  clearable></el-input>
 			</el-form-item>
 			<el-form-item label="可访问路径" prop="accessPath">
@@ -21,10 +21,31 @@
 				<div class="el-form-item-msg">多个使用英文逗号,隔开，例: /a,/b,/c</div>
 			</el-form-item>
 			<el-form-item label="负责人" prop="manager">
-				<el-input v-model="form.manager"  clearable></el-input>
+				<sc-table-select v-model="form.manager" :apiObj="apiObj" :table-width="450" multiple clearable collapse-tags collapse-tags-tooltip :props="props">
+					<template #header="{form, submit}">
+						<el-form :inline="true" :model="form">
+							<el-form-item>
+								<el-input v-model="form.keywords" placeholder="用户名称" clearable></el-input>
+							</el-form-item>
+							<el-form-item>
+								<el-button type="primary" @click="submit">查询</el-button>
+							</el-form-item>
+						</el-form>
+					</template>
+					<!-- <el-table-column prop="id" label="ID" width="180"></el-table-column> -->
+					<el-table-column label="#" type="index" width="50"></el-table-column>
+					<el-table-column prop="username" label="用户名" width="150"></el-table-column>
+					<el-table-column prop="nickname" label="真实名字"></el-table-column>
+				</sc-table-select>
 			</el-form-item>
 			<el-form-item label="联系方式" prop="mobile">
 				<el-input v-model="form.mobile"  clearable></el-input>
+			</el-form-item>
+			<el-form-item label="是否回传属性" prop="useAttrs">
+				<el-switch v-model="form.useAttrs"></el-switch>
+			</el-form-item>
+			<el-form-item label="回传列表" prop="allowedAttrs">
+				<el-input v-model="form.allowedAttrs" clearable type="textarea"></el-input>
 			</el-form-item>
 		</el-form>
 		<template #footer>
@@ -39,6 +60,7 @@
 	export default {
 		emits: ['success', 'closed'],
 		data() {
+			let that = this
 			return {
 				mode: "add",
 				titleMap: {
@@ -47,6 +69,12 @@
 				},
 				visible: false,
 				isSaveing: false,
+				apiObj: this.$API.system_user.user.list,
+				props: {
+					label: 'username',
+					value: 'id',
+					keyword: "keywords"
+				},
 				//表单数据
 				form: {
 					id:"",
@@ -55,9 +83,11 @@
 					sk: "",
 					homepage: "",
 					code: "",
-					manager: "",
+					manager: [],
 					mobile:"",
-					accessPath: ""
+					accessPath: "",
+					useAttrs: false,
+					allowedAttrs: ""
 				},
 				//验证规则
 				rules: {
@@ -65,7 +95,7 @@
 						{required: true, message: '请输入应用名称'}
 					],
 					code: [
-						{required: true, message: '请输入应用编码'}
+						{required: true,validator: that.validtorCode, trigger: 'blur'}
 					],
 					manager: [
 						{required: true, message: '请输入负责人'}
@@ -83,17 +113,19 @@
 				this.mode = mode;
 				this.visible = true;
 				if (this.mode == 'add') {
-					this.form.ak = this.generateAkSK()
+					this.form.ak = this.form.code
 					this.form.sk = this.generateAkSK()
 				} 
 				return this
 			},
 			//表单提交方法
-			submit(){
+			submit() {
 				this.$refs.dialogForm.validate(async (valid) => {
 					if (valid) {
 						this.isSaveing = true;
+						this.form.manager = this.form.manager.map(item => item.username).join(',')
 						if (this.mode == 'add') {
+							this.form.ak = this.form.code
 							// 调用相关接口
 							var res = await this.$API.system_application.application.add.post(this.form);
 						} else {
@@ -112,7 +144,7 @@
 					}
 				})
 			},
-			generateAkSK(){
+			generateAkSK() {
 				return this.generateHexString(26) + (new Date()).getTime();
 			},
 			generateHexString(length){
@@ -128,13 +160,54 @@
 				this.form.applicationName = data.applicationName
 				this.form.homepage = data.homepage
 				this.form.code = data.code
-				this.form.manager = data.manager
+				this.getUsersByUsernames(data.manager)
 				this.form.accessPath = data.accessPath
 				this.form.mobile = data.mobile
 				this.form.ak = data.ak
 				this.form.sk = data.sk
+				this.form.useAttrs = data.useAttrs
+				this.form.allowedAttrs = data.allowedAttrs
 				//可以和上面一样单个注入，也可以像下面一样直接合并进去
 				//Object.assign(this.form, data)
+			},
+			async getUsersByUsernames(data) {
+				var res = {}
+				var params = {
+					usernames: data
+				}
+				var res = await this.$API.system_user.user.listByUsernames.get(params);
+				if (res.code === '00000') {
+					this.form.manager = res.data.records
+				} else {
+					ElMessageBox.alert(res.message, "提示", {type: 'error'})
+				}
+			},
+			async validtorCode(rule, value, callback){
+				if(value.trim().length === 0){
+					callback(new Error('请输入应用编码'))
+				}
+				const regx = /^[a-zA-Z0-9_\-]+$/
+				if(!regx.test(value)){
+					callback(new Error('应用编码由字母、数字、横线及下划线组成'))
+				}
+				const params = {
+					appId: this.form.id ? this.form.id : null, 
+					appCode: value,
+					}
+				const res = await this.$API.system_application.application.validtorCode.get(params)
+				if(res.code==="00000" && res.data){
+					callback()
+				}
+				callback(new Error('应用编码已存在！'))
+			}
+		},
+		watch: {
+			'form.code': {
+				handler(){
+					if(this.mode == 'add'){
+						this.form.ak = this.form.code
+					}
+				}
 			}
 		}
 	}

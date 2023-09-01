@@ -31,6 +31,9 @@ const DEFAULT_CONFIG = {
     //接口地址
     API_URL: import.meta.env.NODE_ENV === 'development' && import.meta.env.VITE_APP_PROXY === 'true' ? "/api" : import.meta.env.VITE_APP_API_BASEURL,
 
+    // IAM的地址
+    IAM_URL: import.meta.env.VITE_APP_IAM_URL,
+    
     //请求超时
     TIMEOUT: 10000,
 
