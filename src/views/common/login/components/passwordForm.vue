@@ -150,9 +150,17 @@ export default {
 				var routes = res.data
 				var roles = userInfo.data.roles
 				var perms = userInfo.data.perms
+				
+				// var menu = this.$TOOL.treeFilter(routes, node => {
+            	// 	return node.meta.roles ? node.meta.roles.filter(item => roles.indexOf(item) > -1).length > 0 : true
+        		// })
+				// 支持排除反向角色
 				var menu = this.$TOOL.treeFilter(routes, node => {
-            		return node.meta.roles ? node.meta.roles.filter(item => roles.indexOf(item) > -1).length > 0 : true
-        		})
+					const containsRoles = roles.some(role => !role.startsWith("!") && node.meta.roles.includes(role));
+					const containsNegatedRoles = roles.some(role => role.startsWith("!") && node.meta.roles.includes(role.substring("!".length())));
+					return containsRoles & !containsNegatedRoles
+				})
+
 				this.$TOOL.data.set("MENU", menu)
 				this.$TOOL.data.set("PERMISSIONS", perms)
 			} else {
