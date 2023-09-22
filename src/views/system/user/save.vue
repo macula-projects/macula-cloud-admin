@@ -12,10 +12,10 @@
           <el-input v-model="form.nickname" placeholder="请输入完整的真实姓名" clearable></el-input>
         </el-form-item>
         <el-form-item label="所属部门" prop="dept">
-          <el-cascader v-model="form.dept" :options="depts" :props="deptsProps" :placeholder="form.dept" @change="handleChangeDept" clearable style="width: 100%;"></el-cascader>
+          <el-cascader v-model="form.dept" :options="depts" :props="deptsProps" :placeholder="form.dept" clearable style="width: 100%;"></el-cascader>
         </el-form-item>
-        <el-form-item label="所属角色">
-          <el-cascader v-model="form.roleNames" :options="roleNames" :props="roleNamesProps" :placeholder="form.roleNames" @change="handleChangeRole" clearable style="width: 100%;"></el-cascader>
+        <el-form-item label="所属角色" prop="roleIds">
+          <el-cascader v-model="form.roleIds" :options="roleNames" :props="roleNamesProps" :placeholder="form.roleNames" clearable style="width: 100%;"></el-cascader>
         </el-form-item>
       </template>
       <template v-if="mode=='resetPassword'">
@@ -45,6 +45,16 @@
 <script>
 export default {
   emits: ['success', 'closed'],
+  props: {
+    roleNames: {
+      required: true,
+      type: Array
+    },
+    depts: {
+      required: true,
+      type: Array
+    },
+  },
   data() {
     return {
       mode: "add",
@@ -62,7 +72,8 @@ export default {
         username: "",
         avatar: "",
         nickname: "",
-        dept: "",
+        dept: [],
+        deptName: "",
         roleNames: "",
         deptId: null,
         password: "",
@@ -70,10 +81,7 @@ export default {
       },
       //验证规则
       rules: {
-        // avatar:[
-        //   {required: true, message: '请上传头像'}
-        // ],
-        role: [
+        roleIds: [
           {required: true, message: '请选择所属角色'}
         ],
         username: [
@@ -106,13 +114,9 @@ export default {
         ]
       },
       //所需数据选项
-      roleNames: [],
       roleNamesProps: {
-        value: "value",
-        multiple: true,
-        checkStrictly: true
+        multiple: true
       },
-      depts: [],
       deptsProps: {
         children: "children",
         label: "name",
@@ -121,10 +125,6 @@ export default {
       }
     }
   },
-  mounted() {
-    this.getRole()
-    this.getDept()
-  },
   methods: {
     //显示
     open(mode='add'){
@@ -132,32 +132,26 @@ export default {
       this.visible = true;
       return this
     },
-    //加载树数据
-    async getRole(){
-      var res = await this.$API.system_role.role.options.get();
-      this.roleNames = res.data;
-      console.log("res_role",res);
+    //后端接口识别的部门数据处理
+    handleSubmitDept(){
+      this.form.deptId = this.form.dept[this.form.dept.length - 1];
     },
-    async getDept(){
-      var res = await this.$API.system_dept.dept.list.get();
-      this.depts = res.data;
-      console.log("depts",this.depts)
-    },
-    handleChangeDept(val){
-      this.form.deptId = val[1];
-    },
-    handleChangeRole(val){
-      let roleIdArray = [];
-      val.forEach(item => {
-        roleIdArray.push(item[0]);
-      });
-      this.form.roleIds = roleIdArray;
+    //后端接口识别的角色数据处理
+    handleSubmitRoleId(){
+      this.form.roleIds = this.form.roleIds.map(item => {
+        if(item instanceof Array){
+          return item[0]
+        }
+        return item
+      })
     },
     //表单提交方法
     submit(){
       // 获取部门id和角色id;
       this.$refs.dialogForm.validate(async (valid) => {
         if (valid) {
+          this.handleSubmitDept()
+          this.handleSubmitRoleId()
           this.isSaveing = true;
           if(this.mode == 'add'){
             var res = await this.$API.system_user.user.add.post(this.form);
@@ -189,8 +183,47 @@ export default {
       this.form.avatar = data.avatar
       this.form.nickname = data.nickname
       this.form.roleNames = data.roleNames
-      this.form.dept = data.deptName
       this.form.password = data.password
+      this.form.roleIds = this.getRoleIds(data.roleNames)
+      this.loadDept(data.deptName, this.form)
+    },
+    // 跟据列表传递的角色中文转成id值
+    getRoleIds(roleNames){
+      let roleNameArr = roleNames.split(",")
+      let roleIds = []
+      roleNameArr.forEach(roleName => {
+        let findRole = this.roleNames.find(item => item.label === roleName)
+        if(findRole) {
+          roleIds.push(findRole.value)
+        }
+      })
+      return roleIds
+    },
+    // 加载部门信息
+    loadDept(deptName, form){
+      if(this.depts && this.depts.length > 0){
+        this.loopHandSubDept(this.depts, [], "", deptName, form)
+      } else {
+        form.deptName = ""
+        form.dept = []
+      }
+    },
+    // 递归整理部门信息结构
+    loopHandSubDept(deptInfo, dept, formDeptName, goalDeptName, form){
+      deptInfo.find(item => {
+        let innerDept = JSON.parse(JSON.stringify(dept))
+        innerDept.push(item.id)
+        let innerFormDeptName = formDeptName.length > 0 ? formDeptName + " / " + item.name : item.name 
+        if(item.name === goalDeptName){
+          form.deptName = innerFormDeptName
+          form.dept = innerDept
+          return true
+        }
+        if(item.children) {
+          this.loopHandSubDept(item.children, innerDept, innerFormDeptName, goalDeptName, form)
+        }
+        return false
+      })
     }
   }
 }

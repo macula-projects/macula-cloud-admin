@@ -59,7 +59,7 @@
     </el-container>
   </el-container>
 
-  <save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSuccess" @closed="dialog.save=false"></save-dialog>
+  <save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSuccess" @closed="dialog.save=false" :role-names="saveRoleNames" :depts="saveDepts"></save-dialog>
 
 </template>
 
@@ -84,7 +84,9 @@ export default {
       roleNames: [],
       search: {
         keywords: null
-      }
+      },
+      saveRoleNames: [],
+      saveDepts: []
     }
   },
   watch: {
@@ -94,6 +96,8 @@ export default {
   },
   mounted() {
     this.getDept();
+    this.getSaveDept()
+    this.getSaveRole()
   },
   methods: {
     //添加
@@ -178,6 +182,16 @@ export default {
       this.group = res.data;
       this.showGrouploading = false;
       this.group.unshift({id: '', label: '所有'});
+    },
+    //获取保存页面的角色，用于form表单数据加载
+    async getSaveRole(){
+      var res = await this.$API.system_role.role.options.get();
+      this.saveRoleNames = res.data;
+    },
+    //获取保存页面的部门，用于form表单数据加载
+    async getSaveDept(){
+      var res = await this.$API.system_dept.dept.list.get();
+      this.saveDepts = res.data;
     },
     //树过滤
     groupFilterNode(value, data){

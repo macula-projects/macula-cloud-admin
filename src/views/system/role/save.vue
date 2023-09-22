@@ -98,7 +98,7 @@
 				if(value.trim().length === 0){
 					callback(new Error('请输入角色编码'))
 				}
-				const regx = /^[A-Z]+_*[A-Z]*$/g
+				const regx = /^[A-Z]+_*[A-Z_]*$/g
 				if(!regx.test(value)){
 					callback(new Error('角色编码由大写字母及下划线组成且必须以大写字母开头'))
 				}
