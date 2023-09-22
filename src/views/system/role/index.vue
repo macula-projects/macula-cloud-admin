@@ -20,6 +20,11 @@
 				<el-table-column label="角色名称" prop="name" width="250"></el-table-column>
 				<el-table-column label="角色编码" prop="code" width="200"></el-table-column>
 				<el-table-column label="排序" prop="sort" width="120" sortable></el-table-column>
+				<el-table-column label="反向角色" prop="negative" width="120">
+					<template #default="scope">
+						<el-switch :model-value="String(scope.row.negative)" disabled active-value="true" inactive-value="false" />
+					</template>
+				</el-table-column>
 				<el-table-column label="状态" prop="status" width="120">
 					<template #default="scope">
 						<el-switch :model-value="String(scope.row.status)" disabled active-value="1" inactive-value="0" />

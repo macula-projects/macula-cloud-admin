@@ -13,7 +13,6 @@
 </template>
 
 <script>
-	import tenant from './tenant'
 	import { useTenantStore } from '@/stores/tenant';
 	import { mapState, mapActions } from 'pinia';
 	export default{
