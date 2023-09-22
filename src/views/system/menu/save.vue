@@ -61,7 +61,7 @@
 				<sc-form-table v-model="form.apiList" :addTemplate="apiListAddTemplate" placeholder="暂无匹配接口权限">
 					<el-table-column prop="code" label="标识" width="150">
 						<template #default="scope">
-							<el-popover :visible="scope.row.codeVisible" placement="bottom" popper-style="padding: 0px;">
+							<el-popover :visible="scope.row.codeErrMsgVisible" placement="bottom" popper-style="padding: 0px;">
 								<el-tag
 										class="mx-1"
 										type="danger"
@@ -77,7 +77,7 @@
 					</el-table-column>
 					<el-table-column prop="url" label="Api url">
 						<template #default="scope">
-							<el-popover :visible="scope.row.urlVisible" placement="bottom" popper-style="padding: 0px;">
+							<el-popover :visible="scope.row.urlErrMsgVisible" placement="bottom" popper-style="padding: 0px;">
 								<el-tag
 										class="mx-1"
 										type="danger"
@@ -152,8 +152,8 @@
 					code: "",
 					url: "",
 					method: "GET",
-					urlVisible: false,
-					codeVisible: false
+					urlErrMsgVisible: false,
+					codeErrMsgVisible: false
 				},
 				loading: false,
 				isButton: false,
@@ -161,8 +161,7 @@
 				onlyCatalog: false,
 				methodOptions: [],
 				apiListValidtor: true,
-				apiListValidObj:{},
-				initApi: []
+				apiListValidObj:{}
 			}
 		},
 		watch: {
@@ -267,33 +266,13 @@
 					return
 				}
 				var res = await this.$API.system_menu.menu.add.post(this.form)
-				var oldApiRes = await this.delOldApi()
-				if(oldApiRes.code === '00000'){
-					this.initApi=[]
-					await this.addNewApi(this.form.id, this.form.apiList)
+				if(!res.success){
+					ElMessageBox.alert(res.message, "提示", {type: 'error'})
+					return
 				}
 				ElMessage.success('保存成功！')
 				this.loading = false
 				this.loadPermissionList(this.form)
-			},
-			//保存权限
-			async addNewApi(menuId, apiArr){
-				let apiPermObj = apiArr.map(item=>({
-					name: item.code,
-					menuId: menuId,
-					urlPerm: item.method+":"+item.url
-				}))
-				for(var i = 0 ;i < apiPermObj.length; i++){
-					let item = apiPermObj[i]
-					await this.$API.system_permission.permission.add.post(item)
-				}
-			},
-			//删除权限
-			async delOldApi(){
-				if(this.initApi.length===0){
-					return { code: '00000'}
-				}
-				return await this.$API.system_permission.permission.del.delete(this.initApi.join(","))
 			},
 			//表单注入数据
 			setData(data, pid){
@@ -318,19 +297,12 @@
 						code: item.name,
 						url: item.urlPerm.split(":")[1],
 						method: item.urlPerm.split(":")[0],
+						codeErrMsgVisible: false,
+						urlErrMsgVisible: false
 					}))
-					this.initApiList(this.form.apiList)
 					return
 				}
 				ElMessage.error('加载菜单权限列表失败！请重试！')
-			},
-			//验证是否能修复个别情况api权限列表鼠标hover显示红块问题
-			initApiList(apiList){
-				if(apiList) apiList.forEach(item=>{
-					item['codeVisible']=false; 
-					item['urlVisible']=false; 
-					this.initApi.push(item.id)
-				})
 			},
 			validtorApiCode(code, apiData){
 				if(code.trim().length === 0){
