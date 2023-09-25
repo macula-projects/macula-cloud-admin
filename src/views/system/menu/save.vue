@@ -265,7 +265,7 @@
 					this.loading = false
 					return
 				}
-				var res = await this.$API.system_menu.menu.add.post(this.form)
+				var res = await this.$API.system_menu.menu.update.put(this.form.id, this.form)
 				if(!res.success){
 					ElMessageBox.alert(res.message, "提示", {type: 'error'})
 					return

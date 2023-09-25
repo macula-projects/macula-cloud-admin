@@ -3,11 +3,18 @@ import http from "@/utils/request"
 
 export default {
 	menu: {
-		add:{
+		add: {
             url: `${config.API_URL}/${config.MODEL.system}/api/v1/menus`,
             name: '添加菜单',
             post: async function (data) {
                 return await http.post(this.url, data)
+            }
+        },
+        update: {
+            url: `${config.API_URL}/${config.MODEL.system}/api/v1/menus`,
+            name: '更新菜单',
+            put: async function (id, data) {
+                return await http.put(`${this.url}/${id}`, data)
             }
         },
 		del: {
