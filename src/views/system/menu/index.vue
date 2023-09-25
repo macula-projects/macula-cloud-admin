@@ -91,7 +91,7 @@ export default {
 			this.menuloading = true
 			var res = await this.$API.system_menu.menu.list.get(params)
 			this.menuloading = false
-			if (res.code === '00000') {
+			if (res.success) {
 				this.menuList = res.data
 			}
 		},
@@ -124,7 +124,7 @@ export default {
 				redirect: ''
 			}
 			var res = await this.$API.system_menu.menu.add.post(newMenuData)
-			if (res.code === '00000' && data) {
+			if (res.success) {
 				if (newMenuData.type === 'BUTTON' && this.curMenuType === 'CATALOG') {
 					//目录后选择菜单然后创建下级菜单将自动更新
 					data.createTime = ''

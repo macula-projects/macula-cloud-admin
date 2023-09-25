@@ -115,11 +115,11 @@
 			async table_del(row){
 				var reqData = row.id
 				var res = await this.$API.system_dept.dept.del.delete(reqData);
-				if(res.code === '00000'){
+				if(res.success){
 					this.$refs.table.refresh()
 					ElMessage.success("删除成功")
 				}else{
-					ElMessageBox.alert(res.message, "提示", {type: 'error'})
+					ElMessageBox.alert(res.cause || res.msg, "提示", {type: 'error'})
 				}
 			},
 			async batch_del(){

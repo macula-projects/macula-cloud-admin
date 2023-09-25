@@ -108,12 +108,12 @@ export default{
 						res = await this.$API.system_tenant.tenant.edit.put(reqForm.id, reqForm);
 					}
 					this.isSaveing = false;
-					if(res.code === "00000"){
+					if(res.success){
 						this.$emit('success', this.form, this.mode)
 						this.visible = false;
 						ElMessage.success("操作成功")
 					}else{
-						ElMessageBox.alert(res.message, "提示", {type: 'error'})
+						ElMessageBox.alert(res.cause || res.msg, "提示", {type: 'error'})
 					}
 				}
 			})

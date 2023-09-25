@@ -172,7 +172,7 @@
 			async dicDel(node, data){
 				this.showDicloading = true;
 				var res = await this.$API.system_dict.dict.delType.delete(data.id);
-				if(res.code === '00000'){
+				if(res.success){
 					var dicCurrentKey = this.$refs.dic.getCurrentKey();
 					this.$refs.dic.remove(data.id)
 					if(dicCurrentKey == data.id){
@@ -190,7 +190,7 @@
 					this.showDicloading = false;
 					ElMessage.success("删除成功")
 				}else{
-					ElMessageBox.alert(res.message, "提示", {type: 'error'})
+					ElMessageBox.alert(res.cause || res.msg, "提示", {type: 'error'})
 				}
 			},
 			//添加明细
@@ -225,11 +225,11 @@
 			//删除明细
 			async table_del(row, index){
 				var res = await this.$API.system_dict.dict.delItem.delete(row.id);
-				if(res.code === '00000'){
+				if(res.success){
 					this.$refs.table.tableData.splice(index, 1);
 					ElMessage.success("删除成功")
 				}else{
-					ElMessageBox.alert(res.message, "提示", {type: 'error'})
+					ElMessageBox.alert(res.cause || res.msg, "提示", {type: 'error'})
 				}
 			},
 			//批量删除
@@ -256,12 +256,12 @@
 					this.isListSaveing = true;
 					var res = await this.$API.demo.post.post(formData);
 					this.isListSaveing = false;
-					if(res.code == 200){
+					if(res.success){
 						//这里选择刷新整个表格 OR 插入/编辑现有表格数据
 						this.listDialogVisible = false;
 						ElMessage.success("操作成功")
 					}else{
-						ElMessageBox.alert(res.message, "提示", {type: 'error'})
+						ElMessageBox.alert(res.cause || res.msg, "提示", {type: 'error'})
 					}
 				})
 			},

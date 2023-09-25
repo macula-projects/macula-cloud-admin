@@ -179,7 +179,7 @@
 		},
 		async created() {
 			const methodOptionRes = await this.$API.system_menu.menu.methodOption.get()
-			if(methodOptionRes.code === '00000'){
+			if(methodOptionRes.success){
 				this.methodOptions = methodOptionRes.data
 			}
 		},
@@ -212,7 +212,7 @@
 			},
 			async handlerRequestApiUrlValid(requestValidApi){
 				let validOptionsRes = await this.$API.system_permission.permission.validtorUrlPerm.post(requestValidApi)
-				if(validOptionsRes.code === '00000'){
+				if(validOptionsRes.success){
 					validOptionsRes.data.forEach(item=>{
 						this.apiListValidObj[item.label]['data']['urlErrMsg'] = item.value ? '' : 'url与请求方式已存在'
 						this.apiListValidObj[item.label]['data']['urlVisible'] = !item.value
@@ -267,7 +267,7 @@
 				}
 				var res = await this.$API.system_menu.menu.update.put(this.form.id, this.form)
 				if(!res.success){
-					ElMessageBox.alert(res.message, "提示", {type: 'error'})
+					ElMessageBox.alert(res.cause || res.msg, "提示", {type: 'error'})
 					return
 				}
 				ElMessage.success('保存成功！')
@@ -291,7 +291,7 @@
 					return
 				}
 				let permListRes = await this.$API.system_permission.permission.list.get({menuId: menuData.id})
-				if(permListRes.code === '00000'){
+				if(permListRes.success){
 					this.form.apiList = permListRes.data.map(item=>({
 						id: item.id,
 						code: item.name,

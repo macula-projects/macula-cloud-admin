@@ -84,7 +84,7 @@ export default{
 	},
 	async created(){
 		let dataScopeRes = await this.$API.system_role.role.optionsByDataScope.get()
-		if(dataScopeRes.code === '00000'){
+		if(dataScopeRes.success){
 			this.dataScopeEnum = dataScopeRes.data
 			this.handlerDataScopeEnum()
 		}
@@ -143,11 +143,11 @@ export default{
 		},
 		async del(row){
 			var res = await this.$API.system_role.role.del.delete(row.id)
-			if(res.code === "00000"){
+			if(res.success){
 				this.$refs.table.refresh()
 				ElMessage.success("删除成功")
 			}else{
-				ElMessageBox.alert(res.message, "提示", {type: 'error'})
+				ElMessageBox.alert(res.cause || res.msg, "提示", {type: 'error'})
 			}
 		},
 		//本地更新数据

@@ -93,7 +93,7 @@
 					name: value,
 					}
 				const res = await this.$API.system_role.role.validtorRoleName.get(params)
-				if(res.code==="00000" && res.data){
+				if(res.success && res.data){
 					callback()
 				}
 				callback(new Error('角色名称已存在！'))
@@ -111,7 +111,7 @@
 					code: value,
 					}
 				const res = await this.$API.system_role.role.validtorRoleCode.get(params)
-				if(res.code==="00000" && res.data){
+				if(res.success && res.data){
 					callback()
 				}
 				callback(new Error('角色编码已存在！'))
@@ -123,12 +123,12 @@
 						this.isSaveing = true;
 						var res = await this.$API.system_role.role.post.post(this.form);
 						this.isSaveing = false;
-						if(res.code === "00000"){
+						if(res.success){
 							this.$emit('success', this.form, this.mode)
 							this.visible = false;
 							ElMessage.success("操作成功")
 						}else{
-							ElMessageBox.alert(res.message, "提示", {type: 'error'})
+							ElMessageBox.alert(res.cause || res.msg, "提示", {type: 'error'})
 						}
 					}
 				})

@@ -124,12 +124,12 @@ export default {
     //删除
     async table_del(row, index){
       var res = await this.$API.system_user.user.del.delete(row.id);
-      if(res.code === '00000'){
+      if(res.success){
         //这里选择刷新整个表格 OR 插入/编辑现有表格数据
         this.$refs.table.tableData.splice(index, 1);
         ElMessage.success("删除成功")
       }else{
-        ElMessageBox.alert(res.message, "提示", {type: 'error'})
+        ElMessageBox.alert(res.cause || res.msg, "提示", {type: 'error'})
       }
     },
     //批量删除

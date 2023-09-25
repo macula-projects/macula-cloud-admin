@@ -178,10 +178,10 @@ export default {
 				usernames: data
 			}
 			var res = await this.$API.system_user.user.listByUsernames.get(params);
-			if (res.code === '00000') {
+			if (res.success) {
 				this.form.manager = res.data.records
 			} else {
-				ElMessageBox.alert(res.message, "提示", { type: 'error' })
+				ElMessageBox.alert(res.cause || res.msg, "提示", { type: 'error' })
 			}
 		},
 		async validtorCode(rule, value, callback) {
@@ -197,7 +197,7 @@ export default {
 				appCode: value,
 			}
 			const res = await this.$API.system_application.application.validtorCode.get(params)
-			if (res.code === "00000" && res.data) {
+			if (res.success) {
 				callback()
 			}
 			callback(new Error('应用编码已存在！'))

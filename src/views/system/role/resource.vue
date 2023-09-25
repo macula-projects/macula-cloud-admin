@@ -65,7 +65,7 @@ export default {
 			this.menuloading = true
 			var res = await this.$API.system_menu.menu.list.get(params)
 			this.menuloading = false
-			if(res.code === '00000') {
+			if(res.success) {
 				this.menuList = res.data
 				this.$nextTick(()=>{
 					this.$refs.menuTree.filter()
@@ -121,7 +121,7 @@ export default {
 			this.roleId = row.id
 			this.dataScope = row.dataScope
 			const roleMenuIdsRes = await this.$API.system_role.role.getRoleMenuIds.get(this.roleId)
-			if(roleMenuIdsRes.code === '00000'){
+			if(roleMenuIdsRes.success){
 				this.selectMenuList = roleMenuIdsRes.data
 			}
 			this.getMenu()
@@ -142,7 +142,7 @@ export default {
 			this.selectMenuList.length = 0
 			this.$refs.menuTree.getCheckedNodes(false,true).forEach(item => this.selectMenuList.push(item.id))
 			const putMenusRes = await this.$API.system_role.role.updateRoleMenus.put(this.roleId, this.selectMenuList)
-			if(putMenusRes.code === '00000'){
+			if(putMenusRes.success){
 				return
 			}
 		}

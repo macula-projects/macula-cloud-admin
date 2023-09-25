@@ -179,7 +179,7 @@
 				this.asyncLoading = true
 				apiObj.get(data).then(res => {
 					this.asyncLoading = false
-					if(res.code == 200){
+					if(res.success){
 						this.dialog = false
 						ElMessageBox({
 							title: "成功发起任务",
@@ -190,7 +190,7 @@
 							center: true
 						}).catch(() => {})
 					}else{
-						ElMessageBox.alert(res.message || "未知错误", "发起任务失败", {
+						ElMessageBox.alert(res.cause || res.msg || "未知错误", "发起任务失败", {
 							type: "error",
 							center: true
 						}).catch(() => {})
