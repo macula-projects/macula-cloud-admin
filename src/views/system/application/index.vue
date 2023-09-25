@@ -15,12 +15,10 @@
 		<el-main class="nopadding">
 			<scTable ref="table" :apiObj="apiObj" @selection-change="selectionChange" stripe>
 				<el-table-column type="selection" width="50"></el-table-column>
-				<el-table-column label="应用名称" prop="applicationName" width="150"></el-table-column>
-				<el-table-column label="应用编码" prop="code" width="150"></el-table-column>
-				<el-table-column label="主页" prop="homepage" width="170"></el-table-column>
-				<el-table-column label="可访问路径" prop="accessPath" width="170"></el-table-column>
-				<el-table-column label="appKey" prop="ak" width="170"></el-table-column>
-				<el-table-column label="secretKey" prop="sk" width="170"></el-table-column>
+				<el-table-column label="应用名称" prop="applicationName" width="250"></el-table-column>
+				<el-table-column label="应用编码" prop="code" width="250"></el-table-column>
+				<el-table-column label="主页" prop="homepage" width="270"></el-table-column>
+				<el-table-column label="可访问路径" prop="accessPath" width="370"></el-table-column>
 				<el-table-column label="负责人" prop="manager" width="120"></el-table-column>
 				<el-table-column label="联系方式" prop="mobile" width="150"></el-table-column>
 				<el-table-column label="创建时间" prop="createTime" width="170"></el-table-column>
