@@ -25,6 +25,11 @@
 						<el-switch :model-value="String(scope.row.negative)" disabled active-value="true" inactive-value="false" />
 					</template>
 				</el-table-column>
+				<el-table-column label="排他角色" prop="exclusivity" width="120">
+					<template #default="scope">
+						<el-switch :model-value="String(scope.row.exclusivity)" disabled active-value="true" inactive-value="false" />
+					</template>
+				</el-table-column>
 				<el-table-column label="状态" prop="status" width="120">
 					<template #default="scope">
 						<el-switch :model-value="String(scope.row.status)" disabled active-value="1" inactive-value="0" />

@@ -19,6 +19,9 @@
 			<el-form-item label="反向角色" prop="negative">
 				<el-switch v-model="form.negative" active-value="true" inactive-value="false"></el-switch>
 			</el-form-item>
+			<el-form-item label="排他角色" prop="exclusivity">
+				<el-switch v-model="form.exclusivity" active-value="true" inactive-value="false"></el-switch>
+			</el-form-item>
 			<el-form-item label="状态" prop="status">
 				<el-switch v-model="form.status" active-value="1" inactive-value="0"></el-switch>
 			</el-form-item>
@@ -54,6 +57,7 @@
 					code: "",
 					sort: 1,
 					negative: false,
+					exclusivity: false,
 					status: '1',
 					dataScope: "ALL"
 				},
@@ -140,6 +144,7 @@
 				this.form.code = data.code
 				this.form.sort = data.sort
 				this.form.negative = String(data.negative)
+				this.form.exclusivity = String(data.exclusivity);
 				this.form.status = String(data.status)
 				this.form.dataScope = data.dataScope
 			}
