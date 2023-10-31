@@ -8,7 +8,7 @@
 				<el-input v-model="form.code" clearable></el-input>
 			</el-form-item>
 			<el-form-item label="负责人" prop="supervisor">
-				<sc-table-select v-model="form.supervisor" :apiObj="apiObj" :table-width="450" multiple clearable collapse-tags collapse-tags-tooltip :props="props">
+				<sc-table-select v-model="form.supervisor" :apiObj="apiObj" :table-width="450" multiple clearable collapse-tags collapse-tags-tooltip :props="props" :params="params">
 					<template #header="{form, submit}">
 						<el-form :inline="true" :model="form">
 							<el-form-item>
@@ -64,6 +64,7 @@ export default{
 				keyword: "keywords"
 			},
 			apiObj: this.$API.system_user.user.list,
+			params: {deleted: 0},
 			//验证规则
 			rules: {
 				name: [
