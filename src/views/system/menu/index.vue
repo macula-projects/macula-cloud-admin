@@ -124,13 +124,7 @@ export default {
 				redirect: ''
 			}
 			var res = await this.$API.system_menu.menu.add.post(newMenuData)
-			if (res.success) {
-				if (newMenuData.type === 'BUTTON' && this.curMenuType === 'CATALOG') {
-					//目录后选择菜单然后创建下级菜单将自动更新
-					data.createTime = ''
-					data.path = data.routePath
-					await this.$API.system_menu.menu.add.post(data)
-				}
+			if (res.success && data) {
 				data.children = data.children || []
 				data.children.push(newMenuData)
 				this.$refs.save.setData(data, data.parentId || "0")
